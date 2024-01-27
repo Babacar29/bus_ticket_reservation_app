@@ -361,5 +361,6 @@ const Map<String, dynamic> appLanguageLabelKeys = /*{
   "myProfile": "Mon profil",
   "noComments": "Soyez le premier à commenter !!!",
   "minute": "minute",
-  "read": "lire"
+  "read": "lire",
+  "chooseSitHintLbl": "Voulez-vous choisir un sège ?"
 };

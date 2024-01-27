@@ -16,7 +16,6 @@ class SettingsRepository {
   Map<String, dynamic> getCurrentSettings() {
     return {
       "showIntroSlider": _settingsLocalDataSource.getIntroSlider(),
-      "languageCode": _settingsLocalDataSource.getCurrentLanguageCode(),
       "theme": _settingsLocalDataSource.getCurrentTheme(),
       "notification": _settingsLocalDataSource.getNotification(),
       "token": _settingsLocalDataSource.getToken(),

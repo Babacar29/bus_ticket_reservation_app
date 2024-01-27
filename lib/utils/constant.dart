@@ -1,7 +1,9 @@
 //Please add your admin panel url here and make sure you do not add '/' at the end of the url
 
+const String authUrl = "https://gateway.rahimo.ankata.net/authentication-api";
+const String catalogUrl = "https://gateway.rahimo.ankata.net/catalog-api";
 const String baseUrl = "https://admin.reewmi.fr/";
-const String databaseUrl = "$baseUrl/api/";
+const String databaseUrl = "${baseUrl}api/";
 
 //Please add your jwt key here that you have added in admin panel system configuration setting
 const String jwtKey = "replace_your_jwt_secret_key";

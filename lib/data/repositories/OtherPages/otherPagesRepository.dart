@@ -1,9 +1,9 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
-import 'package:burkina_transport_app/data/models/OtherPageModel.dart';
-import 'package:burkina_transport_app/utils/api.dart';
-import 'package:burkina_transport_app/utils/strings.dart';
+import '../../../utils/api.dart';
+import '../../../utils/strings.dart';
+import '../../models/OtherPageModel.dart';
 import 'otherPageRemoteDataSorce.dart';
 
 class OtherPageRepository {

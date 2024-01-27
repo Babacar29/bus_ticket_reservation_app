@@ -2,17 +2,10 @@
 
 import 'dart:io';
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:burkina_transport_app/cubits/Auth/authCubit.dart';
-import 'package:burkina_transport_app/cubits/Auth/updateFCMCubit.dart';
-import 'package:burkina_transport_app/cubits/appLocalizationCubit.dart';
-import 'package:burkina_transport_app/cubits/privacyTermsCubit.dart';
-import 'package:burkina_transport_app/cubits/settingCubit.dart';
 import 'package:burkina_transport_app/ui/screens/auth/Widgets/bottomComBtn.dart';
 import 'package:burkina_transport_app/ui/screens/auth/Widgets/fieldFocusChange.dart';
 import 'package:burkina_transport_app/ui/screens/auth/Widgets/setConfimPass.dart';
@@ -21,19 +14,16 @@ import 'package:burkina_transport_app/ui/screens/auth/Widgets/setForgotPass.dart
 import 'package:burkina_transport_app/ui/screens/auth/Widgets/setLoginAndSignUpBtn.dart';
 import 'package:burkina_transport_app/ui/screens/auth/Widgets/setName.dart';
 import 'package:burkina_transport_app/ui/screens/auth/Widgets/setPassword.dart';
-import 'package:burkina_transport_app/ui/screens/auth/Widgets/setTermPolicy.dart';
 import 'package:burkina_transport_app/ui/styles/colors.dart';
 import 'package:burkina_transport_app/ui/widgets/SnackBarWidget.dart';
-import 'package:burkina_transport_app/ui/widgets/circularProgressIndicator.dart';
 import 'package:burkina_transport_app/ui/widgets/customTextBtn.dart';
 import 'package:burkina_transport_app/ui/widgets/customTextLabel.dart';
 import 'package:burkina_transport_app/utils/constant.dart';
 import 'package:burkina_transport_app/utils/internetConnectivity.dart';
 import 'package:burkina_transport_app/utils/uiUtils.dart';
-import 'package:burkina_transport_app/cubits/Auth/authCubit.dart' as auth;
 
 import 'package:burkina_transport_app/app/routes.dart';
-import 'package:burkina_transport_app/cubits/Auth/socialSignUpCubit.dart';
+import 'package:burkina_transport_app/cubits/Auth/loginCubit.dart';
 import 'package:burkina_transport_app/utils/validators.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -74,9 +64,6 @@ class LoginScreenState extends State<LoginScreen> with SingleTickerProviderState
   @override
   void initState() {
     //load privacy pages
-    Future.delayed(Duration.zero, () {
-      context.read<PrivacyTermsCubit>().getPrivacyTerms(context: context, langId: context.read<AppLocalizationCubit>().state.id);
-    });
 
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
     assignAllTextController();
@@ -138,16 +125,16 @@ class LoginScreenState extends State<LoginScreen> with SingleTickerProviderState
 
   //show form content
   showContent() {
-    return BlocConsumer<SocialSignUpCubit, SocialSignUpState>(
-        bloc: context.read<SocialSignUpCubit>(),
+    return BlocConsumer<LoginCubit, LoginState>(
+        bloc: context.read<LoginCubit>(),
         listener: (context, state) async {
-          if (state is SocialSignUpFailure) {
+          if (state is LoginFailure) {
             showSnackBar(
               state.errorMessage,
               context,
             );
           }
-          if (state is SocialSignUpSuccess) {
+          /*if (state is LoginSuccess) {
             context.read<AuthCubit>().checkAuthStatus();
             if (state.authModel.status == "0") {
               showSnackBar(UiUtils.getTranslatedLabel(context, 'deactiveMsg'), context);
@@ -163,10 +150,10 @@ class LoginScreenState extends State<LoginScreen> with SingleTickerProviderState
               } else if (widget.isFromApp == true) {
                 Navigator.pop(context);
               } else {
-                Navigator.pushNamedAndRemoveUntil(context, Routes.home, (route) => false);
+                //Navigator.pushNamedAndRemoveUntil(context, Routes.home, (route) => false);
               }
             }
-          }
+          }*/
         },
         builder: (context, state) {
           return Form(
@@ -182,7 +169,7 @@ class LoginScreenState extends State<LoginScreen> with SingleTickerProviderState
                       showTabBarView(),
                     ]),
                   ),
-                  if (state is SocialSignUpProgress) showCircularProgress(true, Theme.of(context).primaryColor),
+                  //if (state is SocialSignUpProgress) showCircularProgress(true, Theme.of(context).primaryColor),
                 ],
               ));
         });
@@ -316,7 +303,7 @@ class LoginScreenState extends State<LoginScreen> with SingleTickerProviderState
                         FocusScope.of(context).unfocus(); //dismiss keyboard
                         if (validateAndSave()) {
                           if (await InternetConnectivity.isNetworkAvailable()) {
-                            context.read<SocialSignUpCubit>().socialSignUpUser(email: emailC!.text.trim(), password: passC!.text, authProvider: auth.AuthProvider.email, context: context);
+                            context.read<LoginCubit>().loginUser( context: context);
                           } else {
                             showSnackBar(UiUtils.getTranslatedLabel(context, 'internetmsg'), context);
                           }
@@ -327,16 +314,6 @@ class LoginScreenState extends State<LoginScreen> with SingleTickerProviderState
                   ),
                   //setDividerOr(context),
                   //bottomBtn(),
-                  BlocConsumer<PrivacyTermsCubit, PrivacyTermsState>(listener: (context, state) {
-                    if (state is PrivacyTermsFetchSuccess) {
-                      isPolicyAvailable = true;
-                    }
-                    if (state is PrivacyTermsFetchFailure) {
-                      isPolicyAvailable = false;
-                    }
-                  }, builder: (context, state) {
-                    return (state is PrivacyTermsFetchSuccess) ? setTermPolicyTxt(context, isChecked, updateCheck, state) : const SizedBox.shrink();
-                  })
                 ]),
               )),
               //SignUp
@@ -354,7 +331,7 @@ class LoginScreenState extends State<LoginScreen> with SingleTickerProviderState
                         onTap: () async {
                           FocusScope.of(context).unfocus(); //dismiss keyboard
                           if (await InternetConnectivity.isNetworkAvailable()) {
-                            registerWithEmailPassword(sEmailC!.text.trim(), sPassC!.text.trim());
+                            //registerWithEmailPassword(sEmailC!.text.trim(), sPassC!.text.trim());
                           } else {
                             showSnackBar(UiUtils.getTranslatedLabel(context, 'internetmsg'), context);
                           }
@@ -370,7 +347,7 @@ class LoginScreenState extends State<LoginScreen> with SingleTickerProviderState
     );
   }
 
-  registerWithEmailPassword(String email, String password) async {
+  /*registerWithEmailPassword(String email, String password) async {
     try {
       debugPrint("------------- here ----------------");
       try{
@@ -403,7 +380,7 @@ class LoginScreenState extends State<LoginScreen> with SingleTickerProviderState
     } catch (e) {
       debugPrint(e.toString());
     }
-  }
+  }*/
 
   loginTxt() {
     return Align(
@@ -442,7 +419,7 @@ class LoginScreenState extends State<LoginScreen> with SingleTickerProviderState
                 if (!isPolicyAvailable) {
                   showSnackBar(UiUtils.getTranslatedLabel(context, 'addTCFirst'), context);
                 } else if (isChecked) {
-                  context.read<SocialSignUpCubit>().socialSignUpUser(authProvider: auth.AuthProvider.gmail, context: context);
+                  //context.read<SocialSignUpCubit>().socialSignUpUser(authProvider: AuthProvider.gmail, context: context);
                 } else {
                   showSnackBar(UiUtils.getTranslatedLabel(context, 'agreeTCFirst'), context);
                 }
@@ -455,7 +432,7 @@ class LoginScreenState extends State<LoginScreen> with SingleTickerProviderState
                   if (!isPolicyAvailable) {
                     showSnackBar(UiUtils.getTranslatedLabel(context, 'addTCFirst'), context);
                   } else if (isChecked) {
-                    context.read<SocialSignUpCubit>().socialSignUpUser(authProvider: auth.AuthProvider.fb, context: context);
+                    //context.read<SocialSignUpCubit>().socialSignUpUser(authProvider: AuthProvider.fb, context: context);
                   } else {
                     showSnackBar(UiUtils.getTranslatedLabel(context, 'agreeTCFirst'), context);
                   }
@@ -468,7 +445,7 @@ class LoginScreenState extends State<LoginScreen> with SingleTickerProviderState
                   if (!isPolicyAvailable) {
                     showSnackBar(UiUtils.getTranslatedLabel(context, 'addTCFirst'), context);
                   } else if (isChecked) {
-                    context.read<SocialSignUpCubit>().socialSignUpUser(authProvider: auth.AuthProvider.apple, context: context);
+                    //context.read<SocialSignUpCubit>().socialSignUpUser(authProvider: AuthProvider.apple, context: context);
                   } else {
                     showSnackBar(UiUtils.getTranslatedLabel(context, 'agreeTCFirst'), context);
                   }

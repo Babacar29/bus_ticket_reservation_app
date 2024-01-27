@@ -13,15 +13,24 @@ class CustomTextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      style: ButtonStyle(
-        overlayColor: MaterialStateProperty.all(Colors.transparent),
-        foregroundColor: MaterialStateProperty.all(darkSecondaryColor),
-      ),
-      onPressed: () {
+    return GestureDetector(
+      onTap: (){
         onTap();
       },
-      child: Text(text, style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: color, fontWeight: FontWeight.normal)),
+      child: Container(
+        color: color,
+        width: MediaQuery.sizeOf(context).width,
+        child: TextButton(
+          style: ButtonStyle(
+            overlayColor: MaterialStateProperty.all(Colors.transparent),
+            foregroundColor: MaterialStateProperty.all(darkSecondaryColor),
+          ),
+          onPressed: () {
+            onTap();
+          },
+          child: Text(text, style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white, fontWeight: FontWeight.normal, fontSize: 20)),
+        ),
+      ),
     );
   }
 }

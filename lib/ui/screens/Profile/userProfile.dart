@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:burkina_transport_app/app/routes.dart';
 import 'package:burkina_transport_app/cubits/Auth/authCubit.dart';
 import 'package:burkina_transport_app/cubits/Auth/updateUserCubit.dart';
@@ -15,7 +14,6 @@ import 'package:burkina_transport_app/ui/widgets/SnackBarWidget.dart';
 import 'package:burkina_transport_app/ui/widgets/circularProgressIndicator.dart';
 import 'package:burkina_transport_app/ui/widgets/customAppBar.dart';
 import 'package:burkina_transport_app/ui/widgets/customTextLabel.dart';
-import 'package:burkina_transport_app/ui/widgets/showUploadImageBottomsheet.dart';
 import 'package:burkina_transport_app/utils/uiUtils.dart';
 import 'package:burkina_transport_app/utils/validators.dart';
 
@@ -130,35 +128,6 @@ class UserProfileScreenState extends State<UserProfileScreen> {
             isenable: (context.read<AuthCubit>().getType() != loginMbl) ? true : false));
   }
 
-  //set image camera
-  getFromCamera() async {
-    try {
-      XFile? pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
-      if (pickedFile != null) {
-        Navigator.of(context).pop(); //pop dialog
-        setState(() {
-          image = File(pickedFile.path);
-          profile = image!.path;
-        });
-        context.read<UpdateUserCubit>().setUpdateUser(userId: context.read<AuthCubit>().getUserId(), context: context, filePath: image!.path);
-      }
-    } catch (e) {
-      debugPrint("camera-err-${e.toString()}");
-    }
-  }
-
-// set image gallery
-  _getFromGallery() async {
-    XFile? pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery, maxWidth: 1800, maxHeight: 1800);
-    if (pickedFile != null) {
-      setState(() {
-        image = File(pickedFile.path);
-        profile = image!.path;
-        Navigator.of(context).pop(); //pop dialog
-      });
-      context.read<UpdateUserCubit>().setUpdateUser(userId: context.read<AuthCubit>().getUserId(), context: context, filePath: image!.path);
-    }
-  }
 
   profileWidget() {
     return Container(padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15), child: Center(child: profileImgWidget()));
@@ -166,7 +135,9 @@ class UserProfileScreenState extends State<UserProfileScreen> {
 
   profileImgWidget() {
     return GestureDetector(
-      onTap: () => showUploadImageBottomsheet(context: context, onCamera: getFromCamera, onGallery: _getFromGallery),
+      onTap: () {
+
+      },
       child: Stack(
         alignment: Alignment.center,
         children: [

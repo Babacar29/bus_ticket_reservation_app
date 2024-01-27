@@ -1,14 +1,11 @@
 // ignore_for_file: file_names, use_build_context_synchronously
 
-import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
-import 'package:burkina_transport_app/utils/api.dart';
-import 'package:burkina_transport_app/utils/uiUtils.dart';
-import 'package:burkina_transport_app/utils/strings.dart';
-import 'package:burkina_transport_app/data/repositories/Auth/authLocalDataSource.dart';
-import 'package:burkina_transport_app/data/repositories/Auth/authRemoteDataSource.dart';
 
 import '../../../cubits/Auth/authCubit.dart';
+import '../../../utils/strings.dart';
+import 'authLocalDataSource.dart';
+import 'authRemoteDataSource.dart';
 
 class AuthRepository {
   static final AuthRepository _authRepository = AuthRepository._internal();
@@ -62,42 +59,9 @@ class AuthRepository {
   }
 
   //First we signin user with given provider then add user details
-  Future<Map<String, dynamic>> signInUser({required BuildContext context, required AuthProvider authProvider, String? email, String? password, String? otp, String? verifiedId}) async {
-    try {
-      final result = await _authRemoteDataSource.socialSignInUser(context: context, authProvider: authProvider, email: email, password: password, verifiedId: verifiedId, otp: otp);
-      final user = result['user'] as firebase_auth.User;
-      var providerData = user.providerData[0];
-      if ((authProvider == AuthProvider.email && !user.emailVerified)) {
-        throw ApiException(UiUtils.getTranslatedLabel(context, 'verifyEmailMsg'));
-      }
-
-      Map<String, dynamic> userDataTest = await _authRemoteDataSource.loginAuth(
-          mobile: providerData.phoneNumber ?? "",
-          context: context,
-          email: providerData.email ?? "",
-          firebaseId: user.uid,
-          name: providerData.displayName ?? "",
-          profile: providerData.photoURL ?? "",
-          type: authProvider.name);
-
-      if (userDataTest["data"][STATUS] != "0") {
-        setLocalAuthDetails(
-            type: userDataTest["data"][TYPE] ?? "",
-            profile: userDataTest["data"][PROFILE] ?? "",
-            name: userDataTest["data"][NAME] ?? "",
-            email: userDataTest["data"][EMAIL] ?? "",
-            authStatus: true,
-            id: userDataTest["data"][ID] ?? "0",
-            mobile: userDataTest["data"][MOBILE] ?? "",
-            role: userDataTest["data"][ROLE] ?? "",
-            status: userDataTest["data"][STATUS] ?? "");
-      }
-
-      return userDataTest;
-    } catch (e) {
-      signOut(authProvider);
-      throw ApiMessageAndCodeException(errorMessage: e.toString());
-    }
+  Future signInUser({required BuildContext context}) async {
+    final result = await _authRemoteDataSource.signInUser( context: context);
+    return result;
   }
 
   //to update fcmId user's data to database. This will be in use when authenticating using fcmId
@@ -124,9 +88,8 @@ class AuthRepository {
     return result;
   }
 
-  //to update fcmId user's data to database. This will be in use when authenticating using fcmId
-  Future<Map<String, dynamic>> registerToken({required String fcmId, required BuildContext context}) async {
-    final result = await _authRemoteDataSource.registerToken(fcmId: fcmId, context: context);
+  Future<Map<String, dynamic>> register({required BuildContext context}) async {
+    final result = await _authRemoteDataSource.register(context: context);
     return result;
   }
 

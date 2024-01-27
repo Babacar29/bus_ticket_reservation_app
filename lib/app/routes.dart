@@ -1,29 +1,19 @@
+import 'package:burkina_transport_app/ui/screens/Payments/PaymentStarted.dart';
+import 'package:burkina_transport_app/ui/screens/Tickets/TicketDetails.dart';
+import 'package:burkina_transport_app/ui/screens/chooseSit.dart';
+import 'package:burkina_transport_app/ui/screens/showAvailablePlace/ShowAvailableCitiesScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:burkina_transport_app/ui/screens/AddNews.dart';
-import 'package:burkina_transport_app/ui/screens/BookmarkScreen.dart';
-import 'package:burkina_transport_app/ui/screens/ImagePreviewScreen.dart';
-import 'package:burkina_transport_app/ui/screens/LiveStreaming.dart';
-import 'package:burkina_transport_app/ui/screens/NewsDetail/NewsDetailScreen.dart';
-import 'package:burkina_transport_app/ui/screens/NewsDetail/Widgets/ShowMoreNewsList.dart';
-import 'package:burkina_transport_app/ui/screens/NewsVideo.dart';
 import 'package:burkina_transport_app/ui/screens/PrivacyPolicyScreen.dart';
 import 'package:burkina_transport_app/ui/screens/Profile/userProfile.dart';
-import 'package:burkina_transport_app/ui/screens/Search.dart';
-import 'package:burkina_transport_app/ui/screens/ShowUserRolesNews.dart';
-import 'package:burkina_transport_app/ui/screens/SubCategory/SubCategoryScreen.dart';
-import 'package:burkina_transport_app/ui/screens/TagNewsScreen.dart';
 import 'package:burkina_transport_app/ui/screens/auth/ForgotPassword.dart';
-import 'package:burkina_transport_app/ui/screens/auth/RequestOtpScreen.dart';
-import 'package:burkina_transport_app/ui/screens/auth/VerifyOtpScreen.dart';
 import 'package:burkina_transport_app/ui/screens/dashBoard/dashBoardScreen.dart';
-import 'package:burkina_transport_app/ui/screens/introSlider.dart';
 import 'package:burkina_transport_app/ui/screens/languageList.dart';
 import 'package:burkina_transport_app/ui/screens/splashScreen.dart';
-import 'package:burkina_transport_app/ui/screens/ManagePreference.dart';
-import 'package:burkina_transport_app/ui/screens/SectionMoreNews/SectionMoreBreakNewsList.dart';
-import 'package:burkina_transport_app/ui/screens/SectionMoreNews/SectionMoreNewsList.dart';
 import 'package:burkina_transport_app/ui/screens/auth/loginScreen.dart';
+
+import '../ui/screens/GetUserInfos.dart';
+import '../ui/screens/Tickets/TicketsScreen.dart';
 
 class Routes {
   static const String splash = "splash";
@@ -32,25 +22,19 @@ class Routes {
   static const String languageList = "languageList";
   static const String login = "login";
   static const String privacy = "privacy";
-  static const String search = "search";
-  static const String live = "live";
-  static const String subCat = "subCat";
   static const String requestOtp = "requestOtp";
   static const String verifyOtp = "verifyOtp";
   static const String managePref = "managePref";
-  static const String newsVideo = "newsVideo";
-  static const String bookmark = "bookmark";
-  static const String newsDetails = "newsDetails";
   static const String imagePreview = "imagePreview";
   static const String tagScreen = "tagScreen";
-  static const String addNews = "AddNews";
-  static const String editNews = "editNews";
-  static const String showNews = "showNews";
   static const String forgotPass = "forgotPass";
-  static const String sectionNews = "sectionNews";
-  static const String sectionBreakNews = "sectionBreakNews";
-  static const String showMoreRelatedNews = "showMoreRelatedNews";
   static const String editUserProfile = "editUserProfile";
+  static const String showAvailablePLace = "showAvailablePLace";
+  static const String showUserInfo = "showUserInfo";
+  static const String chooseSit = "chooseSit";
+  static const String startPayment = "startPayment";
+  static const String ticketDetails = "ticketDetails";
+  static const String tickets = "tickets";
 
   static String currentRoute = splash;
 
@@ -65,10 +49,6 @@ class Routes {
         {
           return DashBoard.route(routeSettings);
         }
-      case introSlider:
-        {
-          return CupertinoPageRoute(builder: (_) => const IntroSliderScreen());
-        }
       case login:
         {
           return LoginScreen.route(routeSettings);
@@ -81,78 +61,37 @@ class Routes {
         {
           return PrivacyPolicy.route(routeSettings);
         }
-      case search:
-        {
-          return CupertinoPageRoute(builder: (_) => const Search());
-        }
-      case live:
-        {
-          return LiveStreaming.route(routeSettings);
-        }
-      case subCat:
-        {
-          return SubCategoryScreen.route(routeSettings);
-        }
-      case requestOtp:
-        {
-          return CupertinoPageRoute(builder: (_) => const RequestOtp());
-        }
-      case verifyOtp:
-        {
-          return VerifyOtp.route(routeSettings);
-        }
-      case managePref:
-        {
-          return ManagePref.route(routeSettings);
-        }
-      case newsVideo:
-        {
-          return NewsVideo.route(routeSettings);
-        }
-      case bookmark:
-        {
-          return CupertinoPageRoute(builder: (_) => const BookmarkScreen());
-        }
-      case newsDetails:
-        {
-          return NewsDetailScreen.route(routeSettings);
-        }
-      case imagePreview:
-        {
-          return ImagePreview.route(routeSettings);
-        }
-      case tagScreen:
-        {
-          return NewsTag.route(routeSettings);
-        }
-      case addNews:
-        {
-          return AddNews.route(routeSettings);
-        }
-      case showNews:
-        {
-          return CupertinoPageRoute(builder: (_) => const ShowNews());
-        }
       case forgotPass:
         {
           return CupertinoPageRoute(builder: (_) => const ForgotPassword());
         }
-
-      case sectionNews:
-        {
-          return SectionMoreNewsList.route(routeSettings);
-        }
-      case sectionBreakNews:
-        {
-          return SectionMoreBreakingNewsList.route(routeSettings);
-        }
-      case showMoreRelatedNews:
-        {
-          return ShowMoreNewsList.route(routeSettings);
-        }
       case editUserProfile:
         {
           return UserProfileScreen.route(routeSettings);
+        }
+      case showAvailablePLace:
+        {
+          return ShowAvailableCities.route(routeSettings);
+        }
+      case showUserInfo:
+        {
+          return GetUserInfos.route(routeSettings);
+        }
+      case chooseSit:
+        {
+          return ChooseSit.route(routeSettings);
+        }
+      case startPayment:
+        {
+          return PaymentStarted.route(routeSettings);
+        }
+      case ticketDetails:
+        {
+          return TicketDetailsScreen.route(routeSettings);
+        }
+      case tickets:
+        {
+          return TicketsScreen.route(routeSettings);
         }
       default:
         {

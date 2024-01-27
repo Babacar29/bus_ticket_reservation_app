@@ -3,45 +3,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:burkina_transport_app/app/routes.dart';
 import 'package:burkina_transport_app/cubits/Auth/authCubit.dart';
-import 'package:burkina_transport_app/cubits/Bookmark/bookmarkCubit.dart';
-import 'package:burkina_transport_app/cubits/LikeAndDislikeNews/LikeAndDislikeCubit.dart';
-import 'package:burkina_transport_app/cubits/appLocalizationCubit.dart';
-import 'package:burkina_transport_app/cubits/appSystemSettingCubit.dart';
 import 'package:burkina_transport_app/cubits/languageJsonCubit.dart';
-import 'package:burkina_transport_app/cubits/privacyTermsCubit.dart';
-import 'package:burkina_transport_app/ui/screens/NewsDetail/Widgets/InterstitialAds/fbInterstitialAds.dart';
-import 'package:burkina_transport_app/ui/screens/NewsDetail/Widgets/InterstitialAds/googleInterstitialAds.dart';
-//import 'package:burkina_transport_app/ui/screens/NewsDetail/Widgets/InterstitialAds/unityInterstitialAds.dart';
 import 'package:burkina_transport_app/ui/styles/colors.dart';
 import 'package:burkina_transport_app/utils/labelKeys.dart';
 import 'package:burkina_transport_app/ui/styles/appTheme.dart';
-import 'package:burkina_transport_app/utils/hiveBoxKeys.dart';
 
 class UiUtils {
   static GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
-
-  static Future<void> setDynamicStringValue(String key, String value) async {
-    Hive.box(settingsBoxKey).put(key, value);
-  }
-
-  static Future<void> setDynamicListValue(String key, String value) async {
-    List<String>? valueList = getDynamicListValue(key);
-    if (!valueList.contains(value)) {
-      if (valueList.length > 4) valueList.removeAt(0);
-      valueList.add(value);
-
-      Hive.box(settingsBoxKey).put(key, valueList);
-    }
-  }
-
-  static List<String> getDynamicListValue(String key) {
-    return Hive.box(settingsBoxKey).get(key);
-  }
 
   //used for IntroSlider Images only
   static String getImagePath(String imageName) {
@@ -78,17 +50,16 @@ class UiUtils {
   static String? convertToAgo(BuildContext context, DateTime input, int from) {
     Duration diff = DateTime.now().difference(input);
     initializeDateFormatting(); //locale according to location
-    final langCode = Hive.box(settingsBoxKey).get(currentLanguageCodeKey);
     bool isNegative = diff.isNegative;
     if (diff.inDays >= 1 || (isNegative && diff.inDays < 1)) {
       if (from == 0) {
-        var newFormat = DateFormat("MMM dd, yyyy", langCode);
+        var newFormat = DateFormat("MMM dd, yyyy", ('fr'));
         final newsDate1 = newFormat.format(input);
         return newsDate1;
       } else if (from == 1) {
         return "${diff.inDays} ${getTranslatedLabel(context, 'days')} ${getTranslatedLabel(context, 'ago')}";
       } else if (from == 2) {
-        var newFormat = DateFormat("dd MMMM yyyy HH:mm:ss", langCode);
+        var newFormat = DateFormat("dd MMMM yyyy HH:mm:ss", 'fr');
         final newsDate1 = newFormat.format(input);
         return newsDate1;
       }
@@ -120,13 +91,9 @@ class UiUtils {
   }
 
   static userLogOut({required BuildContext contxt}) {
-    Future.delayed(Duration.zero, () {
-      contxt.read<PrivacyTermsCubit>().getPrivacyTerms(context: contxt, langId: contxt.read<AppLocalizationCubit>().state.id);
-    });
     for (int i = 0; i < AuthProvider.values.length; i++) {
       if (AuthProvider.values[i].name == contxt.read<AuthCubit>().getType()) {
-        contxt.read<BookmarkCubit>().resetState();
-        contxt.read<LikeAndDisLikeCubit>().resetState();
+        //contxt.read<BookmarkCubit>().resetState();
         contxt.read<AuthCubit>().signOut(AuthProvider.values[i]).then((value) {
           Navigator.of(contxt).pushNamedAndRemoveUntil(Routes.login, (route) => false);
         });
@@ -139,18 +106,6 @@ class UiUtils {
     return SizedBox(height: 35, width: 35, child: childWidget);
   }
 
-  //Interstitial Ads
-  static showInterstitialAds({required BuildContext context}) {
-    if (context.read<AppConfigurationCubit>().getInAppAdsMode() == "1") {
-      if (context.read<AppConfigurationCubit>().checkAdsType() == "google") {
-        showGoogleInterstitialAd(context);
-      } else if (context.read<AppConfigurationCubit>().checkAdsType() == "fb") {
-        showFBInterstitialAd();
-      } else {
-        //showUnityInterstitialAds(context.read<AppConfigurationCubit>().interstitialId()!);
-      }
-    }
-  }
 
   //calculate time in Minutes to Read News Article
   static int calculateReadingTime(String text) {
@@ -158,5 +113,15 @@ class UiUtils {
     final wordCount = text.trim().split(' ').length;
     final readTime = (wordCount / wordsPerMinute).ceil();
     return readTime;
+  }
+
+  Future<String> getDocumentType(String docType) async{
+    String ret;
+    ret = switch (docType) {
+      'DocumentType.CNIB' => 'CNIB',
+      'DocumentType.Passeport' => 'Passeport',
+      _ => 'CNIB'
+    };
+    return ret;
   }
 }

@@ -2,15 +2,12 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 //import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive/hive.dart';
-import 'package:burkina_transport_app/cubits/Auth/registerTokenCubit.dart';
 import 'package:burkina_transport_app/cubits/appLocalizationCubit.dart';
 import 'package:burkina_transport_app/cubits/languageJsonCubit.dart';
-import 'package:burkina_transport_app/cubits/settingCubit.dart';
 import 'package:burkina_transport_app/cubits/themeCubit.dart';
 import 'package:burkina_transport_app/ui/styles/colors.dart';
 import 'package:burkina_transport_app/ui/widgets/errorContainerWidget.dart';
@@ -38,11 +35,6 @@ class SplashState extends State<Splash> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     fetchAppConfigurations();
-    FirebaseMessaging.instance.getToken().then((token) async {
-      if (token != context.read<SettingsCubit>().getSettings().token && token != null) {
-        context.read<RegisterTokenCubit>().registerToken(fcmId: token, context: context);
-      }
-    });
 
     _slideControllerBottom = AnimationController(vsync: this, duration: const Duration(seconds: 3));
     _splashIconController = AnimationController(vsync: this, duration: const Duration(seconds: 1));
@@ -93,7 +85,8 @@ class SplashState extends State<Splash> with TickerProviderStateMixin {
   }
 
   Future<void> navigationPage() async {
-    Future.delayed(const Duration(seconds: 4), () async {
+    Navigator.of(context).pushReplacementNamed(Routes.home);
+    /*Future.delayed(const Duration(seconds: 4), () async {
       final currentSettings = context.read<SettingsCubit>().state.settingsModel;
 
       if (currentSettings!.showIntroSlider) {
@@ -101,7 +94,7 @@ class SplashState extends State<Splash> with TickerProviderStateMixin {
       } else {
         Navigator.of(context).pushReplacementNamed(Routes.home, arguments: false);
       }
-    });
+    });*/
   }
 
   Widget buildScale() {
@@ -125,7 +118,7 @@ class SplashState extends State<Splash> with TickerProviderStateMixin {
                   return ErrorContainerWidget(
                     errorMsg: (state.errorMessage.contains(ErrorMessageKeys.noInternet)) ? UiUtils.getTranslatedLabel(context, 'internetmsg') : state.errorMessage,
                     onRetry: () {
-                      fetchAppConfigurations();
+                      //fetchAppConfigurations();
                     },
                   );
                 } else if (langState is LanguageJsonFetchFailure) {
@@ -137,20 +130,8 @@ class SplashState extends State<Splash> with TickerProviderStateMixin {
                   );
                 } else {
                   return Container(
-                    width: double.maxFinite,
-                    margin: const EdgeInsets.only(top: 2 * kToolbarHeight),
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.only(topRight: Radius.circular(200)),
-                      color: darkSecondaryColor,
-                    ),
-                    child: Column(mainAxisSize: MainAxisSize.min, children: [
-                      const SizedBox(height: 150),
-                      splashLogoIcon(),
-                      //newsTextIcon(),
-                      subTitle(),
-                      const Spacer(),
-                      //bottomText(),
-                    ]),
+                      color: darkBackgroundColor,
+                      child: splashLogoIcon()
                   );
                 }
               });
@@ -164,7 +145,7 @@ class SplashState extends State<Splash> with TickerProviderStateMixin {
             itemCount: 3,
             slideDirection: SlideDirection.fromRight,
             animationController: _splashIconController!,
-            child: Image.asset(UiUtils.getImagePath("reewmi_logo.png"), height: 100.0, fit: BoxFit.fill)));
+            child: Image.asset(UiUtils.getImagePath("ic_new_logo-playstore.png"), height: 250.0, fit: BoxFit.fill)));
   }
 
   /*Widget newsTextIcon() {

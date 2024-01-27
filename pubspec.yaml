@@ -8,55 +8,32 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.3+14
 
 environment:
-  sdk: '>=2.18.4 <3.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
 
   cupertino_icons: ^1.0.2
-  flutter_svg: ^2.0.7
+  flutter_svg: ^1.0.2
   jaguar_jwt: ^3.0.0
   connectivity_plus: ^3.0.2
-  country_code_picker: ^2.0.2
+  #country_code_picker: ^2.0.2
   sms_autofill: ^2.0.1
-  location: ^5.0.3
   intl: ^0.18.0
-  firebase_core: ^2.0.0
-  firebase_auth: ^4.0.1
-  google_sign_in: ^6.0.1
-  photo_view: ^0.14.0
   url_launcher: ^6.0.10
   shimmer: ^2.0.0
-  firebase_dynamic_links: ^5.0.1
-  share_plus: ^6.3.0
-  flutter_tts: ^3.2.2
-  image_picker: ^1.0.1
-  file_picker: ^5.2.6
-  video_player: ^2.2.5
-  flick_video_player: ^0.5.0
-  youtube_player_flutter: ^8.0.0
   in_app_review: ^2.0.3
-  flutter_local_notifications: ^15.1.0+1
-  firebase_messaging: ^14.6.2
-  path_provider: ^2.0.5
-  flutter_login_facebook: ^1.6.0
-  sign_in_with_apple: ^4.1.0
-  crypto: ^3.0.1
-  facebook_audience_network: ^1.0.1
-  percent_indicator: ^4.0.0
-  google_mobile_ads: ^2.1.0
-  device_info_plus: ^8.2.2
-  flutter_widget_from_html: ^0.10.0
   #unity_ads_plugin: ^0.3.9
-  flutter_inappwebview: ^5.7.1
-  html_editor_enhanced: ^2.5.1
   flutter_bloc: ^8.1.3
   dio: ^5.0.1
   hive: ^2.2.3
+  share_plus: ^6.3.4
   hive_flutter: ^1.1.0
   equatable: ^2.0.5
   lottie: ^1.2.2
+  book_my_seat: ^1.0.1
+  omni_datetime_picker: ^1.0.9
 
 dependency_overrides:
   modal_bottom_sheet: ^3.0.0-pre
@@ -66,6 +43,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^2.0.0
   flutter_launcher_icons: "^0.13.1"
+  pigeon: ^16.0.0
 
 
 flutter:
@@ -75,6 +53,7 @@ flutter:
     - assets/images/svgImage/
     - assets/languages/
     - assets/animations/
+    - assets/
 
   fonts:
     - family: Sarabun

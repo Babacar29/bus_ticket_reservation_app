@@ -7,3 +7,4 @@ const Color borderColor = Color(0xff6B6B6B);
 
 const Color darkSecondaryColor = Color(0xff1B2D51);
 const Color darkBackgroundColor = Color(0xff1F345E);
+const Color greenLogoColor = Color(0xff3DDC84);

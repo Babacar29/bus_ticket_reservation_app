@@ -1,33 +1,21 @@
 // ignore_for_file: file_names
 
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:burkina_transport_app/cubits/notificationCubit.dart';
-import 'package:burkina_transport_app/ui/screens/dashBoard/dashBoardScreen.dart';
 import 'package:burkina_transport_app/ui/styles/colors.dart';
 import 'package:burkina_transport_app/ui/widgets/customAppBar.dart';
 import 'package:burkina_transport_app/ui/widgets/customTextLabel.dart';
 import 'package:burkina_transport_app/ui/widgets/errorContainerWidget.dart';
 import 'package:burkina_transport_app/ui/widgets/networkImage.dart';
 import 'package:burkina_transport_app/utils/ErrorMessageKeys.dart';
-import 'package:burkina_transport_app/utils/constant.dart';
 import 'package:burkina_transport_app/utils/internetConnectivity.dart';
 import 'package:burkina_transport_app/utils/uiUtils.dart';
 import 'package:burkina_transport_app/cubits/Auth/authCubit.dart';
 import 'package:burkina_transport_app/cubits/languageCubit.dart';
-import 'package:burkina_transport_app/cubits/Bookmark/bookmarkCubit.dart';
-import 'package:burkina_transport_app/cubits/LikeAndDislikeNews/LikeAndDislikeCubit.dart';
 import 'package:burkina_transport_app/cubits/appLocalizationCubit.dart';
-import 'package:burkina_transport_app/cubits/categoryCubit.dart';
-import 'package:burkina_transport_app/cubits/featureSectionCubit.dart';
 import 'package:burkina_transport_app/cubits/languageJsonCubit.dart';
-import 'package:burkina_transport_app/cubits/liveStreamCubit.dart';
-import 'package:burkina_transport_app/cubits/otherPagesCubit.dart';
-import 'package:burkina_transport_app/cubits/videosCubit.dart';
-import 'package:burkina_transport_app/cubits/UserNotification/userNotificationCubit.dart';
 
 class LanguageList extends StatefulWidget {
   const LanguageList({super.key});
@@ -140,23 +128,12 @@ class LanguageListState extends State<LanguageList> {
         bloc: context.read<LanguageJsonCubit>(),
         listener: (context, state) {
           if (state is LanguageJsonFetchSuccess) {
-            UiUtils.setDynamicStringValue(context.read<AppLocalizationCubit>().state.languageCode, jsonEncode(state.languageJson));
+            //UiUtils.setDynamicStringValue(context.read<AppLocalizationCubit>().state.languageCode, jsonEncode(state.languageJson));
 
-            context.read<OtherPageCubit>().getOtherPage(
-                  context: context,
-                  langId: context.read<AppLocalizationCubit>().state.id,
-                );
-            context.read<SectionCubit>().getSection(context: context, langId: context.read<AppLocalizationCubit>().state.id, userId: context.read<AuthCubit>().getUserId());
-            context.read<LiveStreamCubit>().getLiveStream(context: context, langId: context.read<AppLocalizationCubit>().state.id);
-            if (isWeatherDataShow) homeScreenKey!.currentState!.getWeatherData();
-            context.read<VideoCubit>().getVideo(context: context, langId: context.read<AppLocalizationCubit>().state.id);
-            context.read<CategoryCubit>().getCategory(context: context, langId: context.read<AppLocalizationCubit>().state.id);
+            //context.read<CategoryCubit>().getCategory(context: context, langId: context.read<AppLocalizationCubit>().state.id);
             if (context.read<AuthCubit>().getUserId() != "0") {
-              context.read<LikeAndDisLikeCubit>().getLikeAndDisLike(context: context, langId: context.read<AppLocalizationCubit>().state.id, userId: context.read<AuthCubit>().getUserId());
-              context.read<BookmarkCubit>().getBookmark(context: context, langId: context.read<AppLocalizationCubit>().state.id, userId: context.read<AuthCubit>().getUserId());
-              context.read<UserNotificationCubit>().getUserNotification(context: context, userId: context.read<AuthCubit>().getUserId());
+              //context.read<BookmarkCubit>().getBookmark(context: context, langId: context.read<AppLocalizationCubit>().state.id, userId: context.read<AuthCubit>().getUserId());
             }
-            context.read<NotificationCubit>().getNotification(context: context);
             Navigator.pop(context);
           }
         },

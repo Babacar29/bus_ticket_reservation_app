@@ -1,6 +1,5 @@
 // ignore_for_file: file_names, deprecated_member_use, use_build_context_synchronously
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:burkina_transport_app/ui/widgets/customBackBtn.dart';
@@ -20,7 +19,6 @@ class ForgotPassword extends StatefulWidget {
 
 class FrgtPswdState extends State<ForgotPassword> {
   TextEditingController emailC = TextEditingController();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
   @override
@@ -48,7 +46,7 @@ class FrgtPswdState extends State<ForgotPassword> {
           width: 150,
           height: 150,
           fit: BoxFit.fill,
-          colorFilter: ColorFilter.mode(UiUtils.getColorScheme(context).primaryContainer.withOpacity(0.7), BlendMode.srcIn),
+          //colorFilter: ColorFilter.mode(UiUtils.getColorScheme(context).primaryContainer.withOpacity(0.7), BlendMode.srcIn),
         ),
       ),
     );
@@ -108,21 +106,15 @@ class FrgtPswdState extends State<ForgotPassword> {
                 showSnackBar(UiUtils.getTranslatedLabel(context, 'emailValid'), context);
               } else {
                 try {
-                  await _auth.sendPasswordResetEmail(email: emailC.text.trim());
+                  //await _auth.sendPasswordResetEmail(email: emailC.text.trim());
                   final form = _formkey.currentState;
                   form!.save();
                   if (form.validate()) {
                     showSnackBar(UiUtils.getTranslatedLabel(context, 'passReset'), context);
                     Navigator.pop(context);
                   }
-                } on FirebaseAuthException catch (e) {
-                  debugPrint(e.code);
-                  debugPrint(e.message);
-                  if (e.code == "userNotFound") {
-                    showSnackBar(UiUtils.getTranslatedLabel(context, 'userNotFound'), context);
-                  } else {
-                    showSnackBar(e.message!, context);
-                  }
+                } on Exception catch (e) {
+                  debugPrint("e ==> $e");
                 }
               }
             });

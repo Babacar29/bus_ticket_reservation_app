@@ -1,7 +1,7 @@
 // ignore_for_file: file_names, use_build_context_synchronously
 
 import 'dart:io';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:burkina_transport_app/ui/styles/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,20 +10,20 @@ import 'package:in_app_review/in_app_review.dart';
 import 'package:burkina_transport_app/app/app.dart';
 import 'package:burkina_transport_app/app/routes.dart';
 import 'package:burkina_transport_app/cubits/Auth/authCubit.dart';
-import 'package:burkina_transport_app/cubits/Auth/deleteUserCubit.dart';
 import 'package:burkina_transport_app/cubits/appLocalizationCubit.dart';
-import 'package:burkina_transport_app/cubits/otherPagesCubit.dart';
 import 'package:burkina_transport_app/cubits/settingCubit.dart';
 import 'package:burkina_transport_app/data/repositories/Auth/authLocalDataSource.dart';
 import 'package:burkina_transport_app/ui/widgets/customTextLabel.dart';
 import 'package:burkina_transport_app/utils/internetConnectivity.dart';
 import 'package:burkina_transport_app/utils/uiUtils.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:burkina_transport_app/cubits/themeCubit.dart';
 import 'package:burkina_transport_app/utils/constant.dart';
 import 'package:burkina_transport_app/ui/styles/appTheme.dart';
 import 'package:burkina_transport_app/ui/widgets/SnackBarWidget.dart';
-import 'package:burkina_transport_app/cubits/Auth/authCubit.dart' as auth;
+import 'package:share_plus/share_plus.dart';
+
+import '../../../cubits/otherPagesCubit.dart';
+import '../../widgets/myAppBar.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -46,7 +46,6 @@ class ProfileScreenState extends State<ProfileScreen> {
   bool isEditMono = false;
   bool isEditEmail = false;
   String? updateValue;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final InAppReview _inAppReview = InAppReview.instance;
 
   @override
@@ -108,11 +107,12 @@ class ProfileScreenState extends State<ProfileScreen> {
   }
 
   bool getNotification() {
-    if (context.read<SettingsCubit>().state.settingsModel!.notification == true) {
+    /*if (context.read<SettingsCubit>().state.settingsModel!.notification == true) {
       return true;
     } else {
       return false;
-    }
+    }*/
+    return false;
   }
 
   switchNotification(bool value) {
@@ -156,15 +156,6 @@ class ProfileScreenState extends State<ProfileScreen> {
           switch (id) {
             case 2:
               Navigator.of(context).pushNamed(Routes.languageList, arguments: {"from": 2});
-              break;
-            case 3:
-              Navigator.of(context).pushNamed(Routes.bookmark);
-              break;
-            case 4:
-              Navigator.of(context).pushNamed(Routes.addNews, arguments: {"isEdit": false, "from": "profile"});
-              break;
-            case 5:
-              Navigator.of(context).pushNamed(Routes.showNews);
               break;
             case 6:
               Navigator.of(context).pushNamed(Routes.managePref, arguments: {"from": 1});
@@ -229,24 +220,24 @@ class ProfileScreenState extends State<ProfileScreen> {
               backgroundColor: UiUtils.getColorScheme(context).background,
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
               content: CustomTextLabel(
-                  text: (_auth.currentUser != null) ? 'deleteConfirm' : 'deleteRelogin',
+                  text: 'deleteRelogin',
                   textStyle: Theme.of(this.context).textTheme.titleMedium?.copyWith(color: UiUtils.getColorScheme(context).primaryContainer)),
-              title: (_auth.currentUser != null) ? const CustomTextLabel(text: 'deleteAcc') : const CustomTextLabel(text: 'deleteAlertTitle'),
+              title: const CustomTextLabel(text: 'deleteAlertTitle'),
               titleTextStyle: Theme.of(this.context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800, color: UiUtils.getColorScheme(context).primaryContainer),
               actions: <Widget>[
                 TextButton(
                     child: CustomTextLabel(
-                        text: (_auth.currentUser != null) ? 'noLbl' : 'cancelBtn',
+                        text: 'cancelBtn',
                         textStyle: Theme.of(this.context).textTheme.titleSmall?.copyWith(color: UiUtils.getColorScheme(context).primaryContainer, fontWeight: FontWeight.bold)),
                     onPressed: () {
                       Navigator.of(context).pop(false);
                     }),
                 TextButton(
                     child: CustomTextLabel(
-                        text: (_auth.currentUser != null) ? 'yesLbl' : 'logoutLbl',
+                        text: 'logoutLbl',
                         textStyle: Theme.of(this.context).textTheme.titleSmall?.copyWith(color: UiUtils.getColorScheme(context).primaryContainer, fontWeight: FontWeight.bold)),
                     onPressed: () async {
-                      (_auth.currentUser != null) ? proceedToDeleteProfile() : askToLoginAgain();
+                      askToLoginAgain();
                     })
               ],
             );
@@ -259,7 +250,7 @@ class ProfileScreenState extends State<ProfileScreen> {
     Navigator.of(context).pushNamedAndRemoveUntil(Routes.login, (route) => false);
   }
 
-  proceedToDeleteProfile() async {
+  /*proceedToDeleteProfile() async {
     //delete user from firebase
     try {
       await _auth.currentUser!.delete().then((value) {
@@ -290,7 +281,7 @@ class ProfileScreenState extends State<ProfileScreen> {
     } catch (e) {
       debugPrint("unable to delete user - ${e.toString()}");
     }
-  }
+  }*/
 
   Future<void> _openStoreListing() => _inAppReview.openStoreListing(
         appStoreId: appStoreId,
@@ -382,7 +373,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                     onTap: () {
                       Future.delayed(const Duration(milliseconds: 500), () {
                         setState(() {
-                          Navigator.of(context).pushNamed(Routes.login);
+                          Navigator.of(context).pushNamed(Routes.login, arguments: {"isFromApp": true});
                         });
                       });
                     },
@@ -404,28 +395,29 @@ class ProfileScreenState extends State<ProfileScreen> {
       padding: const EdgeInsets.only(top: 20.0),
       child: Container(
           padding: const EdgeInsetsDirectional.only(start: 20.0, end: 20.0),
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(15.0), color: Theme.of(context).colorScheme.background),
+          //decoration: BoxDecoration(borderRadius: BorderRadius.circular(15.0), color: Theme.of(context).colorScheme.background),
           child: ScrollConfiguration(
             behavior: GlobalScrollBehavior(),
             child: BlocBuilder<AuthCubit, AuthState>(
               builder: (context, state) {
                 return ListView(
-                  padding: const EdgeInsetsDirectional.only(top: 10.0),
+                  //padding: const EdgeInsetsDirectional.only(top: 5.0),
                   shrinkWrap: true,
                   physics: const BouncingScrollPhysics(),
                   children: <Widget>[
-                    setDrawerItem('darkModeLbl', Icons.swap_horizontal_circle, true, false, true, 0),
-                    setDrawerItem('notificationLbl', Icons.notifications_rounded, true, false, true, 1),
-                    setDrawerItem('changeLang', Icons.g_translate_rounded, false, true, false, 2),
-                    if (context.read<AuthCubit>().getUserId() != "0") setDrawerItem('bookmarkLbl', Icons.bookmarks_rounded, false, true, false, 3),
-                    if (context.read<AuthCubit>().getUserId() != "0" && context.read<AuthCubit>().getRole() != "0") setDrawerItem('createNewsLbl', Icons.add_box_rounded, false, true, false, 4),
-                    if (context.read<AuthCubit>().getUserId() != "0" && context.read<AuthCubit>().getRole() != "0") setDrawerItem('manageNewsLbl', Icons.edit_document, false, true, false, 5),
-                    if (context.read<AuthCubit>().getUserId() != "0") setDrawerItem('managePreferences', Icons.thumbs_up_down_rounded, false, true, false, 6),
-                    pagesBuild(),
+                    //setDrawerItem('darkModeLbl', Icons.swap_horizontal_circle, true, false, true, 0),
+                    //setDrawerItem('notificationLbl', Icons.notifications_rounded, true, false, true, 1),
+                    //setDrawerItem('changeLang', Icons.g_translate_rounded, false, true, false, 2),
+                    //if (context.read<AuthCubit>().getUserId() != "0") setDrawerItem('bookmarkLbl', Icons.bookmarks_rounded, false, true, false, 3),
+                   // if (context.read<AuthCubit>().getUserId() != "0" && context.read<AuthCubit>().getRole() != "0") setDrawerItem('createNewsLbl', Icons.add_box_rounded, false, true, false, 4),
+                    //if (context.read<AuthCubit>().getUserId() != "0" && context.read<AuthCubit>().getRole() != "0") setDrawerItem('manageNewsLbl', Icons.edit_document, false, true, false, 5),
+                    //if (context.read<AuthCubit>().getUserId() != "0") setDrawerItem('managePreferences', Icons.thumbs_up_down_rounded, false, true, false, 6),
+                    //pagesBuild(),
+                    setDrawerItem("Conditions d'utilisation", Icons.privacy_tip, false, true, false, 7),
                     setDrawerItem('rateUs', Icons.stars_sharp, false, true, false, 8),
                     setDrawerItem('shareApp', Icons.share_rounded, false, true, false, 9),
-                    if (context.read<AuthCubit>().getUserId() != "0") setDrawerItem('logoutLbl', Icons.logout_rounded, false, true, false, 10),
-                    if (context.read<AuthCubit>().getUserId() != "0") setDrawerItem('deleteAcc', Icons.delete_forever_rounded, false, true, false, 11),
+                    //if (context.read<AuthCubit>().getUserId() != "0") setDrawerItem('logoutLbl', Icons.logout_rounded, false, true, false, 10),
+                     setDrawerItem('deleteAcc', Icons.delete_forever_rounded, false, true, false, 11),
                   ],
                 );
               },
@@ -436,14 +428,21 @@ class ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
-            body: Stack(
-      children: [
-        SingleChildScrollView(
-            padding: const EdgeInsetsDirectional.only(start: 15.0, end: 15.0, top: 25.0, bottom: 10.0),
-            child: Column(mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: <Widget>[setHeader(), setBody()])),
-      ],
-    )));
+    return Scaffold(
+        appBar: const CustomAppBar(title: "Mon compte",),
+        backgroundColor: darkBackgroundColor.withOpacity(0.1),
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+                padding: const EdgeInsetsDirectional.only(start: 15.0, end: 15.0, top: 25.0, bottom: 10.0),
+                child: Column(mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: <Widget>[
+                  //setHeader(),
+                  setBody()
+                ]
+              )
+            ),
+          ],
+       )
+    );
   }
 }

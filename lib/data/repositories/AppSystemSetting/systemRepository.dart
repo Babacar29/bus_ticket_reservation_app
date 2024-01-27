@@ -5,7 +5,7 @@ import 'package:burkina_transport_app/utils/api.dart';
 class SystemRepository {
   Future<dynamic> fetchSettings() async {
     try {
-      final result = await Api.post(
+      final result = await Api.postSettings(
         url: Api.getSettingApi,
         body: {},
       );

@@ -58,6 +58,14 @@ class Validators {
     return null;
   }
 
+
+  static String? notEmptyValidation(String value, BuildContext context) {
+    if (value.isEmpty) {
+      return "Ce champ ne peut pas ètre vide";
+    }
+    return null;
+  }
+
   static String? urlValidation(String value, BuildContext context) {
     bool? test;
     if (value.isEmpty) {
@@ -82,4 +90,122 @@ class Validators {
       return true;
     }
   }
+
+  static Map<String, String> normalList (){
+    return {
+      "00": "0",
+      "01": "1",
+      "02": "2",
+      "03": "3",
+      "04": "4",
+      "05": "5",
+      "06": "6",
+      "07": "7",
+      "08": "8",
+      "09": "9",
+      "10": "10",
+    };
+  }
+
+
+  static Map<String, String> disabledList (){
+    return {
+      "00": "0",
+      "01": "1",
+      "02": "2",
+      "03": "3",
+      "04": "4",
+      "05": "5",
+      "06": "6",
+      "07": "7",
+      "08": "8",
+      "09": "9",
+      "10": "10",
+    };
+  }
+
+
+  static Map<String, String> asjbList (){
+    return {
+      "00": "0",
+      "01": "1",
+      "02": "2",
+      "03": "3",
+      "04": "4",
+      "05": "5",
+      "06": "6",
+      "07": "7",
+      "08": "8",
+      "09": "9",
+      "10": "10",
+    };
+  }
+
+
+  static Map<String, String> visuallyImpairedList (){
+    return {
+      "00": "0",
+      "01": "1",
+      "02": "2",
+      "03": "3",
+      "04": "4",
+      "05": "5",
+      "06": "6",
+      "07": "7",
+      "08": "8",
+      "09": "9",
+      "10": "10",
+    };
+  }
+
+
+  static Map<String, String> retiredList (){
+    return {
+      "00": "0",
+      "01": "1",
+      "02": "2",
+      "03": "3",
+      "04": "4",
+      "05": "5",
+      "06": "6",
+      "07": "7",
+      "08": "8",
+      "09": "9",
+      "10": "10",
+    };
+  }
+
+
+  static Map<String, String> childrenList (){
+    return {
+      "00": "0",
+      "01": "1",
+      "02": "2",
+      "03": "3",
+      "04": "4",
+      "05": "5",
+      "06": "6",
+      "07": "7",
+      "08": "8",
+      "09": "9",
+      "10": "10",
+    };
+  }
+
+  static Map<String, String> studentList (){
+    return {
+      "00": "0",
+      "01": "1",
+      "02": "2",
+      "03": "3",
+      "04": "4",
+      "05": "5",
+      "06": "6",
+      "07": "7",
+      "08": "8",
+      "09": "9",
+      "10": "10",
+    };
+  }
+
 }

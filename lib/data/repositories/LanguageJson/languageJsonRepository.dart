@@ -1,8 +1,6 @@
 // ignore_for_file: file_names
 
-import 'package:hive/hive.dart';
 import 'package:burkina_transport_app/utils/api.dart';
-import 'package:burkina_transport_app/utils/hiveBoxKeys.dart';
 import 'languageJsonRemoteDataRepo.dart';
 
 class LanguageJsonRepository {
@@ -31,7 +29,6 @@ class LanguageJsonRepository {
       Map<dynamic, dynamic> languageLabelsJson = {};
       await getLanguageJson(lanCode: langCode).then((value) async {
         languageLabelsJson = value as Map<dynamic, dynamic>; //result;
-        await Hive.box(settingsBoxKey).put(langCode, languageLabelsJson);
       });
       return languageLabelsJson;
     } catch (e) {

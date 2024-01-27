@@ -1,7 +1,8 @@
 // ignore_for_file: file_names
 
 import 'package:hive/hive.dart';
-import 'package:burkina_transport_app/utils/hiveBoxKeys.dart';
+
+import '../../../utils/hiveBoxKeys.dart';
 
 //AuthLocalDataSource will communicate with local database (hive)
 class AuthLocalDataSource {
