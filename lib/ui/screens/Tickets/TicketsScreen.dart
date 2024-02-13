@@ -1,11 +1,14 @@
 // ignore_for_file: file_names
 
+import 'package:burkina_transport_app/cubits/ticketsCubit.dart';
 import 'package:burkina_transport_app/ui/screens/HomePage/HomePage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import '../../../app/routes.dart';
 import '../../../cubits/Auth/authCubit.dart';
+import '../../../data/models/Ticket.dart';
 import '../../../utils/uiUtils.dart';
 import '../../styles/colors.dart';
 import '../../widgets/customTextBtn.dart';
@@ -13,14 +16,18 @@ import '../../widgets/myAppBar.dart';
 import '../Profile/ProfileScreen.dart';
 
 class TicketsScreen extends StatefulWidget {
-  const TicketsScreen({super.key});
+  const TicketsScreen({super.key, this.from});
+  final int? from;
 
   @override
   TicketsScreenState createState() => TicketsScreenState();
 
   static Route route(RouteSettings routeSettings) {
+    final arguments = routeSettings.arguments as Map<String, dynamic>;
     return CupertinoPageRoute(
-      builder: (_) => const TicketsScreen(),
+      builder: (_) => TicketsScreen(
+        from: arguments["from"]
+      ),
     );
   }
 }
@@ -32,9 +39,41 @@ class TicketsScreenState extends State<TicketsScreen> with TickerProviderStateMi
     Icons.bookmark,
     Icons.account_circle,
   ];
+  List<Ticket> myTicketList = [];
+  late TabController controller;
+  int _currentIndex = 0;
+
+  void _handleTabSelection() {
+    setState(() {
+      _currentIndex = controller.index;
+    });
+  }
+
+  getPassedTickets() async{
+    List<Ticket> tickets = [];
+    var result = await context.read<TicketsCubit>().getTickets(context: context);
+    //
+    for(var ticket in result["passedTicketList"].toList()){
+      //widget.tickets?.add(Ticket.fromMap(ticket));
+      tickets.add(Ticket.fromMap(ticket));
+    }
+    return tickets;
+  }
+
+  getUpComingTickets() async{
+    List<Ticket> tickets = [];
+    var result = await context.read<TicketsCubit>().getTickets(context: context);
+    //
+    for(var ticket in result["upcomingTicketList"].toList()){
+      //widget.tickets?.add(Ticket.fromMap(ticket));
+      tickets.add(Ticket.fromMap(ticket));
+    }
+    return tickets;
+  }
 
   @override
   void initState() {
+    controller = TabController(vsync: this, length: 2);
     super.initState();
   }
 
@@ -111,58 +150,209 @@ class TicketsScreenState extends State<TicketsScreen> with TickerProviderStateMi
     );
   }
   
-  Widget showTickets(BuildContext context){
-    return ListView.builder(
-        itemCount: 3,
-        itemBuilder: (context, int i){
-          return GestureDetector(
-            onTap: () {
-              Navigator.of(context).pushNamed(Routes.ticketDetails);
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(top: 10.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10)
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      decoration: const BoxDecoration(
-                        color: darkBackgroundColor,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(10),
-                          topRight: Radius.circular(10)
-                        )
-                      ),
-                      child: const Row(
-                        children: [
-                           Padding(
-                            padding: EdgeInsets.all(5.0),
-                            child: Text(
-                              "Ouagadougou > Bobo Dioulasso",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold
+  Widget showPassedTickets(BuildContext context){
+    return FutureBuilder(
+      future: getPassedTickets(),
+      builder: (context, AsyncSnapshot snap){
+        List<Widget> children;
+        if(snap.hasData){
+          children = <Widget>[
+            snap.data.toList() == [] ? const SizedBox() : ListView.builder(
+              //itemCount: widget.tickets?.length,
+                physics: const ClampingScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: snap.data.length,
+                itemBuilder: (context, int i){
+                  Ticket ticket = snap.data[i];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushNamed(Routes.ticketDetails, arguments: {"ticket": ticket});
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              decoration: const BoxDecoration(
+                                  color: darkBackgroundColor,
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      topRight: Radius.circular(10)
+                                  )
+                              ),
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: Text(
+                                      "${ticket.departureCity} > ${ticket.arrivalCity}",
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold
+                                      ),
+                                    ),
+                                  )
+                                ],
                               ),
                             ),
-                          )
-                        ],
+                            paddingText(title: "Date: ", subtitle: DateFormat("d MMMM yyyy").format(DateTime.parse("${ticket.departureDate}"))),
+                            paddingText(title: "Heure: ", subtitle: ticket.departureTime),
+                            paddingText(title: "Statut: ", subtitle: ticket.paymentStatus),
+                            paddingText(title: "Numéro de place: ", subtitle: "${ticket.seatNumber}"),
+                            const SizedBox(height: 5,),
+                          ],
+                        ),
                       ),
                     ),
-                    paddingText(title: "Date: ", subtitle: "26/01/2024"),
-                    paddingText(title: "Heure: ", subtitle: "07:30"),
-                    paddingText(title: "Statut: ", subtitle: "Validé"),
-                    paddingText(title: "Numéro de place: ", subtitle: "23"),
-                    const SizedBox(height: 5,),
-                  ],
-                ),
+                  );
+                }
+            )
+          ];
+        }
+        else if (snap.hasError) {
+          children = <Widget>[
+            const Icon(
+              Icons.error_outline,
+              color: Colors.red,
+              size: 60,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: Text('Erreur: ${snap.error}'),
+            ),
+          ];
+        } else {
+          children = <Widget>[
+            SizedBox(
+              height: 300,
+            ),
+            Center(
+              child: CircularProgressIndicator( color: darkBackgroundColor,),
+            ),
+            Center(
+              child: Padding(
+                padding: EdgeInsets.only(top: 16),
+                child: Text('Chargement...'),
               ),
             ),
-          );
+          ];
         }
+        return ListView(
+          shrinkWrap: true,
+          physics: const ClampingScrollPhysics(),
+          children: children,
+        );
+
+      }
+    );
+  }
+
+  Widget showUpComingTickets(BuildContext context){
+    return FutureBuilder(
+      future: getUpComingTickets(),
+      builder: (context, AsyncSnapshot snap){
+        List<Widget> children;
+        if(snap.hasData){
+          children = <Widget>[
+            snap.data.toList() == [] ? const SizedBox() : ListView.builder(
+              //itemCount: widget.tickets?.length,
+                physics: const ClampingScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: snap.data.length,
+                itemBuilder: (context, int i){
+                  Ticket ticket = snap.data[i];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushNamed(Routes.ticketDetails, arguments: {"ticket": ticket});
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              decoration: const BoxDecoration(
+                                  color: darkBackgroundColor,
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      topRight: Radius.circular(10)
+                                  )
+                              ),
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: Text(
+                                      "${ticket.departureCity} > ${ticket.arrivalCity}",
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            paddingText(title: "Date: ", subtitle: DateFormat("d MMMM yyyy").format(DateTime.parse("${ticket.departureDate}"))),
+                            paddingText(title: "Heure: ", subtitle: ticket.departureTime),
+                            paddingText(title: "Statut: ", subtitle: ticket.paymentStatus),
+                            paddingText(title: "Numéro de place: ", subtitle: "${ticket.seatNumber}"),
+                            const SizedBox(height: 5,),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }
+            )
+          ];
+        }
+        else if (snap.hasError) {
+          children = <Widget>[
+            const Icon(
+              Icons.error_outline,
+              color: Colors.red,
+              size: 60,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: Text('Erreur: ${snap.error}'),
+            ),
+          ];
+        } else {
+          children = <Widget>[
+            SizedBox(
+              height: 300,
+            ),
+            Center(
+              child: CircularProgressIndicator( color: darkBackgroundColor,),
+            ),
+            Center(
+              child: Padding(
+                padding: EdgeInsets.only(top: 16),
+                child: Text('Chargement...'),
+              ),
+            ),
+          ];
+        }
+        return ListView(
+          shrinkWrap: true,
+          physics: const ClampingScrollPhysics(),
+          children: children,
+        );
+
+      }
     );
   }
 
@@ -204,38 +394,55 @@ class TicketsScreenState extends State<TicketsScreen> with TickerProviderStateMi
             child: SizedBox(
               height: height - 30,
               width: width/1.1,
-              child: showTickets(context)
+              //child: (widget.tickets != null && widget.tickets != []) ? showTickets(context) : const SizedBox(),
+              //child: myTicketList.isEmpty ? showTickets(context) : const SizedBox(),
+              child: TabBarView(
+                controller: controller,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    showUpComingTickets(context),
+                    showPassedTickets(context),
+                  ]
+              ),
             ),
           ),
           Expanded(
             flex: 1,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: width/2 - 1,
-                    child: CustomTextButton(
+            child: DefaultTabController(
+              initialIndex: 0,
+              length: 2,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: TabBar(
+                  unselectedLabelColor: darkBackgroundColor,
+                  controller: controller,
+                  indicatorColor: Colors.transparent,
+                  onTap: (int index){
+                    controller.addListener(() {
+                      return _handleTabSelection();
+                    });
+                  },
+                  tabs: [
+                    CustomTextButton(
                       onTap: (){
+                        setState(() {
+                          controller.animateTo(controller.index - 1);
+                        });
                       },
-                      color: darkBackgroundColor,
+                      color: controller.index == 0 ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.6),
                       text: "A VENIR",
                     ),
-                  ),
-                  const VerticalDivider(
-                    width: 2,
-                  ),
-                  SizedBox(
-                    width: width/2 - 1,
-                    child: CustomTextButton(
+                    CustomTextButton(
                       onTap: (){
+                        setState(() {
+                          controller.animateTo(controller.index + 1);
+                        });
                       },
-                      color: darkBackgroundColor,
+                      color: controller.index == 1 ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.6),
                       text: "PASSÉS",
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -265,7 +472,7 @@ class TicketsScreenState extends State<TicketsScreen> with TickerProviderStateMi
               const ProfileScreen(),
             ],
           ),
-          //bottomNavigationBar: bottomBar()
+          bottomNavigationBar: widget.from == 0 ? bottomBar() : const SizedBox()
         );
       },
     );

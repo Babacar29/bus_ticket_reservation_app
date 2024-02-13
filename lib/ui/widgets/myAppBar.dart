@@ -45,7 +45,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                         alignment: Alignment.topRight,
                         child: Padding(
                           padding: EdgeInsets.only(bottom: MediaQuery.sizeOf(context).height/1.3, left: MediaQuery.sizeOf(context).width/4),
-                          child: SimpleDialog(
+                          child: const SimpleDialog(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.zero
                             ),

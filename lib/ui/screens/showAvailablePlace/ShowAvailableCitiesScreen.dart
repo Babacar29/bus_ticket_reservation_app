@@ -10,7 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 
-import '../../../app/routes.dart';
 import '../../../data/models/CityModel.dart';
 import '../../../utils/uiUtils.dart';
 import '../../styles/colors.dart';
@@ -51,8 +50,8 @@ class _ShowAvailableCitiesState extends State<ShowAvailableCities> {
   String retiredValue = "0";
   String childrenValue = "0";
   String studentValue = "0";
-  String departureValue = "Banfora";
-  String arriveValue = "Banfora";
+  String departureValue = "Ouagadougou";
+  String arriveValue = "Bobo Dioulasso";
   bool showPlace = false;
   List routes = [];
   String departureId = "";
@@ -63,14 +62,12 @@ class _ShowAvailableCitiesState extends State<ShowAvailableCities> {
   };
 
   Map<String, dynamic> departureData = {
-    "Banfora": "Banfora",
-    "Bobo Dioulasso": ""
+    "Ouagadougou": "Ouagadougou",
   };
 
 
   Map<String, dynamic> arriveData = {
-    "Banfora": "Banfora",
-    "Bobo Dioulasso": ""
+    "Bobo Dioulasso": "Bobo Dioulasso",
   };
 
   Widget buildNavBarItem(IconData icon, int index) {
@@ -728,7 +725,7 @@ class _ShowAvailableCitiesState extends State<ShowAvailableCities> {
         children: [
           showContent(),
       //Add only if Category Mode is enabled From Admin panel.
-          const TicketsScreen(),
+          const TicketsScreen( ),
           const ProfileScreen(),
         ],
       ),

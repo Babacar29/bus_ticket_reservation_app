@@ -59,7 +59,7 @@ class HomeScreenState extends State<HomeScreen> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.of(context).pushNamed(Routes.tickets);
+                      Navigator.of(context).pushNamed(Routes.tickets, arguments: {"from": 0});
                     },
                     child: Container(
                       height: height / 2.7,

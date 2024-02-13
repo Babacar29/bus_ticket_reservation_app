@@ -1,8 +1,17 @@
+import 'package:burkina_transport_app/cubits/Payments/paymentCubit.dart';
+import 'package:burkina_transport_app/cubits/ticketsCubit.dart';
+import 'package:burkina_transport_app/ui/widgets/circularProgressIndicator.dart';
+import 'package:burkina_transport_app/utils/ErrorMessageKeys.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+import 'package:intl/intl.dart';
 
+import '../../../utils/internetConnectivity.dart';
 import '../../../utils/uiUtils.dart';
 import '../../styles/colors.dart';
+import '../../widgets/customTextLabel.dart';
 import '../../widgets/myAppBar.dart';
 import '../Profile/ProfileScreen.dart';
 import '../Tickets/TicketsScreen.dart';
@@ -28,12 +37,33 @@ class PaymentStarted extends StatefulWidget {
 
 class _PaymentStartedState extends State<PaymentStarted> {
   TextEditingController numController = TextEditingController();
+  TextEditingController codeController = TextEditingController();
   int _selectedIndex = 0;
   List<IconData> iconList = [
     Icons.bookmark,
     Icons.bookmark,
     Icons.account_circle,
   ];
+  var data = {};
+  var paymentsAvailable = [];
+  Map<String, dynamic> paymentInfo = {};
+
+  getData(String commandId) async {
+    final result = await context.read<PaymentCubit>().getCommandDetails(commandId: commandId);
+    final result1 = await context.read<PaymentCubit>().getAvailablePayments();
+    if(!mounted) return;
+    setState(() {
+      data = result;
+      paymentsAvailable = result1;
+    });
+    debugPrint("Payment infos ==========>$paymentsAvailable");
+  }
+
+  @override
+  void initState() {
+    getData(widget.commandData["id"]);
+    super.initState();
+  }
 
 
   Widget buildNavBarItem(IconData icon, int index) {
@@ -112,180 +142,474 @@ class _PaymentStartedState extends State<PaymentStarted> {
   Widget showBody (BuildContext context){
     final width = MediaQuery.sizeOf(context).width;
     final height = MediaQuery.sizeOf(context).height;
-    return SingleChildScrollView(
-      physics: const ClampingScrollPhysics(),
-      child: Padding(
-          padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-               Container(
-               color: Colors.white,
-                width: width,
-                child: const Padding(
-                  padding: EdgeInsets.only(left: 10.0, top: 10, bottom: 10),
-                  child: Text(
-                    "Le vendredi 12 Janv, 2024 à 18:30",
-                    style: TextStyle(
-                      color: darkBackgroundColor
-                    ),
+    return BlocConsumer<PaymentCubit, PaymentState>(
+      listener: (context, state) {
+        if(state is PaymentFailure){
+          showCustomSnackBar(context: context, message: state.errorMessage);
+        }
+      },
+      builder: (context, state) {
+        return BlocConsumer<PaymentCubit, PaymentState>(
+          listener: (context, state) {
+            // TODO: implement listener
+          },
+          builder: (context, state) {
+            return Stack(
+              children: [
+                SingleChildScrollView(
+                  physics: const ClampingScrollPhysics(),
+                  child: Padding(
+                      padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            color: Colors.white,
+                            width: width,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 10.0, top: 10, bottom: 10),
+                              child: Text(
+                                data["departureDate"] != null ? "Le ${DateFormat('d MMMM yyyy').format(DateTime.tryParse(data["departureDate"])!)}, ${data["departureTime"] ?? ""}" : "" ,
+                                style: const TextStyle(
+                                    color: darkBackgroundColor
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10,),
+                          Container(
+                            color: darkBackgroundColor,
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text(
+                                    "${data["departureCity"] ?? ""}",
+                                    style: const TextStyle(
+                                        color: Colors.white
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  const Text(
+                                    "Ville de départ",
+                                    style: TextStyle(
+                                        color: Colors.white
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10,),
+                          Container(
+                            color: darkBackgroundColor,
+                            child: Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text(
+                                    "${data["arrivalCity"]  ?? ""}",
+                                    style: const TextStyle(
+                                        color: Colors.white
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  const Text(
+                                    "Ville d'arrivée",
+                                    style: TextStyle(
+                                        color: Colors.white
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10,),
+                          Container(
+                            color: Colors.white,
+                            child: Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  const Text(
+                                    "Cout total du billet:",
+                                    style: TextStyle(
+                                        color: darkBackgroundColor
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  Text(
+                                    "${data["price"]  ?? ""} FCFA",
+                                    style: const TextStyle(
+                                        color: darkBackgroundColor
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 30,),
+                          const Text(
+                            "Choisissez votre mode de paiement",
+                            style: TextStyle(
+                                color: darkBackgroundColor
+                            ),
+                          ),
+                          const SizedBox(height: 5,),
+                          Container(
+                            color: Colors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.all(3.0),
+                              child: textFormField(controller: numController, hintText: "Numéro de téléphone"),
+                            ),
+                          ),
+                          const SizedBox(height: 10,),
+                          paymentsAvailable.isEmpty ? const  SizedBox() : SizedBox(
+                            height: MediaQuery.sizeOf(context).height/4,
+                            child: ListView.builder(
+                                itemCount: paymentsAvailable.length,
+                                shrinkWrap: true,
+                                physics: const ClampingScrollPhysics(),
+                                itemBuilder: (context, int i){
+                                  var item = paymentsAvailable[i];
+                                  return GestureDetector(
+                                    onTap: () async{
+                                      simHintDialog(item["id"]);
+                                    },
+                                    child: Container(
+                                      color: Colors.white,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Row(
+                                          children: [
+                                            Image.asset("assets/orange_money.jpeg", height: height/25,),
+                                            SizedBox(width: width/20,),
+                                            Text(
+                                              item["name"] ?? "",
+                                              textScaler: const TextScaler.linear(1.5),
+                                              style: const TextStyle(
+                                                  color: darkBackgroundColor,
+                                                  fontWeight: FontWeight.bold
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }
+                            ),
+                          ),
+                        ],
+                      )
                   ),
                 ),
+                if(state is PaymentProgress) showCircularProgress(true, darkBackgroundColor)
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  TextFormField textFormField({required TextEditingController controller, required String hintText}) {
+    return TextFormField(
+      decoration: InputDecoration(
+        contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+        border: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey.withOpacity(0.2))
+        ),
+        focusedBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(color: darkBackgroundColor, width: 3),
+        ),
+        enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey.withOpacity(0.4))
+        ),
+        labelStyle: const TextStyle(
+          color: Colors.grey,
+          fontSize: 15,
+        ),
+        hintText: hintText,
+        hintStyle: const TextStyle(
+          color: Colors.grey,
+          fontSize: 16,
+        ),
+      ),
+      validator: (val){
+        /*if(expirationDateController.text.isEmpty){
+          return Validators.notEmptyValidation(val!, context);
+        }*/
+      },
+      keyboardType: TextInputType.phone,
+      cursorHeight: 18,
+      controller: controller,
+      cursorColor: Colors.black,
+      style: const TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.w600,
+          fontSize: 16
+      ),
+      onChanged: (String value) {
+      },
+      textAlignVertical: TextAlignVertical.center,
+      textInputAction: TextInputAction.done,
+    );
+  }
+
+  simHintDialog(String methodPayment) async {
+    await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(builder: (BuildContext context, StateSetter setStater) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              surfaceTintColor: Colors.white,
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
+              content: CustomTextLabel(text: 'SimHintLbl', textStyle: Theme.of(this.context).textTheme.titleMedium?.copyWith(color: UiUtils.getColorScheme(context).primaryContainer, fontSize: 18), textAlign: TextAlign.center),
+              actions: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                        child: CustomTextLabel(
+                            text: 'noLbl', textStyle: Theme.of(this.context).textTheme.titleSmall?.copyWith(color: UiUtils.getColorScheme(context).primaryContainer, fontWeight: FontWeight.bold)
+                        ),
+                        onPressed: () async{
+                          if (await InternetConnectivity.isNetworkAvailable()) {
+                            context.read<PaymentCubit>().sendOtp(
+                            canCall: false,
+                            command: widget.commandData,
+                            paymentMethod: methodPayment,
+                            phoneNumber: numController.text,
+                            context: context
+                            );
+                          }
+                          else {
+                          showCustomSnackBar(context: context, message: ErrorMessageKeys.noInternet);
+                          }
+                        }
+                    ),
+                    TextButton(
+                        child: CustomTextLabel(
+                            text: 'yesLbl', textStyle: Theme.of(this.context).textTheme.titleSmall?.copyWith(color: UiUtils.getColorScheme(context).primaryContainer, fontWeight: FontWeight.bold)),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          generateOtpHintDialog(methodPayment);
+                        }
+                    )
+                  ],
+                ),
+              ],
+            );
+          });
+        });
+  }
+
+  _callNumber(String code) async{
+   bool? res = await FlutterPhoneDirectCaller.callNumber(code);
+   return res;
+  }
+
+  generateOtpHintDialog(String methodPayment) async {
+    await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(builder: (BuildContext context, StateSetter setStater) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              surfaceTintColor: Colors.white,
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
+              content: CustomTextLabel(text: 'otpHintLbl', textStyle: Theme.of(this.context).textTheme.titleMedium?.copyWith(color: UiUtils.getColorScheme(context).primaryContainer, fontSize: 18), textAlign: TextAlign.center,),
+              actions: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                        child: CustomTextLabel(
+                            text: 'noLbl', textStyle: Theme.of(this.context).textTheme.titleSmall?.copyWith(color: UiUtils.getColorScheme(context).primaryContainer, fontWeight: FontWeight.bold)
+                        ),
+                        onPressed: () async{
+                          if (await InternetConnectivity.isNetworkAvailable()) {
+                            context.read<PaymentCubit>().sendOtp(
+                            canCall: false,
+                            command: widget.commandData,
+                            paymentMethod: methodPayment,
+                            phoneNumber: numController.text,
+                            context: context
+                            );
+                          }
+                          else {
+                          showCustomSnackBar(context: context, message: ErrorMessageKeys.noInternet);
+                          }
+                        }
+                    ),
+                    TextButton(
+                        child: CustomTextLabel(
+                            text: 'yesLbl', textStyle: Theme.of(this.context).textTheme.titleSmall?.copyWith(color: UiUtils.getColorScheme(context).primaryContainer, fontWeight: FontWeight.bold)),
+                        onPressed: () async {
+                          if (await InternetConnectivity.isNetworkAvailable()) {
+                           final data = await context.read<PaymentCubit>().sendOtp(
+                                canCall: true,
+                                command: widget.commandData,
+                                paymentMethod: methodPayment,
+                                phoneNumber: numController.text,
+                                context: context
+                            );
+                           debugPrint("otp result ========> $data");
+                           Navigator.of(context).pop();
+                           bool otpGenerated = await _callNumber(data["transactionCode"]);
+                           if(otpGenerated){
+                             paidDialog(data);
+                           }
+                          }
+                          else {
+                            showCustomSnackBar(context: context, message: ErrorMessageKeys.noInternet);
+                          }
+                        })
+                  ],
+                ),
+              ],
+            );
+          });
+        });
+  }
+
+  paidDialog(Map<String, dynamic> paymentInfo) async {
+    await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(builder: (BuildContext context, StateSetter setStater) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              surfaceTintColor: Colors.white,
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
+              title: CustomTextLabel(text: 'payOrderTitle', textStyle: Theme.of(this.context).textTheme.titleMedium?.copyWith(color: Colors.grey, fontSize: 18), textAlign: TextAlign.center,),
+              content: SizedBox(
+                height: MediaQuery.sizeOf(context).height/5,
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Téléphone",
+                          textScaler: TextScaler.linear(1.1),
+                          style: TextStyle(
+                            color: Colors.grey
+                          ),
+                        ),
+                        Text(
+                          "${paymentInfo["phoneNumber"]}",
+                          textScaler: const TextScaler.linear(1.1),
+                          style: const TextStyle(
+                            color: Colors.grey
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Nombre de ticket(s)",
+                          textScaler: TextScaler.linear(1.1),
+                          style: TextStyle(
+                            color: Colors.grey
+                          ),
+                        ),
+                        Text(
+                          "${paymentInfo["ticketNumber"]}",
+                          textScaler: const TextScaler.linear(1.1),
+                          style: const TextStyle(
+                            color: Colors.grey
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Prix",
+                          textScaler: TextScaler.linear(1.1),
+                          style: TextStyle(
+                            color: Colors.grey
+                          ),
+                        ),
+                        Text(
+                          "${paymentInfo["initPrice"]} FCFA",
+                          textScaler: const TextScaler.linear(1.1),
+                          style: const TextStyle(
+                            color: Colors.grey
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        const Text(
+                          "Code de paiement",
+                          textScaler: TextScaler.linear(1.1),
+                          style: TextStyle(
+                            color: Colors.grey
+                          ),
+                        ),
+                        SizedBox(
+                          width: MediaQuery.sizeOf(context).width/4,
+                          child: textFormField(controller: codeController, hintText: "code")
+                        )
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 10,),
-              Container(
-                color: darkBackgroundColor,
-                child: const Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Text(
-                        "Ouagadougou",
+              actions: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () async{
+                        if (await InternetConnectivity.isNetworkAvailable()) {
+                          await context.read<PaymentCubit>().payCommand(
+                              commandId: widget.commandData["id"],
+                              value: codeController.text,
+                              context: context
+                          );
+                          //Navigator.of(context).pop();
+                          //Navigator.of(context).pop();
+                        }
+                        else {
+                          showCustomSnackBar(context: context, message: ErrorMessageKeys.noInternet);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: darkBackgroundColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5)
+                        )
+                      ),
+                      child: Text(
+                        "Acheter",
                         style: TextStyle(
                           color: Colors.white
-                        ),
-                      ),
-                      const Spacer(),
-                      Text(
-                        "Ville de départ",
-                        style: TextStyle(
-                            color: Colors.white
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10,),
-              Container(
-                color: darkBackgroundColor,
-                child: const Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Text(
-                        "Bobo Dioulasso",
-                        style: TextStyle(
-                          color: Colors.white
-                        ),
-                      ),
-                      const Spacer(),
-                      Text(
-                        "Ville d'arrivée",
-                        style: TextStyle(
-                            color: Colors.white
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10,),
-              Container(
-                color: Colors.white,
-                child: const Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Text(
-                        "Cout total du billet:",
-                        style: TextStyle(
-                          color: darkBackgroundColor
-                        ),
-                      ),
-                      const Spacer(),
-                      Text(
-                        "8500 FCFA",
-                        style: TextStyle(
-                            color: darkBackgroundColor
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 30,),
-              Text(
-                "Choisissez votre mode de paiement",
-                style: TextStyle(
-                    color: darkBackgroundColor
-                ),
-              ),
-              const SizedBox(height: 5,),
-              Container(
-                color: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                      border: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey.withOpacity(0.2))
-                      ),
-                      focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: darkBackgroundColor, width: 3),
-                      ),
-                      enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey.withOpacity(0.4))
-                      ),
-                      labelStyle: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 15,
-                      ),
-                      hintText: "Numéro de téléphone",
-                      hintStyle: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 16,
-                      ),
-                    ),
-                    validator: (val){
-                      /*if(expirationDateController.text.isEmpty){
-                        return Validators.notEmptyValidation(val!, context);
-                      }*/
-                    },
-                    keyboardType: TextInputType.number,
-                    cursorHeight: 18,
-                    controller: numController,
-                    cursorColor: Colors.black,
-                    style: const TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16
-                    ),
-                    onChanged: (String value) {
-                    },
-                    textAlignVertical: TextAlignVertical.center,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10,),
-              Container(
-                color: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Row(
-                    children: [
-                      Image.asset("assets/orange_money.jpeg", height: height/25,),
-                      SizedBox(width: width/20,),
-                      Text(
-                        "Oranege Money",
-                        textScaler: TextScaler.linear(1.5),
-                        style: TextStyle(
-                          color: darkBackgroundColor,
-                          fontWeight: FontWeight.bold
                         ),
                       )
-                    ],
-                  ),
+                    )
+                  ],
                 ),
-              )
-            ],
-          )
-      ),
-    );
+              ],
+            );
+          });
+        });
   }
 
   Widget showContent(){
@@ -310,5 +634,12 @@ class _PaymentStartedState extends State<PaymentStarted> {
       ),
       bottomNavigationBar: bottomBar(),
     );
+  }
+
+  @override
+  void dispose() {
+    numController.dispose();
+    codeController.dispose();
+    super.dispose();
   }
 }

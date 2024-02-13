@@ -3,6 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:burkina_transport_app/data/repositories/Auth/authRepository.dart';
+import 'package:hive/hive.dart';
+
+import '../../utils/hiveBoxKeys.dart';
 
 @immutable
 abstract class RegisterState {}
@@ -29,11 +32,13 @@ class RegisterCubit extends Cubit<RegisterState> {
   RegisterCubit(this._authRepository) : super(RegisterInitial());
 
   void register({required BuildContext context}) {
+    var box = Hive.box(authBoxKey);
     emit(RegisterProgress());
     _authRepository
         .register(
       context: context,
     ).then((result) {
+      box.put(tokenKey, result["apiKey"]);
       emit(RegisterSuccess());
     }).catchError((e) {
       emit(RegisterFailure(e.toString()));

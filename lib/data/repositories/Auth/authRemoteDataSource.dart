@@ -1,6 +1,7 @@
 // ignore_for_file: file_names, use_build_context_synchronously
 
 import 'dart:io';
+import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -90,9 +91,19 @@ class AuthRemoteDataSource {
     }
   }
 
+  static String getRandomString(int length) {
+    const chars =
+        'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+    Random rnd = Random();
+    return String.fromCharCodes(Iterable.generate(
+        length, (_) => chars.codeUnitAt(rnd.nextInt(chars.length))));
+  }
+
+
   Future<dynamic> register({required BuildContext context}) async {
+    String platform = Platform.isAndroid ? "Android" : "iOS";
     try {
-      final body = {"login": "ankatasengt1", "password": "m4WrMCAPK4bkgeqF"};
+      final body = {"login": "$platform-${getRandomString(30)}"};
       final result = await Api.registerPost(body: body, url: Api.registerApi,);
       return result;
     } on SocketException catch (e) {

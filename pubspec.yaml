@@ -34,6 +34,8 @@ dependencies:
   lottie: ^1.2.2
   book_my_seat: ^1.0.1
   omni_datetime_picker: ^1.0.9
+  flutter_phone_direct_caller: ^2.1.1
+  qr_flutter: ^4.1.0
 
 dependency_overrides:
   modal_bottom_sheet: ^3.0.0-pre

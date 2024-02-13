@@ -1,6 +1,4 @@
 // ignore_for_file: file_names
-
-import 'package:burkina_transport_app/ui/styles/colors.dart';
 import 'package:flutter/material.dart';
 
 Widget showCircularProgress(bool isProgress, Color color) {

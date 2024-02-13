@@ -1,3 +1,4 @@
+import 'package:burkina_transport_app/ui/screens/Payments/OtpScreen.dart';
 import 'package:burkina_transport_app/ui/screens/Payments/PaymentStarted.dart';
 import 'package:burkina_transport_app/ui/screens/Tickets/TicketDetails.dart';
 import 'package:burkina_transport_app/ui/screens/chooseSit.dart';
@@ -35,6 +36,7 @@ class Routes {
   static const String startPayment = "startPayment";
   static const String ticketDetails = "ticketDetails";
   static const String tickets = "tickets";
+  static const String otp = "otp";
 
   static String currentRoute = splash;
 
@@ -92,6 +94,10 @@ class Routes {
       case tickets:
         {
           return TicketsScreen.route(routeSettings);
+        }
+      case otp:
+        {
+          return OtpScreen.route(routeSettings);
         }
       default:
         {

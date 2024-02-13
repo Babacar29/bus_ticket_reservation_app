@@ -212,8 +212,8 @@ const Map<String, dynamic> appLanguageLabelKeys = /*{
   "notiNotAvail": "Notifications non disponibles",
   "notificationLbl": "Notifications",
   "logoutTxt": "Êtes-vous sûr de vouloir vous déconnecter ?",
-  "yesLbl": "Oui",
-  "noLbl": "Non",
+  "yesLbl": "OUI",
+  "noLbl": "NON",
   "frgtPassHead": "Entrez l'adresse e-mail associée à votre compte",
   "forgotPassSub": "Nous vous enverrons un lien pour réinitialiser votre mot de passe par e-mail",
   "submitBtn": "Soumettre",
@@ -362,5 +362,8 @@ const Map<String, dynamic> appLanguageLabelKeys = /*{
   "noComments": "Soyez le premier à commenter !!!",
   "minute": "minute",
   "read": "lire",
-  "chooseSitHintLbl": "Voulez-vous choisir un sège ?"
+  "chooseSitHintLbl": "Voulez-vous choisir un sège ?",
+  "SimHintLbl": "Est-ce que votre sim est sur ce téléphone ?",
+  "otpHintLbl": "Voulez-vous qu'on génère l'OTP pour vous ?",
+  "payOrderTitle": "Paiement de la commande",
 };

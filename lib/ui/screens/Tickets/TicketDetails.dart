@@ -1,25 +1,36 @@
 // ignore_for_file: file_names
 
+import 'dart:convert';
+
+
 import 'package:burkina_transport_app/ui/screens/HomePage/HomePage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import '../../../cubits/Auth/authCubit.dart';
+import '../../../data/models/Ticket.dart';
 import '../../../utils/uiUtils.dart';
 import '../../styles/colors.dart';
-import '../../widgets/customTextBtn.dart';
 import '../../widgets/myAppBar.dart';
 import '../Profile/ProfileScreen.dart';
 
 class TicketDetailsScreen extends StatefulWidget {
-  const TicketDetailsScreen({super.key});
+  const TicketDetailsScreen({super.key, required this.ticket});
+  final Ticket ticket;
 
   @override
   TicketDetailsScreenState createState() => TicketDetailsScreenState();
 
   static Route route(RouteSettings routeSettings) {
+    final arguments = routeSettings.arguments as Map<String, dynamic>;
     return CupertinoPageRoute(
-      builder: (_) => const TicketDetailsScreen(),
+      builder: (_) => TicketDetailsScreen(
+        ticket: arguments["ticket"],
+      ),
     );
   }
 }
@@ -110,6 +121,7 @@ class TicketDetailsScreenState extends State<TicketDetailsScreen> with TickerPro
     );
   }
 
+
   Widget content() {
     final width = MediaQuery.sizeOf(context).width;
     final height = MediaQuery.sizeOf(context).height;
@@ -140,13 +152,13 @@ class TicketDetailsScreenState extends State<TicketDetailsScreen> with TickerPro
                               topRight: Radius.circular(10)
                           )
                       ),
-                      child: const Row(
+                      child: Row(
                         children: [
                           Padding(
-                            padding: EdgeInsets.all(10.0),
+                            padding: const EdgeInsets.all(10.0),
                             child: Text(
-                              "Ouagadougou > Bobo Dioulasso\nKalgonde          Cikasso-cira",
-                              style: TextStyle(
+                              "${widget.ticket.departureCity} > ${widget.ticket.arrivalCity}\n${widget.ticket.departureBusStation}          ${widget.ticket.arrivalBusStation}",
+                              style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold
                               ),
@@ -161,23 +173,35 @@ class TicketDetailsScreenState extends State<TicketDetailsScreen> with TickerPro
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            paddingText(title: "Date: ", subtitle: "26/01/2024"),
-                            paddingText(title: "Heure: ", subtitle: "07:30"),
-                            paddingText(title: "Numéro de place: ", subtitle: "23"),
+                            paddingText(title: "Date: ", subtitle: DateFormat("d MMMM yyyy").format(DateTime.parse("${widget.ticket.departureDate}"))),
+                            paddingText(title: "Heure: ", subtitle: widget.ticket.departureTime),
+                            paddingText(title: "Numéro de place: ", subtitle: widget.ticket.departureTime),
                           ],
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            paddingText(title: "Statut: ", subtitle: "Validé"),
-                            paddingText(title: "Prénom: ", subtitle: "Babacar"),
-                            paddingText(title: "Nom: ", subtitle: "Diouf"),
+                            paddingText(title: "Statut: ", subtitle: widget.ticket.paymentStatus),
+                            paddingText(title: "Prénom: ", subtitle: widget.ticket.passenger.firstName),
+                            paddingText(title: "Nom: ", subtitle: widget.ticket.passenger.lastName),
                           ],
                         )
                       ],
                     ),
                     SizedBox(height: height/10,),
-                    Image.asset("assets/code_qr.png")
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 20.0),
+                          child: QrImageView(
+                            data: widget.ticket.hash,
+                            version: QrVersions.auto,
+                            size: height/3,
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),

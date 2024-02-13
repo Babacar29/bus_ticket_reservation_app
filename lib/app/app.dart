@@ -43,8 +43,10 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart' as intl;
 
 import '../cubits/Payments/paymentCubit.dart';
+import '../cubits/ticketsCubit.dart';
 import '../data/repositories/OtherPages/otherPagesRepository.dart';
 import '../data/repositories/Settings/settingsLocalDataRepository.dart';
+import '../data/repositories/Tickets/TicketsRepositories.dart';
 import '../utils/hiveBoxKeys.dart';
 
 Future<void> initializeApp() async {
@@ -83,6 +85,7 @@ Future<void> initializeApp() async {
     BlocProvider<TrajetsCubit>(create: (_) => TrajetsCubit(TrajetsRepository())),
     BlocProvider<CommandCubit>(create: (_) => CommandCubit(CommandRepository())),
     BlocProvider<PaymentCubit>(create: (_) => PaymentCubit(PaymentRepository())),
+    BlocProvider<TicketsCubit>(create: (_) => TicketsCubit(TicketsRepository())),
   ], child: const MyApp()));
 }
 
@@ -109,7 +112,7 @@ class _MyAppState extends State<MyApp> {
     if (SettingsLocalDataRepository().getCurrentTheme().isEmpty) {
       (brightness == Brightness.dark) ? context.read<ThemeCubit>().changeTheme(AppTheme.Dark) : context.read<ThemeCubit>().changeTheme(AppTheme.Light);
     }
-    context.read<LoginCubit>().loginUser(context: context);
+    //context.read<LoginCubit>().loginUser(context: context);
     //debugPrint("token ======> ${box.get(tokenKey)}");
     if(box.get(tokenKey) == null) context.read<RegisterCubit>().register(context: context);
     super.initState();

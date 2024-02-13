@@ -1,7 +1,8 @@
 //Please add your admin panel url here and make sure you do not add '/' at the end of the url
 
-const String authUrl = "https://gateway.rahimo.ankata.net/authentication-api";
-const String catalogUrl = "https://gateway.rahimo.ankata.net/catalog-api";
+const String authUrl = "https://gateway.recette.ankata.tech/authentication-api";//"https://gateway.rahimo.ankata.net/authentication-api";
+const String catalogUrl = "https://gateway.recette.ankata.tech/catalog-api";//"https://gateway.rahimo.ankata.net/catalog-api";
+const String paymentUrl = "https://gateway.recette.ankata.tech/payment-api";//"https://gateway.rahimo.ankata.net/catalog-api";
 const String baseUrl = "https://admin.reewmi.fr/";
 const String databaseUrl = "${baseUrl}api/";
 

@@ -304,8 +304,18 @@ class _ChooseSitState extends State<ChooseSit> {
             ),
             CustomTextButton(
               onTap: () async{
+                if(selectedSeats.isEmpty){
+                  showCustomSnackBar(context: context, message: "Vous n'avez fait aucun choix");
+                  return;
+                }
+
                 if(selectedSeats.length > widget.commandData["ticketIdList"].length){
                   showCustomSnackBar(context: context, message: "Vous ne pouvez choisir que ${widget.commandData["ticketIdList"].length} siège(s)");
+                  return;
+                }
+
+                if(selectedSeats.length < widget.commandData["ticketIdList"].length){
+                  showCustomSnackBar(context: context, message: "Vous devez choisir ${widget.commandData["ticketIdList"].length} siège(s)");
                   return;
                 }
                 //Navigator.of(context).pushNamed(Routes.chooseSit, arguments: {"from": 1});

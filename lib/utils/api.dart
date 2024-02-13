@@ -44,7 +44,7 @@ class Api {
   static String getNewToken() {
     var box = Hive.box(authBoxKey);
     String token = box.get(tokenKey);
-    //debugPrint("token $token");
+    //debugPrint("api key $token");
     return token;
   }
 
@@ -55,7 +55,7 @@ class Api {
       };
 
   static Map<String, String> get newHeaders => {
-        "Authorization": 'Bearer ${getNewToken()}',
+        "X-Api-key": getNewToken(),
         "X-Device": Platform.isAndroid ? "Android" : "iOS"
       };
 
@@ -126,6 +126,11 @@ class Api {
   static String placeInfoApi = '/placeInformations';
   static String placeRepresentation = '/representation';
   static String seatsApi = '/seats';
+  static String details = '/details';
+  static String pay = '/pay';
+  static String availablePayment = '/paymentMethods/available';
+  static String startPayment = '/paymentStarted';
+  static String tickets = '/tickets/sorted';
 
   static Future<Map<String, dynamic>> post({
     required Map<String, dynamic> body,
@@ -177,9 +182,10 @@ class Api {
         debugPrint("APi exception msg - ${response.data['message']}");
         throw ApiException(response.data['message']);
       }
-      debugPrint("response ======++> $response");
+
 
       if(response.data != ""){
+        debugPrint("response ======++> $response");
         return Map.from(response.data);
       }
       else{
@@ -214,7 +220,7 @@ class Api {
       debugPrint("Requested APi - $url & params are $body ");
 
       final response = await dio.post(url, data: jsonEncode(body), options: Options(headers: (isAuth != null && isAuth) ? _headers : newHeaders, responseType: ResponseType.json, validateStatus: (_) => true) );
-      debugPrint("Response   ==============>  $response");
+      debugPrint("Response   ==============>  ${response.data}");
       if (response.statusCode == 500) {
         debugPrint("APi exception msg - ${response.data['message']}");
         throw ApiException(response.data['message']);
@@ -293,8 +299,9 @@ class Api {
         debugPrint("APi exception msg - ${response.data}");
         throw ApiException(response.data);
       }
-      //debugPrint("response ======++> $response");
-      //return response.data;
+      debugPrint("Register response ============> ${response.statusCode}");
+      debugPrint("response ======++> $response");
+      return response.data;
     } on DioException catch (e) {
       debugPrint("Dio Error - ${e.toString()}");
       throw ApiException(e.error is SocketException ? ErrorMessageKeys.noInternet : ErrorMessageKeys.defaultErrorMessage);
@@ -360,8 +367,46 @@ class Api {
         debugPrint("APi exception msg - ${response.data['message']}");
         throw ApiException(response.data['message']);
       }
-      debugPrint("response ======++> $response");
+      //debugPrint("response ======++> ${response.data}");
       return response.data;
+    } on DioException catch (e) {
+      debugPrint("Dio Error - ${e.toString()}");
+      throw ApiException(e.error is SocketException ? ErrorMessageKeys.noInternet : ErrorMessageKeys.defaultErrorMessage);
+    } on SocketException catch (e) {
+      debugPrint("Socket exception - ${e.toString()}");
+      throw SocketException(e.message);
+    } on ApiException catch (e) {
+      debugPrint("APi Exception - ${e.toString()}");
+      throw ApiException(e.errorMessage);
+    } catch (e) {
+      debugPrint("catch exception- ${e.toString()}");
+      throw ApiException(ErrorMessageKeys.defaultErrorMessage);
+    }
+  }
+
+  static Future<dynamic> noReturnPost({
+    required Map<String, dynamic> body,
+    required String url,
+  }) async {
+    try {
+      if (await InternetConnectivity.isNetworkAvailable() == false) {
+        throw const SocketException(ErrorMessageKeys.noInternet);
+      }
+      final Dio dio = Dio();
+      debugPrint("Requested APi - $url & params are $body === headers is $newHeaders");
+
+      final response = await dio.post(url, data: jsonEncode(body), options: Options(headers: newHeaders));
+      debugPrint("Response status code: ${response.statusCode}");
+      if (response.statusCode == 500) {
+        debugPrint("APi exception msg - ${response.data['message']}");
+        throw ApiException(response.data['message']);
+      }
+      if(response.statusCode != 200) {
+        return "not success";
+      }
+      else{
+        return "success";
+      }
     } on DioException catch (e) {
       debugPrint("Dio Error - ${e.toString()}");
       throw ApiException(e.error is SocketException ? ErrorMessageKeys.noInternet : ErrorMessageKeys.defaultErrorMessage);

@@ -15,10 +15,23 @@ class PaymentRepository {
 
   PaymentRepository._internal();
 
-  Future<dynamic> command({ required Map<String, dynamic> body}) async {
-    final result = await _paymentRemoteDataSource.command(body: body);
+  Future<dynamic> commandDetails({ required String commandId}) async {
+    final result = await _paymentRemoteDataSource.commandDetails(commandId: commandId);
     return result;
   }
 
+  Future<dynamic> payCommand({ required String commandId, required Map<String, dynamic> body}) async {
+    final result = await _paymentRemoteDataSource.payCommand(commandId: commandId, body: body);
+    return result;
+  }
 
+  Future<dynamic> getAvailablePayments() async {
+    final result = await _paymentRemoteDataSource.getAvailablePayments();
+    return result;
+  }
+
+  Future<dynamic> sentOtp({ required String commandId, required Map<String, dynamic> body}) async {
+    final result = await _paymentRemoteDataSource.sendOtp(commandId: commandId, body: body);
+    return result;
+  }
 }

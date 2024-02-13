@@ -8,8 +8,12 @@ import 'package:intl/intl.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 
 import '../../../utils/uiUtils.dart';
+import '../../cubits/Payments/paymentCubit.dart';
+import '../../utils/ErrorMessageKeys.dart';
+import '../../utils/internetConnectivity.dart';
 import '../../utils/validators.dart';
 import '../styles/colors.dart';
+import '../widgets/circularProgressIndicator.dart';
 import '../widgets/customTextBtn.dart';
 import '../widgets/customTextLabel.dart';
 import '../widgets/myAppBar.dart';
@@ -146,7 +150,8 @@ class _GetUserInfosState extends State<GetUserInfos> {
       secondsInterval: 1,
       type: OmniDateTimePickerType.date,
       theme: ThemeData(
-        cardColor: darkBackgroundColor
+        cardColor: darkBackgroundColor,
+        primaryColor: Colors.white,
       ),
       borderRadius: const BorderRadius.all(Radius.circular(16)),
       constraints: const BoxConstraints(
@@ -321,7 +326,8 @@ class _GetUserInfosState extends State<GetUserInfos> {
         builder: (BuildContext context) {
           return StatefulBuilder(builder: (BuildContext context, StateSetter setStater) {
             return AlertDialog(
-              backgroundColor: UiUtils.getColorScheme(context).background,
+              backgroundColor: Colors.white,
+              surfaceTintColor: Colors.white,
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
               content: CustomTextLabel(text: 'chooseSitHintLbl', textStyle: Theme.of(this.context).textTheme.titleMedium?.copyWith(color: UiUtils.getColorScheme(context).primaryContainer)),
               actions: <Widget>[
@@ -331,16 +337,17 @@ class _GetUserInfosState extends State<GetUserInfos> {
                     TextButton(
                         child: CustomTextLabel(
                             text: 'noLbl', textStyle: Theme.of(this.context).textTheme.titleSmall?.copyWith(color: UiUtils.getColorScheme(context).primaryContainer, fontWeight: FontWeight.bold)),
-                        onPressed: () {
-
+                        onPressed: () async{
+                          FocusScope.of(context).unfocus();
+                          submit(false);
                         }
                     ),
                     TextButton(
                         child: CustomTextLabel(
                             text: 'yesLbl', textStyle: Theme.of(this.context).textTheme.titleSmall?.copyWith(color: UiUtils.getColorScheme(context).primaryContainer, fontWeight: FontWeight.bold)),
-                        onPressed: () async {
+                        onPressed: () {
                           FocusScope.of(context).unfocus();
-                          submit();
+                          submit(true);
                         })
                   ],
                 ),
@@ -350,8 +357,8 @@ class _GetUserInfosState extends State<GetUserInfos> {
         });
   }
 
-  void submit() async{
-    debugPrint("is validate ===>${validateAndSave()}");
+  void submit(bool willChooseSit) async{
+    //debugPrint("is validate ===>${validateAndSave()}");
     if(validateAndSave()){
       data.clear();
       var principal = {
@@ -369,7 +376,7 @@ class _GetUserInfosState extends State<GetUserInfos> {
       }
 
       //widget.commandData["ticketIdList"].removeAt(0);
-      for(var i = 0; i < firstNameControllers.length; i++) {
+      for(var i = 0; i < (widget.commandData["ticketIdList"].length - 1); i++) {
         var other = {
           "firstName" : firstNameControllers[i].text,
           "lastName": lastNameControllers[i].text,
@@ -378,10 +385,10 @@ class _GetUserInfosState extends State<GetUserInfos> {
         if(!data.contains(other)){
           data.add(other);
         }
+        debugPrint("data ==>$data");
       }
-      context.read<CommandCubit>().sendPassengerData(context: context, data: data, commandData: widget.commandData);
+      context.read<CommandCubit>().sendPassengerData(context: context, data: data, commandData: widget.commandData, willChooseSeat: willChooseSit);
     }
-    debugPrint("data ==>$data");
   }
 
   SizedBox buildField(

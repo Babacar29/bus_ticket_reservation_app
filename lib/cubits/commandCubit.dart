@@ -60,7 +60,9 @@ class CommandCubit extends Cubit<CommandState> {
     return result;
   }
 
-  Future<dynamic> sendPassengerData({required BuildContext context, required List<dynamic> data, required Map<String, dynamic> commandData
+  Future<dynamic> sendPassengerData({
+    required BuildContext context, required List<dynamic> data,
+    required Map<String, dynamic> commandData, bool? willChooseSeat
   }) async{
     late var result;
 
@@ -68,8 +70,12 @@ class CommandCubit extends Cubit<CommandState> {
       emit(CommandProgress());
       result = await _commandRepository.postPassengersData(body: data, commandId: commandData["id"]);
       debugPrint("send users data result =======>$result");
-      if(result != null){
+      if(result != null && willChooseSeat == true){
         Navigator.of(context).pushNamed(Routes.chooseSit, arguments: {"from": 1, "commandData": commandData});
+      }
+
+      else if(result != null && willChooseSeat == false){
+        Navigator.of(context).pushNamed(Routes.startPayment, arguments: {"from": 1, "commandData": commandData});
       }
       emit(CommandSuccess());
     }
