@@ -64,6 +64,10 @@ class Api {
     "Content-Type": "application/json; charset=UTF-8"
   };
 
+  static Map<String, String> get _registerHeaders => {
+    "X-Antm-Company-Context": "25c992b6-080c-11ec-8d7d-34c93d751fac"
+  };
+
 //access key for access api
   static String accessKey = "5670";
 
@@ -116,21 +120,22 @@ class Api {
   static String setNewsViewApi = '${databaseUrl}set_news_view';
   static String setBreakingNewsViewApi = '${databaseUrl}set_breaking_news_view';
   static String getAdsNewsDetailsApi = '${databaseUrl}get_ad_space_news_details';
-  static String signInApi = '$authUrl/auth/login';
-  static String registerApi = '$authUrl/customers';
-  static String getCitiesApi = '$catalogUrl/v2/cities/available';
-  static String getRouteApi = '$catalogUrl/v1/departures';
-  static String getPassengerCategoryApi = '$catalogUrl/passengerCategories/company/';
-  static String commandApi = '$catalogUrl/commands';
+  static String signInApi = '$base_url/auth/login';
+  static String registerApi = '$base_url/users';
+  static String getCitiesApi = '$base_url/cities';
+  static String getRouteApi = '$base_url/departures';
+  static String getPassengerCategoryApi = '$base_url/passengerCategories/company/';
+  static String commandApi = '$base_url/commands';
   static String passengerApi = '/passengers';
   static String placeInfoApi = '/placeInformations';
   static String placeRepresentation = '/representation';
   static String seatsApi = '/seats';
   static String details = '/details';
   static String pay = '/pay';
-  static String availablePayment = '/paymentMethods/available';
+  static String availablePayment = '/paymentMethods';
   static String startPayment = '/paymentStarted';
-  static String tickets = '/tickets/sorted';
+  static String tickets = '/tickets';
+  static String otp = '/payments';
 
   static Future<Map<String, dynamic>> post({
     required Map<String, dynamic> body,
@@ -293,8 +298,8 @@ class Api {
       final Dio dio = Dio();
       debugPrint("Requested APi - $url & params are $body");
 
-      final response = await dio.post(url, data: jsonEncode(body), options: Options(headers: _headers, validateStatus: (_) => true) );
-      //debugPrint("Response status code  ==============>  ${response.statusCode}");
+      final response = await dio.post(url, data: jsonEncode(body), options: Options(headers: _registerHeaders, validateStatus: (_) => true) );
+      debugPrint("Response status code  ==============>  ${response.statusCode}");
       if (response.statusCode == 500) {
         debugPrint("APi exception msg - ${response.data}");
         throw ApiException(response.data);

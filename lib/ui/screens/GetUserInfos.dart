@@ -1,5 +1,6 @@
 import 'package:burkina_transport_app/cubits/commandCubit.dart';
 import 'package:burkina_transport_app/utils/hiveBoxKeys.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -51,7 +52,12 @@ class _GetUserInfosState extends State<GetUserInfos> {
   DocumentType documentType = DocumentType.CNIB;
   List<TextEditingController> firstNameControllers = [];
   List<TextEditingController> lastNameControllers = [];
+  List<TextEditingController> serialNumberControllers = [];
   List data = [];
+  String indicator = "+226";
+  String principalDocType = "CNIB";
+  String othersDocType = "CNIB";
+  List<String> othersDocumentTypes = [];
 
   int _selectedIndex = 0;
   List<IconData> iconList = [
@@ -174,6 +180,11 @@ class _GetUserInfosState extends State<GetUserInfos> {
     );
   }
 
+  Future<dynamic> getDocumentTypes() async{
+    final result = await context.read<CommandCubit>().getDocumentTypes();
+    return result;
+  }
+
   Widget showBody (BuildContext context){
     final width = MediaQuery.sizeOf(context).width;
     return SingleChildScrollView(
@@ -195,42 +206,45 @@ class _GetUserInfosState extends State<GetUserInfos> {
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   const Text(
                     "Type de document",
                     textScaler: TextScaler.linear(1.12),
+                    style: TextStyle(color: Colors.black),
                   ),
-                  const SizedBox(width: 20,),
-                  Row(
-                    children: [
-                      Radio<DocumentType>(
-                        value: DocumentType.CNIB,
-                        groupValue: documentType,
-                        onChanged: (DocumentType? value){
-                          setState(() {
-                            documentType = value!;
+                  const Spacer(),
+                  FutureBuilder(
+                      future: getDocumentTypes(),
+                      builder: (context, AsyncSnapshot snap){
+                        Map<String, String> docType = {};
+                        Widget children;
+                        if(snap.hasData){
+                          snap.data.forEach((elt){
+                            docType.addAll({
+                              elt["name"] : elt["id"]
+                            });
                           });
-                        },
-                        activeColor: Colors.greenAccent,
-                      ),
-                      const Text("CNIB")
-                    ],
-                  ),
-                  const SizedBox(width: 10,),
-                  Row(
-                    children: [
-                      Radio<DocumentType>(
-                        value: DocumentType.Passeport,
-                        groupValue: documentType,
-                        onChanged: (DocumentType? value){
-                          setState(() {
-                            documentType = value!;
-                          });
-                        },
-                        activeColor: Colors.greenAccent,
-                      ),
-                      const Text("Passeport")
-                    ],
+                          children = buildDropDown(choosedValue: principalDocType, documentTypeData: docType, id: snap.data[0]["id"])
+                          ;
+                        }
+                        else if (snap.hasError) {
+                          children = Padding(
+                            padding: const EdgeInsets.only(top: 16),
+                            child: Text('Erreur: ${snap.error}'),
+                          );
+                        } else {
+                          children =
+                          const Center(
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 16),
+                              child: Text('Chargement...'),
+                            ),
+                          );
+                        }
+                        return children;
+
+                      }
                   ),
                 ],
               ),
@@ -300,9 +314,9 @@ class _GetUserInfosState extends State<GetUserInfos> {
                   ],
                 ),
               ),
-              (widget.commandData["ticketIdList"].length > 1) ? const SizedBox(height: 20) : const SizedBox(),
-              (widget.commandData["ticketIdList"].length > 1) ? const Text("Autres passagers", style: TextStyle(fontWeight: FontWeight.bold,), textScaler: TextScaler.linear(1.2), ) : const SizedBox(),
-              (widget.commandData["ticketIdList"].length > 1) ? buildOtherPassengerFields(width) : const SizedBox(),
+              (widget.commandData["pasengerNumber"] > 1) ? const SizedBox(height: 20) : const SizedBox(),
+              (widget.commandData["pasengerNumber"] > 1) ? const Text("Autres passagers", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black), textScaler: TextScaler.linear(1.2), ) : const SizedBox(),
+              (widget.commandData["pasengerNumber"] > 1) ? buildOtherPassengerFields(width) : const SizedBox(),
               const SizedBox(height: 20),
               CustomTextButton(
                 onTap: () async{
@@ -311,10 +325,57 @@ class _GetUserInfosState extends State<GetUserInfos> {
                 },
                 color: darkBackgroundColor,
                 text: "Valider",
+                width: MediaQuery.sizeOf(context).width,
               ),
               const SizedBox(height: 20),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildDropDown({required String choosedValue, required Map<String, String> documentTypeData, required String id }) {
+    return SizedBox(
+      width: 150,
+      height: 30,
+      child: DropdownButtonFormField(
+        isExpanded: false,
+        iconEnabledColor: Colors.grey,
+        iconSize: 30,
+        isDense: true,
+        items: documentTypeData.map((key, value) {
+          return MapEntry(
+            value,
+            DropdownMenuItem<String>(
+                value: value.toString(),
+                child: Text(
+                  key,
+                  style: const TextStyle(
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  textAlign: TextAlign.right,
+                )
+            ),
+          );
+        }).values.toList(),
+        value: choosedValue,
+        onChanged: (value) {
+          setState(() {
+            principalDocType = value ?? "";
+          });
+          debugPrint("keys ========> ${documentTypeData.values.toList()}");
+        },
+        style: const TextStyle(color: Colors.black87),
+        decoration: const InputDecoration(
+            contentPadding: EdgeInsets.symmetric(vertical: 0),
+            enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide.none
+            ),
+            focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide.none
+            )
         ),
       ),
     );
@@ -364,23 +425,27 @@ class _GetUserInfosState extends State<GetUserInfos> {
       var principal = {
         "firstName" : firstNameController.text,
         "lastName": lastNameController.text,
-        "ticketId": "${widget.commandData["ticketIdList"][0]}",
+        //"ticketId": "${widget.commandData["ticketIdList"][0]}",
         "phoneNumber": phoneController.text,
-        "documentType": await UiUtils().getDocumentType(documentType.toString()),
+        "documentType": principalDocType,
         "issueDate": expirationDateController.text,
         "serialNumber": docController.text,
-        "main": true
+        "main": true,
+        "countryId": indicator
       };
       if(!data.contains(principal)){
         data.add(principal);
       }
 
       //widget.commandData["ticketIdList"].removeAt(0);
-      for(var i = 0; i < (widget.commandData["ticketIdList"].length - 1); i++) {
+      for(var i = 0; i < (widget.commandData["pasengerNumber"] - 1); i++) {
         var other = {
           "firstName" : firstNameControllers[i].text,
           "lastName": lastNameControllers[i].text,
-          "ticketId": "${widget.commandData["ticketIdList"][i + 1]}"
+          "documentType": othersDocumentTypes.isNotEmpty ? othersDocumentTypes[i] : othersDocType,
+          //"issueDate": deliveryDateControllers[i].text,
+          "serialNumber": serialNumberControllers[i].text,
+          //"ticketId": "${widget.commandData["ticketIdList"][i + 1]}"
         };
         if(!data.contains(other)){
           data.add(other);
@@ -398,7 +463,7 @@ class _GetUserInfosState extends State<GetUserInfos> {
       }) {
     return SizedBox(
       width: width,
-      height: 70,
+      height: title == "Numéro de téléphone" ? 90 : 70,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -409,13 +474,29 @@ class _GetUserInfosState extends State<GetUserInfos> {
           Flexible(
             flex: 3,
             child: TextFormField(
-              decoration: InputDecoration(
+              decoration: title != "Numéro de téléphone" ? InputDecoration(
                 contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                 border: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey.withOpacity(0.2))
                 ),
                 focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: darkBackgroundColor, width: 3),
+                  borderSide: BorderSide(color: darkBackgroundColor, width: 3),
+                ),
+                enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey.withOpacity(0.4))
+                ),
+                hintText: hintText,
+                hintStyle: TextStyle(
+                  color: Colors.grey.withOpacity(0.4),
+                  fontSize: 16,
+                ),
+              ) : InputDecoration(
+                contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey.withOpacity(0.2))
+                ),
+                focusedBorder: const UnderlineInputBorder(
+                  borderSide: BorderSide(color: darkBackgroundColor, width: 3),
                 ),
                 enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey.withOpacity(0.4))
@@ -428,6 +509,25 @@ class _GetUserInfosState extends State<GetUserInfos> {
                 hintStyle: TextStyle(
                   color: Colors.grey.withOpacity(0.4),
                   fontSize: 16,
+                ),
+                prefixIcon: CountryCodePicker(
+                  showCountryOnly: false,
+                  initialSelection: "BF",
+                  favorite: const ["+226", "BF"],
+                  showOnlyCountryWhenClosed: false,
+                  showDropDownButton: true,
+                  searchStyle: const TextStyle(color: Colors.black),
+                  dialogTextStyle: const TextStyle(color: Colors.black),
+                  flagWidth: 30,
+                  textStyle: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.black
+                  ),
+                  onChanged: (country){
+                    setState(() {
+                      indicator = country.dialCode ?? "";
+                    });
+                  },
                 ),
               ),
               validator: (val){
@@ -469,17 +569,19 @@ class _GetUserInfosState extends State<GetUserInfos> {
     //debugPrint("other pass ========>${}");
     //widget.commandData["ticketIdList"].removeAt(0);
     return ListView.builder(
-        itemCount: widget.commandData["ticketIdList"].length - 1,
+        itemCount: widget.commandData["pasengerNumber"] - 1,
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, int i){
           firstNameControllers.add( TextEditingController());
           lastNameControllers.add( TextEditingController());
+          serialNumberControllers.add( TextEditingController());
+          //deliveryDateControllers.add( TextEditingController());
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 20),
-              Text("Passager ${i + 1}", style: const TextStyle(fontWeight: FontWeight.w500,), textScaler: const TextScaler.linear(1.2), ),
+              Text("Passager ${i + 1}", style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.black), textScaler: const TextScaler.linear(1.2), ),
               const SizedBox(height: 10),
               SizedBox(
                 width: width,
@@ -489,7 +591,7 @@ class _GetUserInfosState extends State<GetUserInfos> {
                   children: [
                     const Flexible(
                         flex: 2,
-                        child: Text("Nom", textScaler: TextScaler.linear(1.1),)
+                        child: Text("Nom", textScaler: TextScaler.linear(1.1), style: TextStyle(color: Colors.black),)
                     ),
                     Flexible(
                       flex: 3,
@@ -542,7 +644,7 @@ class _GetUserInfosState extends State<GetUserInfos> {
                   children: [
                     const Flexible(
                         flex: 2,
-                        child: Text("Prénom", textScaler: TextScaler.linear(1.1),)
+                        child: Text("Prénom", textScaler: TextScaler.linear(1.1), style: TextStyle(color: Colors.black),)
                     ),
                     Flexible(
                       flex: 3,
@@ -586,6 +688,214 @@ class _GetUserInfosState extends State<GetUserInfos> {
                   ],
                 ),
               ),
+              const SizedBox(height: 10),
+              SizedBox(
+                width: width,
+                height: 70,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Type de document",
+                      textScaler: TextScaler.linear(1.12),
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    const Spacer(),
+                    FutureBuilder(
+                        future: getDocumentTypes(),
+                        builder: (context, AsyncSnapshot snap){
+                          Map<String, String> docType = {};
+                          Widget children;
+                          if(snap.hasData){
+                            snap.data.forEach((elt){
+                              docType.addAll({
+                                elt["name"] : elt["id"]
+                              });
+                            });
+                            //children = buildDropDown(choosedValue: "CNI", documentTypeData: docType, id: snap.data[0]["id"])
+                            children = SizedBox(
+                                width: 150,
+                                height: 30,
+                                child: DropdownButtonFormField(
+                                  isExpanded: false,
+                                  iconEnabledColor: Colors.grey,
+                                  iconSize: 30,
+                                  isDense: true,
+                                  items: docType.map((key, value) {
+                                    return MapEntry(
+                                      value,
+                                      DropdownMenuItem<String>(
+                                          value: value.toString(),
+                                          child: Text(
+                                            key,
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                            textAlign: TextAlign.right,
+                                          )
+                                      ),
+                                    );
+                                  }).values.toList(),
+                                  value: othersDocType,
+                                  onChanged: (value) {
+                                    debugPrint("document type ****************> ${othersDocumentTypes.length}");
+                                    if(othersDocumentTypes.length > widget.commandData["pasengerNumber"] - 1){
+                                      othersDocumentTypes[othersDocumentTypes.length - 1] = value ?? "";
+                                    }
+                                    else if((othersDocumentTypes.length < widget.commandData["pasengerNumber"] - 1)){
+                                      othersDocumentTypes.add(value ?? "");
+                                    }
+                                    else if(othersDocumentTypes.length == widget.commandData["pasengerNumber"] - 1){
+                                      othersDocumentTypes[i] = value ?? "";
+                                    }
+
+                                    //othersDocumentTypes.add(value ?? "");
+                                    debugPrint("document type ========+> $othersDocumentTypes");
+                                  },
+                                  style: const TextStyle(color: Colors.black87),
+                                  decoration: const InputDecoration(
+                                      contentPadding: EdgeInsets.symmetric(vertical: 0),
+                                      enabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide.none
+                                      ),
+                                      focusedBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide.none
+                                      )
+                                  ),
+                                )
+                            );
+                          }
+                          else if (snap.hasError) {
+                            children = Padding(
+                              padding: const EdgeInsets.only(top: 16),
+                              child: Text('Erreur: ${snap.error}'),
+                            );
+                          } else {
+                            children =
+                            const Center(
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 16),
+                                child: Text('Chargement...'),
+                              ),
+                            );
+                          }
+                          return children;
+                        }
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                width: width,
+                height: 70,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Flexible(
+                        flex: 2,
+                        child: Text("Numéro du document", textScaler: TextScaler.linear(1.1), style: TextStyle(color: Colors.black),)
+                    ),
+                    Flexible(
+                      flex: 3,
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                          border: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey.withOpacity(0.2))
+                          ),
+                          focusedBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: darkBackgroundColor, width: 3),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey.withOpacity(0.4))
+                          ),
+                          labelStyle: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 15,
+                          ),
+                          hintText: "",
+                          hintStyle: TextStyle(
+                            color: Colors.grey.withOpacity(0.4),
+                            fontSize: 16,
+                          ),
+                        ),
+                        controller: serialNumberControllers[i],
+                        validator: (val) => Validators.notEmptyValidation(val!, context),
+                        cursorHeight: 18,
+                        cursorColor: Colors.black,
+                        style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16
+                        ),
+                        onChanged: (String value) {
+                          _formkey.currentState!.validate();
+                        },
+                        textAlignVertical: TextAlignVertical.center,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              /*const SizedBox(height: 10),
+              SizedBox(
+                width: width,
+                height: 70,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Flexible(
+                        flex: 2,
+                        child: Text("Date de délivrance", textScaler: TextScaler.linear(1.1), style: TextStyle(color: Colors.black),)
+                    ),
+                    Flexible(
+                      flex: 3,
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                          border: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey.withOpacity(0.2))
+                          ),
+                          focusedBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: darkBackgroundColor, width: 3),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey.withOpacity(0.4))
+                          ),
+                          labelStyle: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 15,
+                          ),
+                          hintText: "",
+                          hintStyle: TextStyle(
+                            color: Colors.grey.withOpacity(0.4),
+                            fontSize: 16,
+                          ),
+                        ),
+                        controller: deliveryDateControllers[i],
+                        validator: (val) => Validators.notEmptyValidation(val!, context),
+                        cursorHeight: 18,
+                        cursorColor: Colors.black,
+                        style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16
+                        ),
+                        onTap: () async{
+                          DateTime dateTime = await showDateTimeDialog();
+                          deliveryDateControllers[i].text = DateFormat('yyyy-MM-dd').format(dateTime);
+                        },
+                        onChanged: (String value) {
+                          _formkey.currentState!.validate();
+                        },
+                        textAlignVertical: TextAlignVertical.center,
+                      ),
+                    ),
+                  ],
+                ),
+              ),*/
               const SizedBox(height: 20),
             ],
           );

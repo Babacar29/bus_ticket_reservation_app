@@ -15,8 +15,8 @@ class PaymentRepository {
 
   PaymentRepository._internal();
 
-  Future<dynamic> commandDetails({ required String commandId}) async {
-    final result = await _paymentRemoteDataSource.commandDetails(commandId: commandId);
+  Future<dynamic> commandDetails({required Map<String, dynamic> body}) async {
+    final result = await _paymentRemoteDataSource.commandDetails(body: body);
     return result;
   }
 

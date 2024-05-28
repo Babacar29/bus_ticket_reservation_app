@@ -80,7 +80,7 @@ class _ChooseSitState extends State<ChooseSit> {
       padding: const EdgeInsets.all(9.0),
       child: GestureDetector(
         onTap: (){
-          debugPrint("number of tickets ======>${widget.commandData["ticketIdList"].length}");
+          debugPrint("number of tickets ======>${widget.commandData["pasengerNumber"]}");
           if((!isSelected || selectedSeats.isEmpty) ){
             selectedSeats.add(int.parse(seatNumber));
             setState(() {});
@@ -309,13 +309,13 @@ class _ChooseSitState extends State<ChooseSit> {
                   return;
                 }
 
-                if(selectedSeats.length > widget.commandData["ticketIdList"].length){
-                  showCustomSnackBar(context: context, message: "Vous ne pouvez choisir que ${widget.commandData["ticketIdList"].length} siège(s)");
+                if(selectedSeats.length > widget.commandData["pasengerNumber"]){
+                  showCustomSnackBar(context: context, message: "Vous ne pouvez choisir que ${widget.commandData["pasengerNumber"]} siège(s)");
                   return;
                 }
 
-                if(selectedSeats.length < widget.commandData["ticketIdList"].length){
-                  showCustomSnackBar(context: context, message: "Vous devez choisir ${widget.commandData["ticketIdList"].length} siège(s)");
+                if(selectedSeats.length < widget.commandData["pasengerNumber"]){
+                  showCustomSnackBar(context: context, message: "Vous devez choisir ${widget.commandData["pasengerNumber"]} siège(s)");
                   return;
                 }
                 //Navigator.of(context).pushNamed(Routes.chooseSit, arguments: {"from": 1});
@@ -323,6 +323,7 @@ class _ChooseSitState extends State<ChooseSit> {
               },
               color: darkBackgroundColor,
               text: "Valider",
+              width: MediaQuery.sizeOf(context).width,
             )
           ],
         )

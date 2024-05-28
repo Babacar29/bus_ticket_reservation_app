@@ -4,31 +4,37 @@ import 'package:flutter/material.dart';
 
 import '../styles/colors.dart';
 
-class CustomTextButton extends StatelessWidget {
+class CustomTextButton extends StatefulWidget {
   final Function onTap;
   final Color color;
   final String text;
+  final double width;
 
-  const CustomTextButton({Key? key, required this.onTap, required this.color, required this.text}) : super(key: key);
+  const CustomTextButton({Key? key, required this.onTap, required this.color, required this.text, required this.width}) : super(key: key);
 
+  @override
+  State<CustomTextButton> createState() => _CustomTextButtonState();
+}
+
+class _CustomTextButtonState extends State<CustomTextButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: (){
-        onTap();
+        widget.onTap();
       },
       child: Container(
-        color: color,
-        width: MediaQuery.sizeOf(context).width,
+        color: widget.color,
+        width: widget.width,
         child: TextButton(
           style: ButtonStyle(
             overlayColor: MaterialStateProperty.all(Colors.transparent),
-            foregroundColor: MaterialStateProperty.all(darkSecondaryColor),
+            foregroundColor: MaterialStateProperty.all(darkBackgroundColor),
           ),
           onPressed: () {
-            onTap();
+            widget.onTap();
           },
-          child: Text(text, style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white, fontWeight: FontWeight.normal, fontSize: 20)),
+          child: Text(widget.text, style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 20)),
         ),
       ),
     );

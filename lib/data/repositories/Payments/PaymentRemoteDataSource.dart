@@ -10,9 +10,9 @@ import '../../../utils/constant.dart';
 class PaymentRemoteDataSource {
 
 
-  Future<dynamic> commandDetails({required String commandId}) async {
+  Future<dynamic> commandDetails({required Map<String, dynamic> body}) async {
     try {
-      final result = await Api.get(url: "$catalogUrl/commands/$commandId${Api.details}");
+      final result = await Api.normalPost(url: "$base_url/estimations", body: body);
       return result;
     } on SocketException catch (e) {
       throw SocketException(e.toString());
@@ -23,7 +23,7 @@ class PaymentRemoteDataSource {
 
   Future<dynamic> getAvailablePayments() async {
     try {
-      final result = await Api.get(url: "$paymentUrl${Api.availablePayment}");
+      final result = await Api.get(url: "$base_url${Api.availablePayment}");
       return result;
     } on SocketException catch (e) {
       throw SocketException(e.toString());
@@ -34,7 +34,7 @@ class PaymentRemoteDataSource {
 
   Future<dynamic> payCommand({required String commandId, required Map<String, dynamic> body}) async {
     try {
-      final result = await Api.noReturnPost(url: "$catalogUrl/commands/$commandId${Api.pay}", body: body);
+      final result = await Api.newPost(url: "$base_url/commands", body: body);
       return result;
     } on SocketException catch (e) {
       throw SocketException(e.toString());
@@ -45,7 +45,7 @@ class PaymentRemoteDataSource {
 
   Future<dynamic> sendOtp({required String commandId, required Map<String, dynamic> body}) async {
     try {
-      final result = await Api.newPost(url: "$catalogUrl/v3/commands/$commandId${Api.startPayment}", body: body);
+      final result = await Api.newPost(url: "$base_url/commands/$commandId${Api.otp}", body: body);
       return result;
     } on SocketException catch (e) {
       throw SocketException(e.toString());

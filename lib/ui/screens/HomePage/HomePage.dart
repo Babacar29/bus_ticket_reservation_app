@@ -36,7 +36,8 @@ class HomeScreenState extends State<HomeScreen> {
                   GestureDetector(
                     onTap: () {
                       Navigator.of(context).pushNamed(
-                          Routes.showAvailablePLace, arguments: {"from": 0});
+                          Routes.chooseCategory, arguments: {"from": 0}
+                      );
                     },
                     child: Container(
                       height: height / 2.7,

@@ -2,9 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 
 import '../../app/routes.dart';
 import '../../data/repositories/Payments/PaymentsRepository.dart';
+import '../../utils/hiveBoxKeys.dart';
 
 
 
@@ -29,13 +31,19 @@ class PaymentCubit extends Cubit<PaymentState> {
   final PaymentRepository _paymentRepository;
 
   PaymentCubit(this._paymentRepository) : super(PaymentInitial());
+  var box = Hive.box(authBoxKey);
 
   Future<dynamic> getCommandDetails({required String commandId }) async{
     late var result;
+    var cat = box.get("categories");
+    Map<String, dynamic> body = {
+      "departureIds": [commandId],
+      "placeToCategory": cat
+    };
 
     try {
       emit(PaymentProgress());
-      result = await _paymentRepository.commandDetails(commandId: commandId);
+      result = await _paymentRepository.commandDetails(body: body);
       emit(PaymentSuccess());
       return result;
     }
@@ -45,18 +53,29 @@ class PaymentCubit extends Cubit<PaymentState> {
     return result;
   }
 
-  Future<dynamic> payCommand({required String commandId, required String value, required BuildContext context }) async{
+  Future<dynamic> payCommand({required Map<String, dynamic> command, required BuildContext context,
+    required String paymentMethod, required String phoneNumber }) async{
     late var result;
+    var cat = box.get("categories");
+    var passengers = box.get("passengers");
+    debugPrint("command data ===========>$command");
+
     Map<String, dynamic> body = {
-      "otp": value
+      "departures": [command["departureId"]],
+      "placeToCategory": cat,
+      "passengers": passengers,
+      "payment": {
+        "paymentNumber": phoneNumber,
+        "paymentMethod": paymentMethod
+      }
     };
 
     try {
       emit(PaymentProgress());
-      result = await _paymentRepository.payCommand(commandId: commandId, body: body);
-      if(result == "success"){
-        debugPrint("pay result ========> $result");
-        Navigator.of(context).pushNamed(Routes.tickets, arguments: {"from": 0});
+      result = await _paymentRepository.payCommand(commandId: command["departureId"], body: body);
+      debugPrint("pay result ========> $result");
+      if(result["commandId"] != null){
+        Navigator.of(context).pushNamed(Routes.otp, arguments: {"from": 1, "commandData": command, "otpData": result});
       }
       emit(PaymentSuccess());
       return result;
@@ -83,25 +102,25 @@ class PaymentCubit extends Cubit<PaymentState> {
   }
 
 
-  Future<dynamic> sendOtp({required Map<String, dynamic> command, required BuildContext context, String? paymentMethod, String? phoneNumber, required bool canCall }) async{
+  Future<dynamic> sendOtp({required Map<String, dynamic> command, required BuildContext context, required String otp, required bool canCall }) async{
     late var result;
     Map<String, dynamic> body = {
-      "paymentMethod": paymentMethod,
-      "paymentNumber": phoneNumber
+      "otp": otp
     };
 
 
     try {
       emit(PaymentProgress());
-      result = await _paymentRepository.sentOtp(commandId: command["id"], body: body);
+      result = await _paymentRepository.sentOtp(commandId: command["departureId"], body: body);
+      debugPrint("send otp response ======>$result");
       if(result["transactionCode"] != null){
-        debugPrint("transaction code is ======>${result["transactionCode"]}");
-        if(canCall){
+        Navigator.of(context).pushNamed(Routes.tickets, arguments: {"from": 1});
+        /*if(canCall){
           return result;
         }
         else{
-          Navigator.of(context).pushNamed(Routes.otp, arguments: {"from": 1, "commandData": command, "otpData": result});
-        }
+          Navigator.of(context).pushNamed(Routes.tickets, arguments: {"from": 1});
+        }*/
       }
       emit(PaymentSuccess());
       return result;

@@ -53,9 +53,11 @@ class TicketsScreenState extends State<TicketsScreen> with TickerProviderStateMi
     List<Ticket> tickets = [];
     var result = await context.read<TicketsCubit>().getTickets(context: context);
     //
-    for(var ticket in result["passedTicketList"].toList()){
-      //widget.tickets?.add(Ticket.fromMap(ticket));
-      tickets.add(Ticket.fromMap(ticket));
+    if(result["passed"] != null){
+      for(var ticket in result["passed"].toList()){
+        //widget.tickets?.add(Ticket.fromMap(ticket));
+        tickets.add(Ticket.fromMap(ticket));
+      }
     }
     return tickets;
   }
@@ -64,9 +66,11 @@ class TicketsScreenState extends State<TicketsScreen> with TickerProviderStateMi
     List<Ticket> tickets = [];
     var result = await context.read<TicketsCubit>().getTickets(context: context);
     //
-    for(var ticket in result["upcomingTicketList"].toList()){
-      //widget.tickets?.add(Ticket.fromMap(ticket));
-      tickets.add(Ticket.fromMap(ticket));
+    if(result["upcoming"] != null){
+      for(var ticket in result["upcoming"].toList()){
+        //widget.tickets?.add(Ticket.fromMap(ticket));
+        tickets.add(Ticket.fromMap(ticket));
+      }
     }
     return tickets;
   }
@@ -431,6 +435,7 @@ class TicketsScreenState extends State<TicketsScreen> with TickerProviderStateMi
                       },
                       color: controller.index == 0 ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.6),
                       text: "A VENIR",
+                      width: width,
                     ),
                     CustomTextButton(
                       onTap: (){
@@ -440,6 +445,7 @@ class TicketsScreenState extends State<TicketsScreen> with TickerProviderStateMi
                       },
                       color: controller.index == 1 ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.6),
                       text: "PASSÉS",
+                      width: width,
                     ),
                   ],
                 ),

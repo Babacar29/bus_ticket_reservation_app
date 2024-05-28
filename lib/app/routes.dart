@@ -1,8 +1,7 @@
 import 'package:burkina_transport_app/ui/screens/Payments/OtpScreen.dart';
 import 'package:burkina_transport_app/ui/screens/Payments/PaymentStarted.dart';
 import 'package:burkina_transport_app/ui/screens/Tickets/TicketDetails.dart';
-import 'package:burkina_transport_app/ui/screens/chooseSit.dart';
-import 'package:burkina_transport_app/ui/screens/showAvailablePlace/ShowAvailableCitiesScreen.dart';
+import 'package:burkina_transport_app/ui/screens/chooseSeat.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:burkina_transport_app/ui/screens/PrivacyPolicyScreen.dart';
@@ -15,6 +14,8 @@ import 'package:burkina_transport_app/ui/screens/auth/loginScreen.dart';
 
 import '../ui/screens/GetUserInfos.dart';
 import '../ui/screens/Tickets/TicketsScreen.dart';
+import '../ui/screens/showAvailablePlace/chooseCategorie.dart';
+import '../ui/screens/showAvailablePlace/chooseDeparture.dart';
 
 class Routes {
   static const String splash = "splash";
@@ -37,6 +38,8 @@ class Routes {
   static const String ticketDetails = "ticketDetails";
   static const String tickets = "tickets";
   static const String otp = "otp";
+  static const String chooseDeparture = "chooseDeparture";
+  static const String chooseCategory = "chooseCategory";
 
   static String currentRoute = splash;
 
@@ -71,10 +74,6 @@ class Routes {
         {
           return UserProfileScreen.route(routeSettings);
         }
-      case showAvailablePLace:
-        {
-          return ShowAvailableCities.route(routeSettings);
-        }
       case showUserInfo:
         {
           return GetUserInfos.route(routeSettings);
@@ -94,6 +93,14 @@ class Routes {
       case tickets:
         {
           return TicketsScreen.route(routeSettings);
+        }
+      case chooseDeparture:
+        {
+          return ChooseDeparture.route(routeSettings);
+        }
+      case chooseCategory:
+        {
+          return ChooseCategory.route(routeSettings);
         }
       case otp:
         {

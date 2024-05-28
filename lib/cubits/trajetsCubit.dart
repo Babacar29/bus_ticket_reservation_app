@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 import '../data/repositories/TrajetsRepositories/TrajetsRepository.dart';
 
@@ -32,16 +33,18 @@ class TrajetsCubit extends Cubit<TrajetsState> {
   Future<dynamic> getTrajets({required BuildContext context, required String depId, required String arrId, required int placeCount, }) {
     late var result;
 
-    Map<String, dynamic> body = {
+    /*Map<String, dynamic> body = {
       "arrivalCity": arrId,
       "company": "39b6a762-e14c-4595-888d-066beffe4e9c",
       "departureCity": depId,
       "placeCount": placeCount
-    };
+    };*/
+
+    String date = DateFormat("yyyy-MM-dd").format(DateTime.now());
 
     try {
       emit(TrajetsProgress());
-      result =  _trajetsRepository.getRoutes(context: context, body: body);
+      result =  _trajetsRepository.getRoutes(context: context, departureCity: depId, arrivalCity: arrId, placeCount: "$placeCount", date: date);
       emit(TrajetsSuccess());
     }
     catch(e){

@@ -20,7 +20,7 @@ import 'package:burkina_transport_app/cubits/themeCubit.dart';
 import 'package:burkina_transport_app/utils/constant.dart';
 import 'package:burkina_transport_app/ui/styles/appTheme.dart';
 import 'package:burkina_transport_app/ui/widgets/SnackBarWidget.dart';
-import 'package:share_plus/share_plus.dart';
+//import 'package:share_plus/share_plus.dart';
 
 import '../../../cubits/otherPagesCubit.dart';
 import '../../widgets/myAppBar.dart';
@@ -168,7 +168,7 @@ class ProfileScreenState extends State<ProfileScreen> {
               break;
             case 9:
               var str = "$appName\n\n${UiUtils.getTranslatedLabel(context, 'shareMsg')}\n\n$androidLbl\n$androidLink$packageName\n\n$iosLbl\n$iosLink";
-              Share.share(str);
+              //Share.share(str);
               break;
             case 10:
               logOutDailog();

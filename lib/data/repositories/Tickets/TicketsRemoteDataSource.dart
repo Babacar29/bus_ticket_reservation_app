@@ -11,7 +11,7 @@ class TicketsRemoteDataSource {
 
   Future<dynamic> getTickets() async {
     try {
-      final result = await Api.get(url: "$catalogUrl${Api.tickets}");
+      final result = await Api.get(url: "$base_url${Api.tickets}");
       return result;
     } on SocketException catch (e) {
       throw SocketException(e.toString());

@@ -185,7 +185,9 @@ class LoginScreenState extends State<LoginScreen> with SingleTickerProviderState
           },
           text: UiUtils.getTranslatedLabel(context, 'skip'),
           color: UiUtils.getColorScheme(context).primaryContainer.withOpacity(0.7),
-        ));
+          width: MediaQuery.sizeOf(context).width,
+        )
+    );
   }
 
   showTabs() {

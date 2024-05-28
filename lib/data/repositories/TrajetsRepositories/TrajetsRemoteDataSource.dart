@@ -9,9 +9,12 @@ import 'package:burkina_transport_app/utils/api.dart';
 class TrajetsRemoteDataSource {
 
 
-  Future<dynamic> getRoutes({required BuildContext context, required Map<String, dynamic> body}) async {
+  Future<dynamic> getRoutes({
+    required BuildContext context, required String departureCity,
+    required String arrivalCity, required String placeCount, required String date
+  }) async {
     try {
-      final result = await Api.newPost(url: Api.getRouteApi, body: body);
+      final result = await Api.get(url: "${Api.getRouteApi}?departureCity=$departureCity&arrivalCity=$arrivalCity&placeCount=$placeCount&date=$date");
       return result;
     } on SocketException catch (e) {
       throw SocketException(e.toString());

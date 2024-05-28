@@ -35,4 +35,13 @@ class CommandRepository {
     return result;
   }
 
+  Future<dynamic> getCategories() async {
+    final result = await _commandRemoteDataSource.getCategories();
+    return result;
+  }
+
+  Future<dynamic> getDocumentTypes() async {
+    final result = await _commandRemoteDataSource.getDocumentTypes();
+    return result;
+  }
 }

@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import '../../../utils/internetConnectivity.dart';
 import '../../../utils/uiUtils.dart';
 import '../../styles/colors.dart';
+import '../../widgets/customTextBtn.dart';
 import '../../widgets/customTextLabel.dart';
 import '../../widgets/myAppBar.dart';
 import '../Profile/ProfileScreen.dart';
@@ -47,6 +48,8 @@ class _PaymentStartedState extends State<PaymentStarted> {
   var data = {};
   var paymentsAvailable = [];
   Map<String, dynamic> paymentInfo = {};
+  bool canShowPhoneField = false;
+  String paymentMethod = "";
 
   getData(String commandId) async {
     final result = await context.read<PaymentCubit>().getCommandDetails(commandId: commandId);
@@ -61,7 +64,7 @@ class _PaymentStartedState extends State<PaymentStarted> {
 
   @override
   void initState() {
-    getData(widget.commandData["id"]);
+    getData(widget.commandData["departureId"]);
     super.initState();
   }
 
@@ -142,178 +145,232 @@ class _PaymentStartedState extends State<PaymentStarted> {
   Widget showBody (BuildContext context){
     final width = MediaQuery.sizeOf(context).width;
     final height = MediaQuery.sizeOf(context).height;
-    return BlocConsumer<PaymentCubit, PaymentState>(
-      listener: (context, state) {
-        if(state is PaymentFailure){
-          showCustomSnackBar(context: context, message: state.errorMessage);
-        }
-      },
-      builder: (context, state) {
-        return BlocConsumer<PaymentCubit, PaymentState>(
-          listener: (context, state) {
-            // TODO: implement listener
-          },
-          builder: (context, state) {
-            return Stack(
-              children: [
-                SingleChildScrollView(
-                  physics: const ClampingScrollPhysics(),
-                  child: Padding(
-                      padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            color: Colors.white,
-                            width: width,
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 10.0, top: 10, bottom: 10),
-                              child: Text(
-                                data["departureDate"] != null ? "Le ${DateFormat('d MMMM yyyy').format(DateTime.tryParse(data["departureDate"])!)}, ${data["departureTime"] ?? ""}" : "" ,
-                                style: const TextStyle(
-                                    color: darkBackgroundColor
+    return Scaffold(
+      body: BlocConsumer<PaymentCubit, PaymentState>(
+        listener: (context, state) {
+          if(state is PaymentFailure){
+            showCustomSnackBar(context: context, message: state.errorMessage);
+          }
+        },
+        builder: (context, state) {
+          return BlocConsumer<PaymentCubit, PaymentState>(
+            listener: (context, state) {
+              // TODO: implement listener
+            },
+            builder: (context, state) {
+              return Stack(
+                children: [
+                  SingleChildScrollView(
+                    physics: const ClampingScrollPhysics(),
+                    child: Padding(
+                        padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              color: Colors.white,
+                              width: width,
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 10.0, top: 10, bottom: 10),
+                                child: Text(
+                                  data["date"] != null ? "Le ${DateFormat('d MMMM yyyy').format(DateTime.tryParse(data["date"])!)}" : "" ,
+                                  style: const TextStyle(
+                                      color: darkBackgroundColor
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 10,),
-                          Container(
-                            color: darkBackgroundColor,
-                            child: Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text(
-                                    "${data["departureCity"] ?? ""}",
-                                    style: const TextStyle(
-                                        color: Colors.white
-                                    ),
-                                  ),
-                                  const Spacer(),
-                                  const Text(
-                                    "Ville de départ",
-                                    style: TextStyle(
-                                        color: Colors.white
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 10,),
-                          Container(
-                            color: darkBackgroundColor,
-                            child: Padding(
-                              padding: EdgeInsets.all(10),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text(
-                                    "${data["arrivalCity"]  ?? ""}",
-                                    style: const TextStyle(
-                                        color: Colors.white
-                                    ),
-                                  ),
-                                  const Spacer(),
-                                  const Text(
-                                    "Ville d'arrivée",
-                                    style: TextStyle(
-                                        color: Colors.white
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 10,),
-                          Container(
-                            color: Colors.white,
-                            child: Padding(
-                              padding: EdgeInsets.all(10),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  const Text(
-                                    "Cout total du billet:",
-                                    style: TextStyle(
-                                        color: darkBackgroundColor
-                                    ),
-                                  ),
-                                  const Spacer(),
-                                  Text(
-                                    "${data["price"]  ?? ""} FCFA",
-                                    style: const TextStyle(
-                                        color: darkBackgroundColor
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 30,),
-                          const Text(
-                            "Choisissez votre mode de paiement",
-                            style: TextStyle(
-                                color: darkBackgroundColor
-                            ),
-                          ),
-                          const SizedBox(height: 5,),
-                          Container(
-                            color: Colors.white,
-                            child: Padding(
-                              padding: const EdgeInsets.all(3.0),
-                              child: textFormField(controller: numController, hintText: "Numéro de téléphone"),
-                            ),
-                          ),
-                          const SizedBox(height: 10,),
-                          paymentsAvailable.isEmpty ? const  SizedBox() : SizedBox(
-                            height: MediaQuery.sizeOf(context).height/4,
-                            child: ListView.builder(
-                                itemCount: paymentsAvailable.length,
-                                shrinkWrap: true,
-                                physics: const ClampingScrollPhysics(),
-                                itemBuilder: (context, int i){
-                                  var item = paymentsAvailable[i];
-                                  return GestureDetector(
-                                    onTap: () async{
-                                      simHintDialog(item["id"]);
-                                    },
-                                    child: Container(
-                                      color: Colors.white,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Row(
-                                          children: [
-                                            Image.asset("assets/orange_money.jpeg", height: height/25,),
-                                            SizedBox(width: width/20,),
-                                            Text(
-                                              item["name"] ?? "",
-                                              textScaler: const TextScaler.linear(1.5),
-                                              style: const TextStyle(
-                                                  color: darkBackgroundColor,
-                                                  fontWeight: FontWeight.bold
-                                              ),
-                                            )
-                                          ],
-                                        ),
+                            const SizedBox(height: 10,),
+                            Container(
+                              color: darkBackgroundColor,
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text(
+                                      "${data["departureCity"] ?? ""}",
+                                      style: const TextStyle(
+                                          color: Colors.white
                                       ),
                                     ),
-                                  );
-                                }
+                                    const Spacer(),
+                                    const Text(
+                                      "Ville de départ",
+                                      style: TextStyle(
+                                          color: Colors.white
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
-                          ),
-                        ],
-                      )
+                            const SizedBox(height: 10,),
+                            Container(
+                              color: darkBackgroundColor,
+                              child: Padding(
+                                padding: EdgeInsets.all(10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text(
+                                      "${data["arrivalCity"]  ?? ""}",
+                                      style: const TextStyle(
+                                          color: Colors.white
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    const Text(
+                                      "Ville d'arrivée",
+                                      style: TextStyle(
+                                          color: Colors.white
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 10,),
+                            Container(
+                              color: Colors.white,
+                              child: Padding(
+                                padding: EdgeInsets.all(10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    const Text(
+                                      "Cout total du billet:",
+                                      style: TextStyle(
+                                          color: darkBackgroundColor
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    Text(
+                                      "${data["amount"]  ?? ""} FCFA",
+                                      style: const TextStyle(
+                                          color: darkBackgroundColor
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const Text(
+                              "Si vous disposez d'un tarif spécial, veuillez vous présenter 1h à l'avance pour être remboursé de la différence avec justificatifs à l'appui.",
+                              textAlign: TextAlign.justify,
+                              style: TextStyle(
+                                  color: darkBackgroundColor,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600
+                              ),
+                            ),
+                            const SizedBox(height: 30,),
+                            const Text(
+                              "Choisissez votre mode de paiement",
+                              style: TextStyle(
+                                color: darkBackgroundColor,
+                                fontSize: 16,
+                              ),
+                            ),
+                            const SizedBox(height: 5,),
+                            paymentsAvailable.isEmpty ? const  SizedBox() : SizedBox(
+                              height: MediaQuery.sizeOf(context).height/4,
+                              child: ListView.builder(
+                                  itemCount: paymentsAvailable.length,
+                                  shrinkWrap: true,
+                                  physics: const ClampingScrollPhysics(),
+                                  itemBuilder: (context, int i){
+                                    var item = paymentsAvailable[i];
+                                    return Column(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () async{
+                                            //simHintDialog(item["id"]);
+                                            setState(() {
+                                              canShowPhoneField = true;
+                                              paymentMethod = item["id"];
+                                            });
+                                          },
+                                          child: Container(
+                                            color: darkBackgroundColor,
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.only(left: 20.0, top: 10, bottom: 10),
+                                                  child: Row(
+                                                    children: [
+                                                      Image.asset("assets/orange_money.jpeg", height: height/25,),
+                                                      SizedBox(width: width/20,),
+                                                      Text(
+                                                        item["name"] ?? "",
+                                                        textScaler: const TextScaler.linear(1.5),
+                                                        style: const TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight: FontWeight.bold
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                                (item["name"] == "Orange Money" && canShowPhoneField) ?
+                                                Padding(
+                                                  padding: const EdgeInsets.only(top: 10.0),
+                                                  child: textFormField(controller: numController, hintText: "Numéro de téléphone"),
+                                                ) : const SizedBox(),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  }
+                              ),
+                            ),
+                          ],
+                        )
+                    ),
                   ),
-                ),
-                if(state is PaymentProgress) showCircularProgress(true, darkBackgroundColor)
-              ],
-            );
+                  if(state is PaymentProgress) showCircularProgress(true, darkBackgroundColor)
+                ],
+              );
+            },
+          );
+        },
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(left: 20.0, right: 20, bottom: 10),
+        child: CustomTextButton(
+          onTap: () async{
+            canShowPhoneField ? submitCommand(paymentMethod, context) : null;
           },
-        );
-      },
+          color: canShowPhoneField ? darkBackgroundColor : Colors.grey,
+          text: "PAYER",
+          width: MediaQuery.sizeOf(context).width,
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
+  }
+
+  submitCommand(String paymentMethod, BuildContext context) async{
+    if(numController.text.isEmpty){
+      showCustomSnackBar(context: context, message: "Veuillez saisir un numéro de téléphone");
+      return;
+    }
+
+    if (await InternetConnectivity.isNetworkAvailable()) {
+      await context.read<PaymentCubit>().payCommand(
+          command: widget.commandData,
+          paymentMethod: paymentMethod,
+          phoneNumber: numController.text,
+          context: context,
+      );
+
+    }
+    else {
+      showCustomSnackBar(context: context, message: ErrorMessageKeys.noInternet);
+    }
   }
 
   TextFormField textFormField({required TextEditingController controller, required String hintText}) {
@@ -349,7 +406,7 @@ class _PaymentStartedState extends State<PaymentStarted> {
       controller: controller,
       cursorColor: Colors.black,
       style: const TextStyle(
-          color: Colors.black,
+          color: Colors.white,
           fontWeight: FontWeight.w600,
           fontSize: 16
       ),
@@ -360,7 +417,7 @@ class _PaymentStartedState extends State<PaymentStarted> {
     );
   }
 
-  simHintDialog(String methodPayment) async {
+  /*simHintDialog(String methodPayment) async {
     await showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -407,14 +464,14 @@ class _PaymentStartedState extends State<PaymentStarted> {
             );
           });
         });
-  }
+  }*/
 
   _callNumber(String code) async{
    bool? res = await FlutterPhoneDirectCaller.callNumber(code);
    return res;
   }
 
-  generateOtpHintDialog(String methodPayment) async {
+  /*generateOtpHintDialog(String methodPayment) async {
     await showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -463,7 +520,7 @@ class _PaymentStartedState extends State<PaymentStarted> {
                            Navigator.of(context).pop();
                            bool otpGenerated = await _callNumber(data["transactionCode"]);
                            if(otpGenerated){
-                             paidDialog(data);
+                             //paidDialog(data);
                            }
                           }
                           else {
@@ -476,9 +533,9 @@ class _PaymentStartedState extends State<PaymentStarted> {
             );
           });
         });
-  }
+  }*/
 
-  paidDialog(Map<String, dynamic> paymentInfo) async {
+  /*paidDialog(Map<String, dynamic> paymentInfo) async {
     await showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -610,7 +667,7 @@ class _PaymentStartedState extends State<PaymentStarted> {
             );
           });
         });
-  }
+  }*/
 
   Widget showContent(){
     return Scaffold(

@@ -47,10 +47,11 @@ class _OtpScreenState extends State<OtpScreen> {
   var data = {};
   var paymentsAvailable = [];
 
-  _callNumber(String code) async{
+
+  /*_callNumber(String code) async{
     await FlutterPhoneDirectCaller.callNumber(code);
   }
-
+*/
 
   @override
   void initState() {
@@ -69,13 +70,11 @@ class _OtpScreenState extends State<OtpScreen> {
       child: Container(
         height: 60,
         width: MediaQuery.sizeOf(context).width / iconList.length,
-        decoration: index == _selectedIndex
-            ? const BoxDecoration(
+        decoration: index == _selectedIndex ? const BoxDecoration(
           border: Border(
             top: BorderSide(width: 3, color: darkBackgroundColor),
           ),
-        )
-            : null,
+        ) : null,
         child: Padding(
           padding: const EdgeInsets.all(2.0),
           child: Column(
@@ -201,9 +200,10 @@ class _OtpScreenState extends State<OtpScreen> {
                     suffixIcon: GestureDetector(
                       onTap: () async{
                         if (await InternetConnectivity.isNetworkAvailable()) {
-                          await context.read<PaymentCubit>().payCommand(
-                              commandId: widget.commandData["id"],
-                              value: otpController.text,
+                          await context.read<PaymentCubit>().sendOtp(
+                              command: widget.commandData,
+                              otp: otpController.text,
+                              canCall: true,
                               context: context
                           );
                           //Navigator.of(context).pop();

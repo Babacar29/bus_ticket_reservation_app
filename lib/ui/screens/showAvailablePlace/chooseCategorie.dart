@@ -1,16 +1,15 @@
+import 'dart:async';
+
 import 'package:burkina_transport_app/cubits/availableCitiesCubit.dart';
 import 'package:burkina_transport_app/cubits/commandCubit.dart';
-import 'package:burkina_transport_app/cubits/trajetsCubit.dart';
-import 'package:burkina_transport_app/ui/widgets/circularProgressIndicator.dart';
 import 'package:burkina_transport_app/utils/hiveBoxKeys.dart';
 import 'package:burkina_transport_app/utils/validators.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
-import 'package:intl/intl.dart';
 
-import '../../../data/models/CityModel.dart';
+import '../../../app/routes.dart';
 import '../../../utils/uiUtils.dart';
 import '../../styles/colors.dart';
 import '../../widgets/customTextBtn.dart';
@@ -18,24 +17,24 @@ import '../../widgets/myAppBar.dart';
 import '../Tickets/TicketsScreen.dart';
 import '../Profile/ProfileScreen.dart';
 
-class ShowAvailableCities extends StatefulWidget {
+class ChooseCategory extends StatefulWidget {
   final int? from;
-  const ShowAvailableCities({super.key, this.from});
+  const ChooseCategory({super.key, this.from});
 
   @override
-  State<ShowAvailableCities> createState() => _ShowAvailableCitiesState();
+  State<ChooseCategory> createState() => _ChooseCategoryState();
 
   static Route route(RouteSettings routeSettings) {
     final arguments = routeSettings.arguments as Map<String, dynamic>;
     return CupertinoPageRoute(
-        builder: (_) => ShowAvailableCities(
+        builder: (_) => ChooseCategory(
           from: arguments['from'],
         )
     );
   }
 }
 
-class _ShowAvailableCitiesState extends State<ShowAvailableCities> {
+class _ChooseCategoryState extends State<ChooseCategory> {
   int _selectedIndex = 0;
   List<IconData> iconList = [
     Icons.bookmark,
@@ -44,31 +43,14 @@ class _ShowAvailableCitiesState extends State<ShowAvailableCities> {
   ];
   int numberPlaces = 0;
   String normalValue = "1";
-  String disabledValue = "0";
-  String ajsbValue = "0";
-  String visuallyImpairedValue = "0";
-  String retiredValue = "0";
-  String childrenValue = "0";
-  String studentValue = "0";
-  String departureValue = "Ouagadougou";
-  String arriveValue = "Bobo Dioulasso";
-  bool showPlace = false;
+  String departureValue = "";
+  String arriveValue = "";
+  //bool showPlace = false;
   List routes = [];
   String departureId = "";
   List<String> selectedTimes = [];
   var box = Hive.box(authBoxKey);
-  Map<String, int> categoryData = {
-    "612fcda81dc3f60432acab85": 1
-  };
-
-  Map<String, dynamic> departureData = {
-    "Ouagadougou": "Ouagadougou",
-  };
-
-
-  Map<String, dynamic> arriveData = {
-    "Bobo Dioulasso": "Bobo Dioulasso",
-  };
+  Map<String, int> categoryData = {};
 
   Widget buildNavBarItem(IconData icon, int index) {
     return InkWell(
@@ -129,18 +111,23 @@ class _ShowAvailableCitiesState extends State<ShowAvailableCities> {
     return Container(
         decoration: BoxDecoration(
           color: UiUtils.getColorScheme(context).secondary,
-          borderRadius: const BorderRadius.only(topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
+          //borderRadius: const BorderRadius.only(topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
           boxShadow: [
             BoxShadow(blurRadius: 6, offset: const Offset(5.0, 5.0), color: darkBackgroundColor.withOpacity(0.4), spreadRadius: 0),
           ],
         ),
         child: ClipRRect(
-            borderRadius: const BorderRadius.only(topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
+          //borderRadius: const BorderRadius.only(topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
             child: Row(
               children: navBarItemList,
             )
         )
     );
+  }
+
+  Future<dynamic> getCategories() async{
+    final result = await context.read<CommandCubit>().getCategories(context: context);
+    return result;
   }
 
   Widget showTickets (){
@@ -150,7 +137,7 @@ class _ShowAvailableCitiesState extends State<ShowAvailableCities> {
       },
       builder: (context, state) {
         return Container(
-          color: darkBackgroundColor.withOpacity(0.1),
+          color: backgroundColor,
           child: Column(
             children: [
               const SizedBox(height: 20,),
@@ -181,22 +168,73 @@ class _ShowAvailableCitiesState extends State<ShowAvailableCities> {
                 ),
               ),
               const SizedBox(height: 20,),
-              buildChoiceRow(title: "Normal", choosedValue: normalValue, numbersList: Validators.normalList()),
-              buildChoiceRow(title: "Handicapé", choosedValue: disabledValue, numbersList: Validators.disabledList()),
-              buildChoiceRow(title: "Ajsb", choosedValue: ajsbValue, numbersList: Validators.asjbList()),
-              buildChoiceRow(title: "Malvoyant", choosedValue: visuallyImpairedValue, numbersList: Validators.visuallyImpairedList()),
-              buildChoiceRow(title: "Retraité", choosedValue: retiredValue, numbersList: Validators.retiredList()),
-              buildChoiceRow(title: "Enfant", choosedValue: childrenValue, numbersList: Validators.childrenList()),
-              buildChoiceRow(title: "Etudiant", choosedValue: studentValue, numbersList: Validators.studentList()),
+              FutureBuilder(
+                  future: getCategories(),
+                  builder: (context, AsyncSnapshot snap){
+                    List<Widget> children;
+                    if(snap.hasData){
+                      children = <Widget>[
+                        ListView.builder(
+                          //itemCount: widget.tickets?.length,
+                            physics: const ClampingScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: snap.data.length,
+                            itemBuilder: (context, int i){
+                              var category = snap.data[i];
+                              return buildChoiceRow(title: category["name"], choosedValue: category["name"] == "Classique" ? normalValue : "0", numbersList: Validators.normalList(), id: category["id"]);
+                            }
+                        )
+                      ];
+                    }
+                    else if (snap.hasError) {
+                      children = <Widget>[
+                        const Icon(
+                          Icons.error_outline,
+                          color: Colors.red,
+                          size: 60,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16),
+                          child: Text('Erreur: ${snap.error}'),
+                        ),
+                      ];
+                    } else {
+                      children = <Widget>[
+                        const SizedBox(
+                          height: 300,
+                        ),
+                        const Center(
+                          child: CircularProgressIndicator( color: darkBackgroundColor,),
+                        ),
+                        const Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 16),
+                            child: Text('Chargement...'),
+                          ),
+                        ),
+                      ];
+                    }
+                    return ListView(
+                      shrinkWrap: true,
+                      physics: const ClampingScrollPhysics(),
+                      children: children,
+                    );
+
+                  }
+              ),
               const Spacer(),
               CustomTextButton(
                 onTap: (){
+                  if(categoryData.isEmpty){
+                    return;
+                  }
                   getCities();
                 },
-                color: darkBackgroundColor,
-                text: "Valider",
+                color: categoryData.isEmpty ? Colors.grey : darkBackgroundColor,
+                text: "VALIDER",
+                width: MediaQuery.sizeOf(context).width,
               ),
-              const SizedBox(height: 20,),
+              const SizedBox(height: 10,),
             ],
           ),
         );
@@ -205,45 +243,36 @@ class _ShowAvailableCitiesState extends State<ShowAvailableCities> {
   }
 
   getCities() async{
+    List values = categoryData.values.toList();
+    int n = 0;
+    for (var element in values) {
+      n = n + int.parse("$element");
+    }
+
     setState(() {
-      showPlace = true;
-      numberPlaces = int.parse(normalValue) + int.parse(disabledValue) + int.parse(ajsbValue) + int.parse(visuallyImpairedValue) + int.parse(retiredValue) + int.parse(childrenValue) + int.parse(studentValue);
+      //showPlace = true;
+      numberPlaces = n;
     });
+    //debugPrint("number places ======+> $numberPlaces");
     box.put("categories", categoryData);
-    final result = await context.read<AvailableCitiesCubit>().getAvailableCities(context: context);
-    final arriveItems = result["arrivalCities"].cast<Map<String, dynamic>>();
-    final departureItems = result["departureCities"].cast<Map<String, dynamic>>();
-    List<City> arriveCities = arriveItems.map<City>((json) {
-      return City.fromJson(json);
-    }).toList();
-    List<City> departureCities = departureItems.map<City>((json) {
-      return City.fromJson(json);
-    }).toList();
-    Map<String, dynamic> depCitiesById = Map.fromIterable(
-        departureCities,
-        key: (v) => v.id, value: (e) => e.name
+    Navigator.of(context).pushNamed(
+        Routes.chooseDeparture, arguments: {"from": 0}
     );
-    Map<String, dynamic> arrCitiesById = Map.fromIterable(
-        arriveCities,
-        key: (v) => v.id, value: (e) => e.name
-    );
-    setState(() {
-      arriveData = arrCitiesById;
-      departureData = depCitiesById;
-    });
   }
 
-  Widget showPlaces (){
+  /*Widget showPlaces (){
+    final height = MediaQuery.sizeOf(context).height;
+    final width = MediaQuery.sizeOf(context).width;
     return BlocConsumer<TrajetsCubit, TrajetsState>(
       listener: (context, state) {
         // TODO: implement listener
       },
       builder: (context, state) {
         return Container(
-          color: darkBackgroundColor.withOpacity(0.1),
+          color: finexsBackgroundColor,
           child: Column(
             children: [
-              const SizedBox(height: 30,),
+              SizedBox(height: height/60,),
               const Padding(
                 padding:  EdgeInsets.only(left: 20.0, right: 20),
                 child:  SizedBox(
@@ -262,11 +291,11 @@ class _ShowAvailableCitiesState extends State<ShowAvailableCities> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10,),
+              SizedBox(height: height/80,),
               Padding(
                 padding: const EdgeInsets.only(left: 20.0, right: 20),
                 child: SizedBox(
-                  height: 45,
+                  height: height/20,
                   child: Row(
                     children: [
                       Expanded(
@@ -277,6 +306,7 @@ class _ShowAvailableCitiesState extends State<ShowAvailableCities> {
                             child: DropdownButtonFormField(
                               isExpanded: true,
                               iconEnabledColor: Colors.grey,
+                              dropdownColor: Colors.white,
                               iconSize: 30,
                               items: departureData.map((value, key) {
                                 return MapEntry(
@@ -322,7 +352,7 @@ class _ShowAvailableCitiesState extends State<ShowAvailableCities> {
                   ),
                 ),
               ),
-              const SizedBox(height: 30,),
+              SizedBox(height: height/35,),
               const Padding(
                 padding:  EdgeInsets.only(left: 20.0, right: 20),
                 child:  SizedBox(
@@ -341,11 +371,11 @@ class _ShowAvailableCitiesState extends State<ShowAvailableCities> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10,),
+              SizedBox(height: height/80,),
               Padding(
                 padding: const EdgeInsets.only(left: 20.0, right: 20),
                 child: SizedBox(
-                  height: 45,
+                  height: height/20,
                   child: Row(
                     children: [
                       Expanded(
@@ -356,6 +386,7 @@ class _ShowAvailableCitiesState extends State<ShowAvailableCities> {
                             child: DropdownButtonFormField(
                               isExpanded: true,
                               iconEnabledColor: Colors.grey,
+                              dropdownColor: Colors.white,
                               iconSize: 30,
                               items: arriveData.map((value, key) {
                                 return MapEntry(
@@ -382,7 +413,6 @@ class _ShowAvailableCitiesState extends State<ShowAvailableCities> {
                                 setState(() {
                                   arriveValue = value!;
                                 });
-
                               },
                               style: const TextStyle(color: Colors.black87),
                               decoration: const InputDecoration(
@@ -402,28 +432,27 @@ class _ShowAvailableCitiesState extends State<ShowAvailableCities> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20,),
+              SizedBox(height: height/60,),
               Padding(
                 padding: const EdgeInsets.only(left: 20.0, right: 20),
                 child: SizedBox(
-                  height: 60,
+                  height: height/16,
                   child: CustomTextButton(
                     onTap: () async{
-                      final result = await context.read<TrajetsCubit>().getTrajets(context: context, depId: departureValue, arrId: arriveValue, placeCount: numberPlaces);
-                      //debugPrint("result: $result" );
-                      setState(() {
-                        routes = result;
-                      });
-
+                      if(arriveValue.isEmpty && departureValue.isEmpty){
+                        return;
+                      }
+                      search();
                     },
-                    color: darkBackgroundColor,
+                    color: (arriveValue.isEmpty && departureValue.isEmpty) ? Colors.grey : darkBackgroundColor,
                     text: "RECHERCHER",
+                    width: MediaQuery.sizeOf(context).width,
                   ),
                 ),
               ),
               //const SizedBox(height: 20,),
               SizedBox(
-                height: MediaQuery.sizeOf(context).height/2.5,
+                height: height/2.4,
                 child: ListView.builder(
                     itemCount: routes.length,
                     shrinkWrap: true,
@@ -440,8 +469,8 @@ class _ShowAvailableCitiesState extends State<ShowAvailableCities> {
                                 padding: const EdgeInsets.only(left: 20.0, top: 15),
                                 child: Text(
                                   DateFormat('d-MMMM-yyyy').format(DateTime.tryParse("${data["date"]}")!),
-                                  textScaler: TextScaler.linear(1.1),
-                                  style: const TextStyle(fontWeight: FontWeight.bold),),
+                                  textScaler: const TextScaler.linear(1.1),
+                                  style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),),
                               )
                             ],
                           ),
@@ -473,27 +502,66 @@ class _ShowAvailableCitiesState extends State<ShowAvailableCities> {
                                       Padding(
                                         padding: const EdgeInsets.only(left: 20.0, right: 20),
                                         child: GridView.builder(
-                                            physics: const NeverScrollableScrollPhysics(),
-                                            shrinkWrap: true,
-                                            itemCount: departure[key].toList().length,
-                                            gridDelegate:  const SliverGridDelegateWithFixedCrossAxisCount(
-                                                crossAxisCount: 4,
-                                                childAspectRatio: 2,
-                                            ),
-                                            itemBuilder: (context, int i){
-                                              var departureValue = departure[key][i];
-                                              String hour = departureValue["trajectTime"].toString().substring(0, 2);
-                                              String minute = departureValue["trajectTime"].toString().substring(3, 5);
-                                              String hourTime = "$hour : $minute";
-                                              return ChoiceChip(
+                                          physics: const NeverScrollableScrollPhysics(),
+                                          shrinkWrap: true,
+                                          itemCount: departure[key].toList().length,
+                                          gridDelegate:  const SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 3,
+                                            childAspectRatio: 2,
+                                          ),
+                                          itemBuilder: (context, int i){
+                                            var departureValue = departure[key][i];
+                                            String hour = departureValue["trajectTime"].toString().substring(0, 2);
+                                            String minute = departureValue["trajectTime"].toString().substring(3, 5);
+                                            String hourTime = "$hour : $minute";
+                                            return departureValue["full"] == true ? Stack(
+                                              children: [
+                                                ChoiceChip(
                                                   label: Text(
                                                     hourTime,
-                                                    textScaler: TextScaler.linear(1.3),
-                                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                                                    textScaler: const TextScaler.linear(1.3),
+                                                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                                                  ),
+                                                  selected: false,
+                                                  backgroundColor: Colors.grey,
+                                                  selectedColor: Colors.grey,
+                                                  showCheckmark: false,
+                                                  onSelected: (bool selected) {
+                                                  },
+                                                ),
+                                                Positioned(
+                                                  top: height/150,
+                                                  left: width/80,
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(10),
+                                                        color: Colors.red,
+                                                        border: Border.all(color: Colors.white)
+                                                    ),
+                                                    child: const Padding(
+                                                      padding: EdgeInsets.all(2.0),
+                                                      child: Text(
+                                                        "Plein",
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 8
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ) : Stack(
+                                              children: [
+                                                ChoiceChip(
+                                                  label: Text(
+                                                    hourTime,
+                                                    textScaler: const TextScaler.linear(1.3),
+                                                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
                                                   ),
                                                   selected: selectedTimes.contains("${data["date"]} $key $hourTime"),
-                                                  backgroundColor: darkBackgroundColor,
-                                                  selectedColor: Colors.greenAccent,
+                                                  backgroundColor: departureValue["full"] == true ? Colors.grey : darkBackgroundColor,
+                                                  selectedColor: customGreen,
                                                   showCheckmark: false,
                                                   onSelected: (bool selected) {
                                                     setState(() {
@@ -507,9 +575,53 @@ class _ShowAvailableCitiesState extends State<ShowAvailableCities> {
                                                         selectedTimes.remove("${data["date"]} $key $hourTime");
                                                       }
                                                     });
-                                                  }
-                                                );
-                                            },
+                                                  },
+                                                ),
+                                                departureValue["full"] == true ? Positioned(
+                                                  top: height/150,
+                                                  right: height/25,
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(10),
+                                                        color: Colors.red,
+                                                        border: Border.all(color: Colors.white)
+                                                    ),
+                                                    child: const Padding(
+                                                      padding: EdgeInsets.all(2.0),
+                                                      child: Text(
+                                                        "Plein",
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 8
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ) : const SizedBox(),
+                                                departureValue["vip"] == true ? Positioned(
+                                                  top: height/150,
+                                                  right: height/25,
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        border: Border.all(color: Colors.white),
+                                                        color: Colors.yellow
+                                                    ),
+                                                    child: const Padding(
+                                                      padding: EdgeInsets.all(3.0),
+                                                      child: Text(
+                                                        "VIP",
+                                                        style: TextStyle(
+                                                            color: darkBackgroundColor,
+                                                            fontSize: 8
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ) : const SizedBox(),
+                                              ],
+                                            );
+                                          },
                                         ),
                                       ),
                                     ],
@@ -539,14 +651,15 @@ class _ShowAvailableCitiesState extends State<ShowAvailableCities> {
                       }
                       var cat = box.get("categories");
                       //Navigator.of(context).pushNamed(Routes.chooseSit, arguments: {"from": 1});
-                      context.read<CommandCubit>().getCommand(context: context, departureId: departureId, placesCat: cat);
+                      context.read<CommandCubit>().getCommand(context: context, departureId: departureId, placesCat: cat, numberSeats: numberPlaces);
                     },
-                    color: darkBackgroundColor,
-                    text: "Valider",
+                    color: selectedTimes.isEmpty ? Colors.grey : darkBackgroundColor,
+                    text: "VALIDER",
+                    width: MediaQuery.sizeOf(context).width,
                   );
                 },
               ),
-              const SizedBox(height: 20,),
+              const SizedBox(height: 10,),
             ],
           ),
         );
@@ -554,167 +667,131 @@ class _ShowAvailableCitiesState extends State<ShowAvailableCities> {
     );
   }
 
+  void search() async{
+    if(departureValue == arriveValue){
+      setState(() {
+        routes.clear();
+      });
+      showCustomSnackBar(context: context, message: "Oops! Vous devez choisir une ville de départ et une ville d'arrivée différentes");
+      return;
+    }
+    final result = await context.read<TrajetsCubit>().getTrajets(context: context, depId: departureValue, arrId: arriveValue, placeCount: numberPlaces);
+    //debugPrint("result: $result" );
+    setState(() {
+      routes = result;
+    });
+  }*/
+
   Widget showContent(){
     return Scaffold(
-      appBar: CustomAppBar(title: showPlace ? "Sélectionnez un trajet" : "Les passagers du voyage",),
-      body: showPlace ? showPlaces() : showTickets(),
+      appBar: const CustomAppBar(title: "Les passagers du voyage",),
+      //appBar: CustomAppBar(title: showPlace ? "Sélectionnez un trajet" : "Les passagers du voyage",),
+      //body: showPlace ? showPlaces() : showTickets(),
+      body: showTickets(),
     );
   }
 
-  Padding buildChoiceRow({required String title, required String choosedValue, required Map<String, String> numbersList }) {
+  Padding buildChoiceRow({required String title, required String choosedValue, required Map<String, String> numbersList, required String id }) {
     return Padding(
-          padding: const EdgeInsets.only(left: 20.0, right: 20),
-          key: Key(title),
-          child: SizedBox(
-            //width: 300,
-            height: 45,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: Text(
-                      title,
-                    style: const TextStyle(
-                      fontSize: 17,
-                      color: Colors.black87
-                    ),
-                  ),
+      padding: const EdgeInsets.only(left: 20.0, right: 20),
+      key: Key(title),
+      child: SizedBox(
+        //width: 300,
+        height: 35,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Expanded(
+              flex: 3,
+              child: Text(
+                title,
+                style: const TextStyle(
+                    fontSize: 17,
+                    color: Colors.black87
                 ),
-                Expanded(
-                  flex: 1,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 20.0),
-                    child: DropdownButtonFormField(
-                      isExpanded: true,
-                      iconEnabledColor: Colors.grey,
-                      iconSize: 30,
-                      items: numbersList.map((key, value) {
-                        return MapEntry(
-                          value,
-                          DropdownMenuItem<String>(
-                              value: value.toString(),
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 5),
-                                child: Text(
-                                  key,
-                                  style: const TextStyle(
-                                      color: Colors.black87,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 17
-                                  ),
-                                ),
-                              )
-                          ),
-                        );
-                      }).values.toList(),
-                      value: choosedValue,
-                      onChanged: (value) {
-                        if(title == "Normal"){
-                          setState(() {
-                            normalValue = value!;
-                          });
-                          if(int.parse(disabledValue) != 0 || int.parse(disabledValue) != 1){
-                            categoryData.update("612fcda81dc3f60432acab85", (value) => int.parse(normalValue));
-                          }
-                        }
-                        if(title == "Handicapé"){
-                          setState(() {
-                            disabledValue = value!;
-                          });
-                          if(int.parse(disabledValue) != 0 ){
-                            categoryData.addAll(
-                                {
-                                  "614726ca649b883dcdbbc850" : int.parse(disabledValue)
-                                }
-                            );
-                          }
-                        }
-                        if(title == "Ajsb"){
-                          setState(() {
-                            ajsbValue = value!;
-                          });
-                          if(int.parse(ajsbValue) != 0 ){
-                            categoryData.addAll(
-                                {
-                                  "614726d2649b883dcdbbc851" : int.parse(ajsbValue)
-                                }
-                            );
-                          }
-                        }
-                        if(title == "Malvoyant"){
-                          setState(() {
-                            visuallyImpairedValue = value!;
-                          });
-                          if(int.parse(visuallyImpairedValue) != 0 ){
-                            categoryData.addAll(
-                                {
-                                  "614726d9649b883dcdbbc852" : int.parse(visuallyImpairedValue)
-                                }
-                            );
-                          }
-                        }
-                        if(title == "Retraité"){
-                          setState(() {
-                            retiredValue = value!;
-                          });
-                          if(int.parse(retiredValue) != 0 ){
-                            categoryData.addAll(
-                                {
-                                  "614726df649b883dcdbbc853" : int.parse(retiredValue)
-                                }
-                            );
-                          }
-                        }
-                        if(title == "Enfant"){
-                          setState(() {
-                            childrenValue = value!;
-                          });
-                          if(int.parse(childrenValue) != 0 ){
-                            categoryData.addAll(
-                                {
-                                  "614726e4649b883dcdbbc854" : int.parse(childrenValue)
-                                }
-                            );
-                          }
-                        }
-                        if(title == "Etudiant"){
-                          setState(() {
-                            studentValue = value!;
-                          });
-                          if(int.parse(studentValue) != 0 ){
-                            categoryData.addAll(
-                                {
-                                  "614726e8649b883dcdbbc855" : int.parse(studentValue)
-                                }
-                            );
-                          }
-                        }
-
-                        debugPrint("category ========> $categoryData");
-                      },
-                      style: const TextStyle(color: Colors.black87),
-                      decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(vertical: 0),
-                          enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide.none
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide.none
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 20.0),
+                child: DropdownButtonFormField(
+                  isExpanded: true,
+                  iconEnabledColor: Colors.grey,
+                  iconSize: 30,
+                  items: numbersList.map((key, value) {
+                    return MapEntry(
+                      value,
+                      DropdownMenuItem<String>(
+                          value: value.toString(),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 5),
+                            child: Text(
+                              key,
+                              style: const TextStyle(
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 17
+                              ),
+                            ),
                           )
                       ),
-                    ),
+                    );
+                  }).values.toList(),
+                  value: choosedValue,
+                  onChanged: (value) {
+                    debugPrint("value =========>$value");
+                    List values = categoryData.values.toList();
+                    if(value != "0" && !categoryData.containsKey(id)){
+                      setState(() {
+                        categoryData.addAll(
+                            {
+                              id : int.parse(value ?? "")
+                            }
+                        );
+                      });
+                    }
+                    else if(values.length == 1 && value == "0"){
+                      setState(() {
+                        categoryData.clear();
+                      });
+                    }
+                    else if(categoryData.containsKey(id) && value == "0"){
+                      setState(() {
+                        categoryData.remove(id);
+                      });
+                    }
+                    else{
+                      int n = 0;
+                      for (var element in values) {
+                        n = n + int.parse("$element");
+                      }
+                      debugPrint("keys ========> $n");
+
+                      if(n == 0){
+                        setState(() {
+                          categoryData.clear();
+                        });
+                      }
+                    }
+                  },
+                  style: const TextStyle(color: Colors.black87),
+                  decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(vertical: 0),
+                      enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide.none
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide.none
+                      )
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-        );
-  }
-
-  @override
-  void initState() {
-    super.initState();
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -724,7 +801,7 @@ class _ShowAvailableCitiesState extends State<ShowAvailableCities> {
         index: _selectedIndex,
         children: [
           showContent(),
-      //Add only if Category Mode is enabled From Admin panel.
+          //Add only if Category Mode is enabled From Admin panel.
           const TicketsScreen( ),
           const ProfileScreen(),
         ],

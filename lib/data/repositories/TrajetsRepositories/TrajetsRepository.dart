@@ -20,8 +20,9 @@ class TrajetsRepository {
 
 
   //to update fcmId user's data to database. This will be in use when authenticating using fcmId
-  Future<dynamic> getRoutes({required BuildContext context, required Map<String, dynamic> body}) async {
-    final result = await _trajetsRemoteDataSource.getRoutes(context: context, body: body);
+  Future<dynamic> getRoutes({required BuildContext context, required String departureCity,
+    required String arrivalCity, required String placeCount, required String date}) async {
+    final result = await _trajetsRemoteDataSource.getRoutes(context: context, departureCity: departureCity, arrivalCity: arrivalCity, placeCount: placeCount, date: date);
     return result;
   }
 
