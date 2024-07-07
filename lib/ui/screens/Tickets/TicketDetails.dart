@@ -48,50 +48,53 @@ class TicketDetailsScreenState extends State<TicketDetailsScreen> with TickerPro
     super.initState();
   }
 
-  Widget buildNavBarItem(IconData icon, int index) {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          _selectedIndex = index;
-        });
-      },
-      child: Container(
-        height: 60,
-        width: MediaQuery.of(context).size.width / iconList.length,
-        decoration: index == _selectedIndex
-            ? const BoxDecoration(
-          border: Border(
-            top: BorderSide(width: 3, color: darkBackgroundColor),
-          ),
-        )
-            : null,
-        child: Padding(
-          padding: const EdgeInsets.all(2.0),
-          child: Column(
-            children: [
-              Icon(
-                icon,
-                color: index == _selectedIndex ? darkBackgroundColor : UiUtils.getColorScheme(context).outline,
-              ),
-              index == 0 ? Text(
-                "Réservations",
-                style: TextStyle(
-                    color: index == _selectedIndex ? darkBackgroundColor : null
+   Widget buildNavBarItem(IconData icon, int index) {
+    return Material(
+      color: Colors.white,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.zero
+      ),
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height/12,
+          width: MediaQuery.of(context).size.width / iconList.length,
+          child: Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  color: index == _selectedIndex ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.5),
                 ),
-              ) : const SizedBox(),
-              index == 1 ? Text(
-                "Mes billets",
-                style: TextStyle(
-                    color: index == _selectedIndex ? darkBackgroundColor : null
-                ),
-              ) : const SizedBox(),
-              index == 2 ? Text(
-                "Mon Compte",
-                style: TextStyle(
-                    color: index == _selectedIndex ? darkBackgroundColor : null
-                ),
-              ) : const SizedBox(),
-            ],
+                index == 0 ? Text(
+                  "Réservations",
+                  style: TextStyle(
+                      color: index == _selectedIndex ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.5),
+                      fontWeight: FontWeight.w700
+                  ),
+                ) : const SizedBox(),
+                index == 1 ? Text(
+                  "Mes billets",
+                  style: TextStyle(
+                      color: index == _selectedIndex ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.5),
+                      fontWeight: FontWeight.w700
+                  ),
+                ) : const SizedBox(),
+                index == 2 ? Text(
+                  "Mon Compte",
+                  style: TextStyle(
+                      color: index == _selectedIndex ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.5),
+                      fontWeight: FontWeight.w700
+                  ),
+                ) : const SizedBox(),
+              ],
+            ),
           ),
         ),
       ),
@@ -175,13 +178,17 @@ class TicketDetailsScreenState extends State<TicketDetailsScreen> with TickerPro
                           children: [
                             paddingText(title: "Date: ", subtitle: DateFormat("d MMMM yyyy").format(DateTime.parse("${widget.ticket.departureDate}"))),
                             paddingText(title: "Heure: ", subtitle: widget.ticket.departureTime),
-                            paddingText(title: "Numéro de place: ", subtitle: widget.ticket.departureTime),
+                            paddingText(title: "Numéro de place: ", subtitle: "${widget.ticket.seatNumber}"),
                           ],
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            paddingText(title: "Statut: ", subtitle: widget.ticket.paymentStatus),
+                            widget.ticket.paymentStatus == "CREATED" ? paddingText(title: "Statut: ", subtitle: "Créée") : const SizedBox(),
+                            widget.ticket.paymentStatus == "PAYMENT_STARTED" ? paddingText(title: "Statut: ", subtitle: "Paiement en cours") : const SizedBox(),
+                            widget.ticket.paymentStatus == "PAYED" ? paddingText(title: "Statut: ", subtitle: "Payée") : const SizedBox(),
+                            widget.ticket.paymentStatus == "CANCELLED" ? paddingText(title: "Statut: ", subtitle: "Annulée") : const SizedBox(),
+                            widget.ticket.paymentStatus == "SCANNED" ? paddingText(title: "Statut: ", subtitle: "Scannée") : const SizedBox(),
                             paddingText(title: "Prénom: ", subtitle: widget.ticket.passenger.firstName),
                             paddingText(title: "Nom: ", subtitle: widget.ticket.passenger.lastName),
                           ],
@@ -238,7 +245,7 @@ class TicketDetailsScreenState extends State<TicketDetailsScreen> with TickerPro
 
   Widget showContent(){
     return Scaffold(
-      backgroundColor: darkBackgroundColor.withOpacity(0.1),
+      backgroundColor: backgroundColor,
       appBar: const CustomAppBar(title: "Mon billet",),
       body: content(),
     );

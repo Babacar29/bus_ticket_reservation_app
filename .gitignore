@@ -51,7 +51,7 @@ android/fastlane/metadata/
 # assets/.env
 # Web related
 lib/generated_plugin_registrant.dart
-android/findme_key.jks
+android/rahimo_signing_key.jks
 
 # Exceptions to above rules.
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages

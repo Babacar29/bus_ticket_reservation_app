@@ -45,7 +45,7 @@ class PaymentRemoteDataSource {
 
   Future<dynamic> sendOtp({required String commandId, required Map<String, dynamic> body}) async {
     try {
-      final result = await Api.newPost(url: "$base_url/commands/$commandId${Api.otp}", body: body);
+      final result = await Api.noReturnPost(url: "$base_url/commands/$commandId${Api.otp}", body: body);
       return result;
     } on SocketException catch (e) {
       throw SocketException(e.toString());

@@ -70,7 +70,7 @@ class DashBoardState extends State<DashBoard> {
     return Future.value(true);
   }
 
-  Widget buildNavBarItem(IconData icon, int index) {
+  /*Widget buildNavBarItem(IconData icon, int index) {
     return InkWell(
       onTap: () {
         setState(() {
@@ -118,6 +118,59 @@ class DashBoardState extends State<DashBoard> {
         ),
       ),
     );
+  }*/
+
+  Widget buildNavBarItem(IconData icon, int index) {
+    return Material(
+      color: Colors.white,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.zero
+      ),
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height/12,
+          width: MediaQuery.of(context).size.width / iconList.length,
+          child: Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  color: index == _selectedIndex ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.5),
+                ),
+                index == 0 ? Text(
+                  "Réservations",
+                  style: TextStyle(
+                      color: index == _selectedIndex ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.5),
+                      fontWeight: FontWeight.w700
+                  ),
+                ) : const SizedBox(),
+                index == 1 ? Text(
+                  "Mes billets",
+                  style: TextStyle(
+                      color: index == _selectedIndex ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.5),
+                      fontWeight: FontWeight.w700
+                  ),
+                ) : const SizedBox(),
+                index == 2 ? Text(
+                  "Mon Compte",
+                  style: TextStyle(
+                      color: index == _selectedIndex ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.5),
+                      fontWeight: FontWeight.w700
+                  ),
+                ) : const SizedBox(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   bottomBar() {
@@ -129,13 +182,13 @@ class DashBoardState extends State<DashBoard> {
     return Container(
         decoration: BoxDecoration(
           color: UiUtils.getColorScheme(context).secondary,
-          borderRadius: const BorderRadius.only(topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
+          //borderRadius: const BorderRadius.only(topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
           boxShadow: [
             BoxShadow(blurRadius: 6, offset: const Offset(5.0, 5.0), color: darkBackgroundColor.withOpacity(0.4), spreadRadius: 0),
           ],
         ),
         child: ClipRRect(
-            borderRadius: const BorderRadius.only(topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
+          //borderRadius: const BorderRadius.only(topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
             child: Row(
               children: navBarItemList,
             )
@@ -163,6 +216,7 @@ class DashBoardState extends State<DashBoard> {
               index: _selectedIndex,
               children: fragments,
             ),
+            backgroundColor: Colors.white,
           );
         },
       ),

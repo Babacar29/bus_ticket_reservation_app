@@ -41,6 +41,7 @@ import 'package:burkina_transport_app/utils/uiUtils.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../cubits/Payments/paymentCubit.dart';
 import '../cubits/ticketsCubit.dart';
@@ -60,6 +61,16 @@ Future<void> initializeApp() async {
   await Hive.openBox(authBoxKey);
 
   await Hive.openBox(settingsBoxKey);
+
+  await SentryFlutter.init(
+          (options) {
+        options.dsn = 'https://fee6332cfe1b46f28bcb78509b0df719@sentry.ankata.net/16';
+        options.tracesSampleRate = 1.0;
+        options.release = "ankata-rahimo@1.1.5+16";
+        options.enableAutoPerformanceTracing = true;
+        options.environment = "Recette";
+      }
+  );
 
   runApp(MultiBlocProvider(providers: [
     BlocProvider<AppConfigurationCubit>(create: (context) => AppConfigurationCubit(SystemRepository())),

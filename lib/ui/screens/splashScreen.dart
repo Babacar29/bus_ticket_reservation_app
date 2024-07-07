@@ -145,7 +145,23 @@ class SplashState extends State<Splash> with TickerProviderStateMixin {
             itemCount: 3,
             slideDirection: SlideDirection.fromRight,
             animationController: _splashIconController!,
-            child: Image.asset(UiUtils.getImagePath("ic_new_logo-playstore.png"), height: 250.0, fit: BoxFit.fill)));
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(UiUtils.getImagePath("ic_new_logo-playstore.png"), height: 250.0, fit: BoxFit.fill),
+                SizedBox(
+                  height: MediaQuery.sizeOf(context).height/10,
+                ),
+                const Text(
+                  "chargement en cours...",
+                  style: TextStyle(
+                      color: Colors.white
+                  ),
+                )
+              ],
+            )
+        )
+    );
   }
 
   /*Widget newsTextIcon() {

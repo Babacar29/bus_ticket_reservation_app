@@ -32,15 +32,14 @@ class TicketsCubit extends Cubit<TicketsState> {
 
   //to socialLogin user
   Future<dynamic> getTickets({required BuildContext context}) {
-    late var result;
+    late Future result;
 
     try {
       emit(TicketsProgress());
       result =  _ticketsRepository.getTickets();
-
-      if(result != null){
-        Navigator.of(context).pushNamed(Routes.tickets);
-      }
+      /*if(result != null){
+        Navigator.of(context).pushNamed(Routes.tickets, arguments: {"from": 1});
+      }*/
       emit(TicketsSuccess());
     }
     catch(e){

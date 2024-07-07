@@ -62,50 +62,53 @@ class _ChooseDepartureState extends State<ChooseDeparture> {
     "Bobo Dioulasso": "Bobo Dioulasso",
   };
 
-  Widget buildNavBarItem(IconData icon, int index) {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          _selectedIndex = index;
-        });
-      },
-      child: Container(
-        height: 60,
-        width: MediaQuery.of(context).size.width / iconList.length,
-        decoration: index == _selectedIndex
-            ? const BoxDecoration(
-          border: Border(
-            top: BorderSide(width: 3, color: darkBackgroundColor),
-          ),
-        )
-            : null,
-        child: Padding(
-          padding: const EdgeInsets.all(2.0),
-          child: Column(
-            children: [
-              Icon(
-                icon,
-                color: index == _selectedIndex ? darkBackgroundColor : UiUtils.getColorScheme(context).outline,
-              ),
-              index == 0 ? Text(
-                "Réservations",
-                style: TextStyle(
-                    color: index == _selectedIndex ? darkBackgroundColor : null
+   Widget buildNavBarItem(IconData icon, int index) {
+    return Material(
+      color: Colors.white,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.zero
+      ),
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height/12,
+          width: MediaQuery.of(context).size.width / iconList.length,
+          child: Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  color: index == _selectedIndex ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.5),
                 ),
-              ) : const SizedBox(),
-              index == 1 ? Text(
-                "Mes billets",
-                style: TextStyle(
-                    color: index == _selectedIndex ? darkBackgroundColor : null
-                ),
-              ) : const SizedBox(),
-              index == 2 ? Text(
-                "Mon Compte",
-                style: TextStyle(
-                    color: index == _selectedIndex ? darkBackgroundColor : null
-                ),
-              ) : const SizedBox(),
-            ],
+                index == 0 ? Text(
+                  "Réservations",
+                  style: TextStyle(
+                      color: index == _selectedIndex ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.5),
+                      fontWeight: FontWeight.w700
+                  ),
+                ) : const SizedBox(),
+                index == 1 ? Text(
+                  "Mes billets",
+                  style: TextStyle(
+                      color: index == _selectedIndex ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.5),
+                      fontWeight: FontWeight.w700
+                  ),
+                ) : const SizedBox(),
+                index == 2 ? Text(
+                  "Mon Compte",
+                  style: TextStyle(
+                      color: index == _selectedIndex ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.5),
+                      fontWeight: FontWeight.w700
+                  ),
+                ) : const SizedBox(),
+              ],
+            ),
           ),
         ),
       ),
@@ -833,6 +836,7 @@ class _ChooseDepartureState extends State<ChooseDeparture> {
           const ProfileScreen(),
         ],
       ),
+      backgroundColor: Colors.white,
       bottomNavigationBar: bottomBar(),
     );
   }

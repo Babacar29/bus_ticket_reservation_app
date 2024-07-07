@@ -1,4 +1,4 @@
-package com.example.burkina_transport_app
+package com.ankata.rahimo.consumer
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -102,7 +102,7 @@ class PaymentCubit extends Cubit<PaymentState> {
   }
 
 
-  Future<dynamic> sendOtp({required Map<String, dynamic> command, required BuildContext context, required String otp, required bool canCall }) async{
+  Future<dynamic> sendOtp({required String commandId, required BuildContext context, required String otp, required bool canCall }) async{
     late var result;
     Map<String, dynamic> body = {
       "otp": otp
@@ -111,10 +111,10 @@ class PaymentCubit extends Cubit<PaymentState> {
 
     try {
       emit(PaymentProgress());
-      result = await _paymentRepository.sentOtp(commandId: command["departureId"], body: body);
+      result = await _paymentRepository.sentOtp(commandId: commandId, body: body);
       debugPrint("send otp response ======>$result");
-      if(result["transactionCode"] != null){
-        Navigator.of(context).pushNamed(Routes.tickets, arguments: {"from": 1});
+      if(result == "success"){
+        Navigator.of(context).pushReplacementNamed(Routes.tickets, arguments: {"from": 0});
         /*if(canCall){
           return result;
         }

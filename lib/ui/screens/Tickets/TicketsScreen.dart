@@ -42,6 +42,8 @@ class TicketsScreenState extends State<TicketsScreen> with TickerProviderStateMi
   List<Ticket> myTicketList = [];
   late TabController controller;
   int _currentIndex = 0;
+  late final Future getPassedTicketsData;
+  late final Future getUpcomingTicketsData;
 
   void _handleTabSelection() {
     setState(() {
@@ -53,8 +55,8 @@ class TicketsScreenState extends State<TicketsScreen> with TickerProviderStateMi
     List<Ticket> tickets = [];
     var result = await context.read<TicketsCubit>().getTickets(context: context);
     //
-    if(result["passed"] != null){
-      for(var ticket in result["passed"].toList()){
+    if(result["passedTicketList"] != null){
+      for(var ticket in result["passedTicketList"].toList()){
         //widget.tickets?.add(Ticket.fromMap(ticket));
         tickets.add(Ticket.fromMap(ticket));
       }
@@ -66,8 +68,9 @@ class TicketsScreenState extends State<TicketsScreen> with TickerProviderStateMi
     List<Ticket> tickets = [];
     var result = await context.read<TicketsCubit>().getTickets(context: context);
     //
-    if(result["upcoming"] != null){
-      for(var ticket in result["upcoming"].toList()){
+    debugPrint("get tickets result ==========>$result");
+    if(result["upcomingTicketList"] != null){
+      for(var ticket in result["upcomingTicketList"].toList()){
         //widget.tickets?.add(Ticket.fromMap(ticket));
         tickets.add(Ticket.fromMap(ticket));
       }
@@ -78,53 +81,58 @@ class TicketsScreenState extends State<TicketsScreen> with TickerProviderStateMi
   @override
   void initState() {
     controller = TabController(vsync: this, length: 2);
+    getPassedTicketsData = getPassedTickets();
+    getUpcomingTicketsData = getUpComingTickets();
     super.initState();
   }
 
-  Widget buildNavBarItem(IconData icon, int index) {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          _selectedIndex = index;
-        });
-      },
-      child: Container(
-        height: 60,
-        width: MediaQuery.of(context).size.width / iconList.length,
-        decoration: index == _selectedIndex
-            ? const BoxDecoration(
-          border: Border(
-            top: BorderSide(width: 3, color: darkBackgroundColor),
-          ),
-        )
-            : null,
-        child: Padding(
-          padding: const EdgeInsets.all(2.0),
-          child: Column(
-            children: [
-              Icon(
-                icon,
-                color: index == _selectedIndex ? darkBackgroundColor : UiUtils.getColorScheme(context).outline,
-              ),
-              index == 0 ? Text(
-                "Réservations",
-                style: TextStyle(
-                    color: index == _selectedIndex ? darkBackgroundColor : null
+   Widget buildNavBarItem(IconData icon, int index) {
+    return Material(
+      color: Colors.white,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.zero
+      ),
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height/12,
+          width: MediaQuery.of(context).size.width / iconList.length,
+          child: Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  color: index == _selectedIndex ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.5),
                 ),
-              ) : const SizedBox(),
-              index == 1 ? Text(
-                "Mes billets",
-                style: TextStyle(
-                    color: index == _selectedIndex ? darkBackgroundColor : null
-                ),
-              ) : const SizedBox(),
-              index == 2 ? Text(
-                "Mon Compte",
-                style: TextStyle(
-                    color: index == _selectedIndex ? darkBackgroundColor : null
-                ),
-              ) : const SizedBox(),
-            ],
+                index == 0 ? Text(
+                  "Réservations",
+                  style: TextStyle(
+                      color: index == _selectedIndex ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.5),
+                      fontWeight: FontWeight.w700
+                  ),
+                ) : const SizedBox(),
+                index == 1 ? Text(
+                  "Mes billets",
+                  style: TextStyle(
+                      color: index == _selectedIndex ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.5),
+                      fontWeight: FontWeight.w700
+                  ),
+                ) : const SizedBox(),
+                index == 2 ? Text(
+                  "Mon Compte",
+                  style: TextStyle(
+                      color: index == _selectedIndex ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.5),
+                      fontWeight: FontWeight.w700
+                  ),
+                ) : const SizedBox(),
+              ],
+            ),
           ),
         ),
       ),
@@ -156,7 +164,7 @@ class TicketsScreenState extends State<TicketsScreen> with TickerProviderStateMi
   
   Widget showPassedTickets(BuildContext context){
     return FutureBuilder(
-      future: getPassedTickets(),
+      future: getPassedTicketsData,
       builder: (context, AsyncSnapshot snap){
         List<Widget> children;
         if(snap.hasData){
@@ -207,7 +215,11 @@ class TicketsScreenState extends State<TicketsScreen> with TickerProviderStateMi
                             ),
                             paddingText(title: "Date: ", subtitle: DateFormat("d MMMM yyyy").format(DateTime.parse("${ticket.departureDate}"))),
                             paddingText(title: "Heure: ", subtitle: ticket.departureTime),
-                            paddingText(title: "Statut: ", subtitle: ticket.paymentStatus),
+                            ticket.paymentStatus == "CREATED" ? paddingText(title: "Statut: ", subtitle: "Créée") : const SizedBox(),
+                            ticket.paymentStatus == "PAYMENT_STARTED" ? paddingText(title: "Statut: ", subtitle: "Paiement en cours") : const SizedBox(),
+                            ticket.paymentStatus == "PAYED" ? paddingText(title: "Statut: ", subtitle: "Payée") : const SizedBox(),
+                            ticket.paymentStatus == "CANCELLED" ? paddingText(title: "Statut: ", subtitle: "Annulée") : const SizedBox(),
+                            ticket.paymentStatus == "SCANNED" ? paddingText(title: "Statut: ", subtitle: "Scannée") : const SizedBox(),
                             paddingText(title: "Numéro de place: ", subtitle: "${ticket.seatNumber}"),
                             const SizedBox(height: 5,),
                           ],
@@ -259,7 +271,7 @@ class TicketsScreenState extends State<TicketsScreen> with TickerProviderStateMi
 
   Widget showUpComingTickets(BuildContext context){
     return FutureBuilder(
-      future: getUpComingTickets(),
+      future: getUpcomingTicketsData,
       builder: (context, AsyncSnapshot snap){
         List<Widget> children;
         if(snap.hasData){
@@ -310,7 +322,11 @@ class TicketsScreenState extends State<TicketsScreen> with TickerProviderStateMi
                             ),
                             paddingText(title: "Date: ", subtitle: DateFormat("d MMMM yyyy").format(DateTime.parse("${ticket.departureDate}"))),
                             paddingText(title: "Heure: ", subtitle: ticket.departureTime),
-                            paddingText(title: "Statut: ", subtitle: ticket.paymentStatus),
+                            ticket.paymentStatus == "CREATED" ? paddingText(title: "Statut: ", subtitle: "Créée") : const SizedBox(),
+                            ticket.paymentStatus == "PAYMENT_STARTED" ? paddingText(title: "Statut: ", subtitle: "Paiement en cours") : const SizedBox(),
+                            ticket.paymentStatus == "PAYED" ? paddingText(title: "Statut: ", subtitle: "Payée") : const SizedBox(),
+                            ticket.paymentStatus == "CANCELLED" ? paddingText(title: "Statut: ", subtitle: "Annulée") : const SizedBox(),
+                            ticket.paymentStatus == "SCANNED" ? paddingText(title: "Statut: ", subtitle: "Scannée") : const SizedBox(),
                             paddingText(title: "Numéro de place: ", subtitle: "${ticket.seatNumber}"),
                             const SizedBox(height: 5,),
                           ],
@@ -388,7 +404,7 @@ class TicketsScreenState extends State<TicketsScreen> with TickerProviderStateMi
     final width = MediaQuery.sizeOf(context).width;
     final height = MediaQuery.sizeOf(context).height;
     return  Container(
-      color: darkBackgroundColor.withOpacity(0.1),
+      color: backgroundColor,
       height: height,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -412,42 +428,45 @@ class TicketsScreenState extends State<TicketsScreen> with TickerProviderStateMi
           ),
           Expanded(
             flex: 1,
-            child: DefaultTabController(
-              initialIndex: 0,
-              length: 2,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: TabBar(
-                  unselectedLabelColor: darkBackgroundColor,
-                  controller: controller,
-                  indicatorColor: Colors.transparent,
-                  onTap: (int index){
-                    controller.addListener(() {
-                      return _handleTabSelection();
-                    });
-                  },
-                  tabs: [
-                    CustomTextButton(
-                      onTap: (){
-                        setState(() {
-                          controller.animateTo(controller.index - 1);
-                        });
-                      },
-                      color: controller.index == 0 ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.6),
-                      text: "A VENIR",
-                      width: width,
-                    ),
-                    CustomTextButton(
-                      onTap: (){
-                        setState(() {
-                          controller.animateTo(controller.index + 1);
-                        });
-                      },
-                      color: controller.index == 1 ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.6),
-                      text: "PASSÉS",
-                      width: width,
-                    ),
-                  ],
+            child: SizedBox(
+              width: width,
+              child: DefaultTabController(
+                initialIndex: 0,
+                length: 2,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 10.0),
+                  child: TabBar(
+                    unselectedLabelColor: darkBackgroundColor,
+                    controller: controller,
+                    indicatorColor: Colors.transparent,
+                    onTap: (int index){
+                      controller.addListener(() {
+                        return _handleTabSelection();
+                      });
+                    },
+                    tabs: [
+                      CustomTextButton(
+                        onTap: (){
+                          setState(() {
+                            controller.animateTo(controller.index - 1);
+                          });
+                        },
+                        color: controller.index == 0 ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.6),
+                        text: "A VENIR",
+                        width: width,
+                      ),
+                      CustomTextButton(
+                        onTap: (){
+                          setState(() {
+                            controller.animateTo(controller.index + 1);
+                          });
+                        },
+                        color: controller.index == 1 ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.6),
+                        text: "PASSÉS",
+                        width: width,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

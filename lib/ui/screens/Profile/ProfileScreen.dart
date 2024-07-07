@@ -135,7 +135,7 @@ class ProfileScreenState extends State<ProfileScreen> {
               },
             )
           : Icon(icon, size: 25),
-      iconColor: UiUtils.getColorScheme(context).primaryContainer,
+      iconColor: darkBackgroundColor,
       trailing: (isTrailing)
           ? SizedBox(
               height: 45,
@@ -150,7 +150,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                       inactiveThumbColor: Colors.grey,
                       inactiveTrackColor: Colors.grey)))
           : const SizedBox.shrink(),
-      title: CustomTextLabel(text: title, textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(color: UiUtils.getColorScheme(context).primaryContainer)),
+      title: CustomTextLabel(text: title, textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(color: darkBackgroundColor)),
       onTap: () {
         if (isNavigate) {
           switch (id) {
@@ -395,6 +395,7 @@ class ProfileScreenState extends State<ProfileScreen> {
       padding: const EdgeInsets.only(top: 20.0),
       child: Container(
           padding: const EdgeInsetsDirectional.only(start: 20.0, end: 20.0),
+          color: backgroundColor,
           //decoration: BoxDecoration(borderRadius: BorderRadius.circular(15.0), color: Theme.of(context).colorScheme.background),
           child: ScrollConfiguration(
             behavior: GlobalScrollBehavior(),
@@ -430,7 +431,7 @@ class ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: const CustomAppBar(title: "Mon compte",),
-        backgroundColor: darkBackgroundColor.withOpacity(0.1),
+        backgroundColor: backgroundColor,
         body: Stack(
           children: [
             SingleChildScrollView(

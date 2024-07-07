@@ -68,50 +68,53 @@ class _GetUserInfosState extends State<GetUserInfos> {
   var box = Hive.box(authBoxKey);
 
 
-  Widget buildNavBarItem(IconData icon, int index) {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          _selectedIndex = index;
-        });
-      },
-      child: Container(
-        height: 60,
-        width: MediaQuery.of(context).size.width / iconList.length,
-        decoration: index == _selectedIndex
-            ? const BoxDecoration(
-          border: Border(
-            top: BorderSide(width: 3, color: darkBackgroundColor),
-          ),
-        )
-            : null,
-        child: Padding(
-          padding: const EdgeInsets.all(2.0),
-          child: Column(
-            children: [
-              Icon(
-                icon,
-                color: index == _selectedIndex ? darkBackgroundColor : UiUtils.getColorScheme(context).outline,
-              ),
-              index == 0 ? Text(
-                "Réservations",
-                style: TextStyle(
-                    color: index == _selectedIndex ? darkBackgroundColor : null
+   Widget buildNavBarItem(IconData icon, int index) {
+    return Material(
+      color: Colors.white,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.zero
+      ),
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height/12,
+          width: MediaQuery.of(context).size.width / iconList.length,
+          child: Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  color: index == _selectedIndex ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.5),
                 ),
-              ) : const SizedBox(),
-              index == 1 ? Text(
-                "Mes billets",
-                style: TextStyle(
-                    color: index == _selectedIndex ? darkBackgroundColor : null
-                ),
-              ) : const SizedBox(),
-              index == 2 ? Text(
-                "Mon Compte",
-                style: TextStyle(
-                    color: index == _selectedIndex ? darkBackgroundColor : null
-                ),
-              ) : const SizedBox(),
-            ],
+                index == 0 ? Text(
+                  "Réservations",
+                  style: TextStyle(
+                      color: index == _selectedIndex ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.5),
+                      fontWeight: FontWeight.w700
+                  ),
+                ) : const SizedBox(),
+                index == 1 ? Text(
+                  "Mes billets",
+                  style: TextStyle(
+                      color: index == _selectedIndex ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.5),
+                      fontWeight: FontWeight.w700
+                  ),
+                ) : const SizedBox(),
+                index == 2 ? Text(
+                  "Mon Compte",
+                  style: TextStyle(
+                      color: index == _selectedIndex ? darkBackgroundColor : darkBackgroundColor.withOpacity(0.5),
+                      fontWeight: FontWeight.w700
+                  ),
+                ) : const SizedBox(),
+              ],
+            ),
           ),
         ),
       ),
@@ -196,7 +199,7 @@ class _GetUserInfosState extends State<GetUserInfos> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text("Voyageur principal", style: TextStyle(fontWeight: FontWeight.bold,), textScaler: TextScaler.linear(1.2), ),
+              const Text("Voyageur principal", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black), textScaler: TextScaler.linear(1.2), ),
               const SizedBox(height: 20),
               buildField(width: width, title: "Nom", controller: lastNameController, hintText: ""),
               const SizedBox(height: 20),
@@ -259,7 +262,7 @@ class _GetUserInfosState extends State<GetUserInfos> {
                   children: [
                     const Flexible(
                         flex: 2,
-                        child: Text("Date d'expiration", textScaler: TextScaler.linear(1.1),)
+                        child: Text("Date d'expiration", textScaler: TextScaler.linear(1.1), style: TextStyle(color: Colors.black),)
                     ),
                     const SizedBox(
                       height: 10,
@@ -469,7 +472,7 @@ class _GetUserInfosState extends State<GetUserInfos> {
         children: [
           Flexible(
             flex: 2,
-            child: Text(title, textScaler: const TextScaler.linear(1.1),)
+            child: Text(title, textScaler: const TextScaler.linear(1.1), style: TextStyle(color: Colors.black),)
           ),
           Flexible(
             flex: 3,
@@ -486,8 +489,8 @@ class _GetUserInfosState extends State<GetUserInfos> {
                     borderSide: BorderSide(color: Colors.grey.withOpacity(0.4))
                 ),
                 hintText: hintText,
-                hintStyle: TextStyle(
-                  color: Colors.grey.withOpacity(0.4),
+                hintStyle: const TextStyle(
+                  color: Colors.black,
                   fontSize: 16,
                 ),
               ) : InputDecoration(
@@ -502,12 +505,12 @@ class _GetUserInfosState extends State<GetUserInfos> {
                     borderSide: BorderSide(color: Colors.grey.withOpacity(0.4))
                 ),
                 labelStyle: const TextStyle(
-                  color: Colors.grey,
+                  color: Colors.black,
                   fontSize: 15,
                 ),
                 hintText: hintText,
                 hintStyle: TextStyle(
-                  color: Colors.grey.withOpacity(0.4),
+                  color: Colors.black,
                   fontSize: 16,
                 ),
                 prefixIcon: CountryCodePicker(
@@ -906,7 +909,7 @@ class _GetUserInfosState extends State<GetUserInfos> {
   Widget showContent(){
     return Scaffold(
       appBar: const CustomAppBar(title: "Informations du voyageur"),
-      backgroundColor: darkBackgroundColor.withOpacity(0.1),
+      backgroundColor: backgroundColor,
       body: showBody(context),
     );
   }
@@ -929,6 +932,7 @@ class _GetUserInfosState extends State<GetUserInfos> {
           const ProfileScreen(),
         ],
       ),
+      backgroundColor: Colors.white,
       bottomNavigationBar: bottomBar(),
     );
   }

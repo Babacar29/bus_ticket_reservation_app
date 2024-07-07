@@ -287,7 +287,7 @@ class Api {
     }
   }
 
-  static Future<void> registerPost({
+  static Future registerPost({
     required Map<String, dynamic> body,
     required String url,
   }) async {

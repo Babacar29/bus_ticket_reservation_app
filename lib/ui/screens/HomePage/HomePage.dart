@@ -26,29 +26,30 @@ class HomeScreenState extends State<HomeScreen> {
       },
       builder: (context, state) {
         return Scaffold(
-            appBar: const CustomAppBar(title: "Que voulez-vous faire ?",),
-            body: SingleChildScrollView(
+            appBar: const CustomAppBar(title: "Bienvenue",),
+            body: SizedBox(
+              height: height,
               child: Column(
                 children: [
-                   SizedBox(
-                    height: height/250,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pushNamed(
-                          Routes.chooseCategory, arguments: {"from": 0}
-                      );
-                    },
-                    child: Container(
-                      height: height / 2.7,
-                      color: darkSecondaryColor.withOpacity(0.9),
-                      child: const Center(
-                        child: Text(
-                          "ACHETER UN TICKET",
-                          style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600
+                  Expanded(
+                    flex: 1,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pushNamed(
+                            Routes.chooseCategory, arguments: {"from": 0}
+                        );
+                      },
+                      child: Container(
+                        height: height / 2.7,
+                        color: darkSecondaryColor.withOpacity(0.9),
+                        child: const Center(
+                          child: Text(
+                            "ACHETER UN TICKET",
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600
+                            ),
                           ),
                         ),
                       ),
@@ -58,20 +59,23 @@ class HomeScreenState extends State<HomeScreen> {
                     color: Colors.white,
                     height: height / 80,
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pushNamed(Routes.tickets, arguments: {"from": 0});
-                    },
-                    child: Container(
-                      height: height / 2.7,
-                      color: darkSecondaryColor.withOpacity(0.9),
-                      child: const Center(
-                        child: Text(
-                          "VOIR MES TICKETS",
-                          style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600
+                  Expanded(
+                    flex: 1,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pushNamed(Routes.tickets, arguments: {"from": 0});
+                      },
+                      child: Container(
+                        height: height / 2.7,
+                        color: darkSecondaryColor.withOpacity(0.9),
+                        child: const Center(
+                          child: Text(
+                            "VOIR MES TICKETS",
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600
+                            ),
                           ),
                         ),
                       ),

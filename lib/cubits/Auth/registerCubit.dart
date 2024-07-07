@@ -34,11 +34,9 @@ class RegisterCubit extends Cubit<RegisterState> {
   void register({required BuildContext context}) {
     var box = Hive.box(authBoxKey);
     emit(RegisterProgress());
-    _authRepository
-        .register(
-      context: context,
-    ).then((result) {
-      box.put(tokenKey, result["apiKey"]);
+    _authRepository.register(context: context,).then((result) {
+      box.put(tokenKey, result["api_key"]);
+      debugPrint("Register result ============+>${result["api_key"]}");
       emit(RegisterSuccess());
     }).catchError((e) {
       emit(RegisterFailure(e.toString()));

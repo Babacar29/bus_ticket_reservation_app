@@ -105,6 +105,7 @@ class AuthRemoteDataSource {
     try {
       final body = {"login": "$platform-${getRandomString(30)}"};
       final result = await Api.registerPost(body: body, url: Api.registerApi,);
+      debugPrint("Register repsonse =========> $result");
       return result;
     } on SocketException catch (e) {
       throw SocketException(e.toString());
