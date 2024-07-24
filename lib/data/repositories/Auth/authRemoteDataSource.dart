@@ -11,6 +11,7 @@ import 'package:burkina_transport_app/utils/strings.dart';
 import 'package:burkina_transport_app/cubits/Auth/authCubit.dart' as auth;
 import 'package:hive/hive.dart';
 
+import '../../../utils/constant.dart';
 import '../../../utils/hiveBoxKeys.dart';
 
 class AuthRemoteDataSource {
@@ -105,7 +106,7 @@ class AuthRemoteDataSource {
     try {
       final body = {"login": "$platform-${getRandomString(30)}"};
       final result = await Api.registerPost(body: body, url: Api.registerApi,);
-      debugPrint("Register repsonse =========> $result");
+      debugPrint("Register response =========> $result");
       return result;
     } on SocketException catch (e) {
       throw SocketException(e.toString());
@@ -138,6 +139,20 @@ class AuthRemoteDataSource {
       //_facebookSignin.logOut();
     } else {
       //_firebaseAuth.signOut();
+    }
+  }
+
+  Future<dynamic> sendApnToken({required String token}) async {
+    try {
+      //body of post request
+      final body = {
+        "token" : token
+      };
+      final result = await Api.normalPost(body: body, url: "$base_url/pushTokens");
+
+      return result;
+    } catch (e) {
+      throw ApiMessageAndCodeException(errorMessage: e.toString());
     }
   }
 }

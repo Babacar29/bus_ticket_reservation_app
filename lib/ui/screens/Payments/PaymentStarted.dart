@@ -1,5 +1,4 @@
 import 'package:burkina_transport_app/cubits/Payments/paymentCubit.dart';
-import 'package:burkina_transport_app/cubits/ticketsCubit.dart';
 import 'package:burkina_transport_app/ui/widgets/circularProgressIndicator.dart';
 import 'package:burkina_transport_app/utils/ErrorMessageKeys.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,7 +11,6 @@ import '../../../utils/internetConnectivity.dart';
 import '../../../utils/uiUtils.dart';
 import '../../styles/colors.dart';
 import '../../widgets/customTextBtn.dart';
-import '../../widgets/customTextLabel.dart';
 import '../../widgets/myAppBar.dart';
 import '../Profile/ProfileScreen.dart';
 import '../Tickets/TicketsScreen.dart';

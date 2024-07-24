@@ -9,12 +9,8 @@ import 'package:intl/intl.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 
 import '../../../utils/uiUtils.dart';
-import '../../cubits/Payments/paymentCubit.dart';
-import '../../utils/ErrorMessageKeys.dart';
-import '../../utils/internetConnectivity.dart';
 import '../../utils/validators.dart';
 import '../styles/colors.dart';
-import '../widgets/circularProgressIndicator.dart';
 import '../widgets/customTextBtn.dart';
 import '../widgets/customTextLabel.dart';
 import '../widgets/myAppBar.dart';

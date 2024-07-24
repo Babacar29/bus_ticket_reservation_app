@@ -659,7 +659,7 @@ class _ChooseDepartureState extends State<ChooseDeparture> {
                                                         "Eco",
                                                         style: TextStyle(
                                                             color: darkBackgroundColor,
-                                                            fontSize: 8.5
+                                                            fontSize: 7.5
                                                         ),
                                                       ),
                                                     ),

@@ -37,13 +37,20 @@ class Api {
   static String getToken() {
     final claimSet = JwtClaim(issuedAt: DateTime.now(), issuer: "WRTEAM", subject: "WRTEAM Authentication");
     String token = issueJwtHS256(claimSet, jwtKey);
-    //debugPrint("token $token");
+    debugPrint("token $token");
     return token;
   }
 
   static String getNewToken() {
     var box = Hive.box(authBoxKey);
     String token = box.get(tokenKey);
+    //debugPrint("api key $token");
+    return token;
+  }
+
+  static String getApiKey() {
+    var box = Hive.box(authBoxKey);
+    String token = box.get(apiKey);
     //debugPrint("api key $token");
     return token;
   }
@@ -55,7 +62,7 @@ class Api {
       };
 
   static Map<String, String> get newHeaders => {
-        "X-Api-key": getNewToken(),
+        "X-Api-key": getNewToken().isNotEmpty ? getNewToken() : getApiKey(),
         "X-Device": Platform.isAndroid ? "Android" : "iOS"
       };
 

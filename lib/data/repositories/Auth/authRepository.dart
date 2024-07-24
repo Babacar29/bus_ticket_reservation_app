@@ -111,4 +111,9 @@ class AuthRepository {
     await _authLocalDataSource.setRole("");
     await _authLocalDataSource.setStatus("");
   }
+
+  Future<Map<String, dynamic>> sendApnToken({required String token }) async {
+    final result = await _authRemoteDataSource.sendApnToken(token: token);
+    return result;
+  }
 }

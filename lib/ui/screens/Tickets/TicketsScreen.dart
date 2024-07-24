@@ -497,7 +497,7 @@ class TicketsScreenState extends State<TicketsScreen> with TickerProviderStateMi
               const ProfileScreen(),
             ],
           ),
-          bottomNavigationBar: widget.from == 0 ? bottomBar() : const SizedBox()
+          bottomNavigationBar: widget.from == 0 ? bottomBar() : const SizedBox(),
         );
       },
     );

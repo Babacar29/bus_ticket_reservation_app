@@ -5,7 +5,7 @@ description: A new Flutter project.
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.12.3+11203
+version: 1.12.5+11205
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -38,7 +38,13 @@ dependencies:
   qr_flutter: ^4.1.0
   versionarte: ^0.9.0
   country_code_picker: ^3.0.0
-  sentry_flutter: ^7.16.1
+  sentry_flutter: ^8.4.0
+  shared_preferences: ^2.2.3
+  flutter_secure_storage: ^9.2.2
+  sentry_logging: ^8.4.0
+  logging: ^1.2.0
+  firebase_messaging: ^14.7.10
+  firebase_core: ^2.27.0
 
 dependency_overrides:
   modal_bottom_sheet: ^3.0.0-pre

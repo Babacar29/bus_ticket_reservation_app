@@ -1,13 +1,8 @@
 // ignore_for_file: file_names
 
-import 'dart:convert';
-
-
 import 'package:burkina_transport_app/ui/screens/HomePage/HomePage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';

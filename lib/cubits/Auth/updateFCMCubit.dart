@@ -43,4 +43,17 @@ class UpdateFcmIdCubit extends Cubit<UpdateFcmIdState> {
       emit(UpdateFcmIdFailure(e.toString()));
     });
   }
+
+  void sendAPNToken({required String token}) {
+    emit(UpdateFcmIdProgress());
+    _authRepository
+        .sendApnToken(
+        token: token
+    )
+        .then((result) {
+      emit(UpdateFcmIdSuccess());
+    }).catchError((e) {
+      emit(UpdateFcmIdFailure(e.toString()));
+    });
+  }
 }

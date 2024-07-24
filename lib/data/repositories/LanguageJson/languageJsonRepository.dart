@@ -17,8 +17,8 @@ class LanguageJsonRepository {
 
   Future<dynamic> getLanguageJson({required String lanCode}) async {
     try {
-      final result = await _languageRemoteDataSource.getLanguageJson(lanCode: lanCode);
-      return result['data'];
+      //final result = await _languageRemoteDataSource.getLanguageJson(lanCode: lanCode);
+      return {"fr": "fr"};
     } catch (e) {
       throw ApiMessageAndCodeException(errorMessage: e.toString());
     }

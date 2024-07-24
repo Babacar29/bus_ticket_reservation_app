@@ -1,0 +1,92 @@
+{
+  "project_info": {
+    "project_number": "831064949419",
+    "project_id": "rahimo-consumer",
+    "storage_bucket": "rahimo-consumer.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:831064949419:android:90f79c0a123d46be056dee",
+        "android_client_info": {
+          "package_name": "com.ankata.finexs.consumer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "831064949419-4u71bhh2kekkq4782onjvhnocp8dt29u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxslgLdxvvi9yV5SIaaWwQGLCNyiAN1w0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "831064949419-4u71bhh2kekkq4782onjvhnocp8dt29u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:831064949419:android:3107ce02764ead47056dee",
+        "android_client_info": {
+          "package_name": "com.ankata.rahimo.consumer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "831064949419-327h7q3vsa4p6gtubacrf5ebop1mhfh2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ankata.rahimo.consumer",
+            "certificate_hash": "9122c98cb9c3898d5889deaa3af66bbce0e36a52"
+          }
+        },
+        {
+          "client_id": "831064949419-842n0dflii48ajaevie2imgcbvtv47pb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ankata.rahimo.consumer",
+            "certificate_hash": "6f6a108372a23f39620e0d399983bd862d5295c6"
+          }
+        },
+        {
+          "client_id": "831064949419-bfsk36181mvd15k4tikjbskt5cns4gv3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ankata.rahimo.consumer",
+            "certificate_hash": "296fb989f0ac7aee1f2587973114b1543eb5fd35"
+          }
+        },
+        {
+          "client_id": "831064949419-4u71bhh2kekkq4782onjvhnocp8dt29u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxslgLdxvvi9yV5SIaaWwQGLCNyiAN1w0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "831064949419-4u71bhh2kekkq4782onjvhnocp8dt29u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
