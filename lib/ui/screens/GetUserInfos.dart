@@ -389,14 +389,14 @@ class _GetUserInfosState extends State<GetUserInfos> {
               backgroundColor: Colors.white,
               surfaceTintColor: Colors.white,
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
-              content: CustomTextLabel(text: 'chooseSitHintLbl', textStyle: Theme.of(this.context).textTheme.titleMedium?.copyWith(color: UiUtils.getColorScheme(context).primaryContainer)),
+              content: CustomTextLabel(text: 'chooseSitHintLbl', textStyle: Theme.of(this.context).textTheme.titleMedium?.copyWith(color: darkBackgroundColor)),
               actions: <Widget>[
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     TextButton(
                         child: CustomTextLabel(
-                            text: 'noLbl', textStyle: Theme.of(this.context).textTheme.titleSmall?.copyWith(color: UiUtils.getColorScheme(context).primaryContainer, fontWeight: FontWeight.bold)),
+                            text: 'noLbl', textStyle: Theme.of(this.context).textTheme.titleSmall?.copyWith(color: darkBackgroundColor, fontWeight: FontWeight.bold)),
                         onPressed: () async{
                           FocusScope.of(context).unfocus();
                           submit(false);
@@ -404,7 +404,7 @@ class _GetUserInfosState extends State<GetUserInfos> {
                     ),
                     TextButton(
                         child: CustomTextLabel(
-                            text: 'yesLbl', textStyle: Theme.of(this.context).textTheme.titleSmall?.copyWith(color: UiUtils.getColorScheme(context).primaryContainer, fontWeight: FontWeight.bold)),
+                            text: 'yesLbl', textStyle: Theme.of(this.context).textTheme.titleSmall?.copyWith(color: darkBackgroundColor, fontWeight: FontWeight.bold)),
                         onPressed: () {
                           FocusScope.of(context).unfocus();
                           submit(true);
