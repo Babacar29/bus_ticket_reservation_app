@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:burkina_transport_app/utils/uiUtils.dart';
+import 'package:bus_ticket_reservation_app/utils/uiUtils.dart';
 
 class Validators {
   //name validation check

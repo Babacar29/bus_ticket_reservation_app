@@ -1,6 +1,6 @@
 // ignore_for_file: file_names
 
-import 'package:burkina_transport_app/data/repositories/AvailableCities/AvailableCitiesRepository.dart';
+import 'package:bus_ticket_reservation_app/data/repositories/AvailableCities/AvailableCitiesRepository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

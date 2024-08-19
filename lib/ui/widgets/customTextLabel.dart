@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:burkina_transport_app/cubits/languageJsonCubit.dart';
+import 'package:bus_ticket_reservation_app/cubits/languageJsonCubit.dart';
 
 class CustomTextLabel extends StatelessWidget {
   final String text;

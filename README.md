@@ -1,4 +1,4 @@
-# burkina_transport_app
+# bus_ticket_reservation_app
 
 A new Flutter project.
 

@@ -1,8 +1,8 @@
 // ignore_for_file: file_names, must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:burkina_transport_app/utils/uiUtils.dart';
-import 'package:burkina_transport_app/utils/validators.dart';
+import 'package:bus_ticket_reservation_app/utils/uiUtils.dart';
+import 'package:bus_ticket_reservation_app/utils/validators.dart';
 
 import 'fieldFocusChange.dart';
 

@@ -2,8 +2,8 @@
 
 //const String base_url = "https://business.ankata.tech";
 const String base_url = "https://consumer.ankata.net";
-const String baseUrl = "https://admin.reewmi.fr/";
-const String databaseUrl = "${baseUrl}api/";
+//const String baseUrl = "https://admin.reewmi.fr/";
+//const String databaseUrl = "${baseUrl}api/";
 
 //Please add your jwt key here that you have added in admin panel system configuration setting
 const String jwtKey = "replace_your_jwt_secret_key";
@@ -35,10 +35,10 @@ const int interstitialAdsIndex = 3;
 const int rewardAdsIndex = 4;
 
 const String appName = 'Rahimo Transport';
-const String packageName = 'com.ankata.rahimo.consumer'; //Your Package name
+const String packageName = 'com.consumer'; //Your Package name
 const String androidLink = 'https://play.google.com/store/apps/details?id=';
 
-const String iosPackage = 'com.ankata.rahimo.consumer'; //Your Package name
+const String iosPackage = 'com.consumer'; //Your Package name
 const String iosLink = 'your ios link here'; //Your Appstore App link
 const String androidLbl = 'Android:';
 const String iosLbl = 'iOS:';

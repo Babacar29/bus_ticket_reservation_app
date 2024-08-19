@@ -1,6 +1,6 @@
 // ignore_for_file: file_names
 
-import 'package:burkina_transport_app/utils/strings.dart';
+import 'package:bus_ticket_reservation_app/utils/strings.dart';
 
 class LanguageModel {
   String? id, language, languageDisplayName, image, code, isRtl;

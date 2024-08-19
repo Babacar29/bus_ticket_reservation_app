@@ -3,12 +3,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:burkina_transport_app/cubits/Auth/authCubit.dart';
-import 'package:burkina_transport_app/cubits/themeCubit.dart';
-import 'package:burkina_transport_app/ui/screens/HomePage/HomePage.dart';
-import 'package:burkina_transport_app/ui/screens/Profile/ProfileScreen.dart';
-import 'package:burkina_transport_app/ui/widgets/SnackBarWidget.dart';
-import 'package:burkina_transport_app/utils/uiUtils.dart';
+import 'package:bus_ticket_reservation_app/cubits/Auth/authCubit.dart';
+import 'package:bus_ticket_reservation_app/ui/screens/HomePage/HomePage.dart';
+import 'package:bus_ticket_reservation_app/ui/screens/Profile/ProfileScreen.dart';
+import 'package:bus_ticket_reservation_app/ui/widgets/SnackBarWidget.dart';
+import 'package:bus_ticket_reservation_app/utils/uiUtils.dart';
 
 import '../../styles/colors.dart';
 import '../Tickets/TicketsScreen.dart';
@@ -198,7 +197,7 @@ class DashBoardState extends State<DashBoard> {
 
   @override
   Widget build(BuildContext context) {
-    UiUtils.setUIOverlayStyle(appTheme: context.read<ThemeCubit>().state.appTheme); //set UiOverlayStyle according to selected theme
+    //UiUtils.setUIOverlayStyle(appTheme: context.read<ThemeCubit>().state.appTheme); //set UiOverlayStyle according to selected theme
     return WillPopScope(
       onWillPop: onWillPop,
       child: BlocConsumer<AuthCubit, AuthState>(

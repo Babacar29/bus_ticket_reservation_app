@@ -1,4 +1,4 @@
-package com.ankata.rahimo.consumer
+package com.consumer
 
 import io.flutter.embedding.android.FlutterActivity
 

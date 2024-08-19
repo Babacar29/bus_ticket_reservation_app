@@ -1,8 +1,9 @@
 // ignore_for_file: file_names
 
+/*
 import 'package:flutter/material.dart';
-import 'package:burkina_transport_app/utils/api.dart';
-import 'package:burkina_transport_app/utils/strings.dart';
+import 'package:bus_ticket_reservation_app/utils/api.dart';
+import 'package:bus_ticket_reservation_app/utils/strings.dart';
 
 class SetUserPrefCatRemoteDataSource {
   Future<dynamic> setUserPrefCat({required BuildContext context, required String catId, required String userId}) async {
@@ -16,3 +17,4 @@ class SetUserPrefCatRemoteDataSource {
     }
   }
 }
+*/

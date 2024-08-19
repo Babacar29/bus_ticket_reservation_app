@@ -1,28 +1,21 @@
 // ignore_for_file: file_names, use_build_context_synchronously
 
 import 'dart:io';
-import 'package:burkina_transport_app/ui/styles/colors.dart';
+import 'package:bus_ticket_reservation_app/ui/styles/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:in_app_review/in_app_review.dart';
-import 'package:burkina_transport_app/app/app.dart';
-import 'package:burkina_transport_app/app/routes.dart';
-import 'package:burkina_transport_app/cubits/Auth/authCubit.dart';
-import 'package:burkina_transport_app/cubits/appLocalizationCubit.dart';
-import 'package:burkina_transport_app/cubits/settingCubit.dart';
-import 'package:burkina_transport_app/data/repositories/Auth/authLocalDataSource.dart';
-import 'package:burkina_transport_app/ui/widgets/customTextLabel.dart';
-import 'package:burkina_transport_app/utils/internetConnectivity.dart';
-import 'package:burkina_transport_app/utils/uiUtils.dart';
-import 'package:burkina_transport_app/cubits/themeCubit.dart';
-import 'package:burkina_transport_app/utils/constant.dart';
-import 'package:burkina_transport_app/ui/styles/appTheme.dart';
-import 'package:burkina_transport_app/ui/widgets/SnackBarWidget.dart';
+import 'package:bus_ticket_reservation_app/app/app.dart';
+import 'package:bus_ticket_reservation_app/app/routes.dart';
+import 'package:bus_ticket_reservation_app/cubits/Auth/authCubit.dart';
+import 'package:bus_ticket_reservation_app/data/repositories/Auth/authLocalDataSource.dart';
+import 'package:bus_ticket_reservation_app/ui/widgets/customTextLabel.dart';
+import 'package:bus_ticket_reservation_app/utils/uiUtils.dart';
+import 'package:bus_ticket_reservation_app/utils/constant.dart';
+import 'package:bus_ticket_reservation_app/ui/widgets/SnackBarWidget.dart';
 //import 'package:share_plus/share_plus.dart';
 
-import '../../../cubits/otherPagesCubit.dart';
 import '../../widgets/myAppBar.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -50,17 +43,17 @@ class ProfileScreenState extends State<ProfileScreen> {
 
   @override
   void initState() {
-    getOtherPagesData();
+    //getOtherPagesData();
     super.initState();
   }
 
-  getOtherPagesData() {
+  /*getOtherPagesData() {
     Future.delayed(Duration.zero, () {
       context.read<OtherPageCubit>().getOtherPage(context: context, langId: context.read<AppLocalizationCubit>().state.id);
     });
-  }
+  }*/
 
-  Widget pagesBuild() {
+  /*Widget pagesBuild() {
     return BlocBuilder<OtherPageCubit, OtherPageState>(builder: (context, state) {
       if (state is OtherPageFetchSuccess) {
         return ScrollConfiguration(
@@ -78,9 +71,9 @@ class ProfileScreenState extends State<ProfileScreen> {
         return const SizedBox.shrink();
       }
     });
-  }
+  }*/
 
-  switchTheme(bool value) async {
+  /*switchTheme(bool value) async {
     if (value) {
       if (await InternetConnectivity.isNetworkAvailable()) {
         SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
@@ -104,7 +97,7 @@ class ProfileScreenState extends State<ProfileScreen> {
 
   bool getTheme() {
     return (context.read<ThemeCubit>().state.appTheme == AppTheme.Dark) ? true : false;
-  }
+  }*/
 
   bool getNotification() {
     /*if (context.read<SettingsCubit>().state.settingsModel!.notification == true) {
@@ -115,10 +108,10 @@ class ProfileScreenState extends State<ProfileScreen> {
     return false;
   }
 
-  switchNotification(bool value) {
+  /*switchNotification(bool value) {
     context.read<SettingsCubit>().changeNotification(value);
     setState(() {});
-  }
+  }*/
 
   //set drawer item list press
   Widget setDrawerItem(String title, IconData? icon, bool isTrailing, bool isNavigate, bool isSwitch, int id, {String? image, String? desc}) {
@@ -136,20 +129,20 @@ class ProfileScreenState extends State<ProfileScreen> {
             )
           : Icon(icon, size: 25),
       iconColor: darkBackgroundColor,
-      trailing: (isTrailing)
+      /*trailing: (isTrailing)
           ? SizedBox(
               height: 45,
               width: 55,
               child: FittedBox(
                   fit: BoxFit.fill,
                   child: Switch.adaptive(
-                      onChanged: (id == 0) ? switchTheme : switchNotification,
+                      onChanged: switchTheme,
                       value: (id == 0) ? getTheme() : getNotification(),
                       activeColor: Theme.of(context).primaryColor,
                       activeTrackColor: Theme.of(context).primaryColor,
                       inactiveThumbColor: Colors.grey,
                       inactiveTrackColor: Colors.grey)))
-          : const SizedBox.shrink(),
+          : const SizedBox.shrink(),*/
       title: CustomTextLabel(text: title, textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(color: darkBackgroundColor)),
       onTap: () {
         if (isNavigate) {

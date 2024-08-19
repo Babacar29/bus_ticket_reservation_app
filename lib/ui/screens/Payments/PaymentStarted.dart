@@ -1,6 +1,6 @@
-import 'package:burkina_transport_app/cubits/Payments/paymentCubit.dart';
-import 'package:burkina_transport_app/ui/widgets/circularProgressIndicator.dart';
-import 'package:burkina_transport_app/utils/ErrorMessageKeys.dart';
+import 'package:bus_ticket_reservation_app/cubits/Payments/paymentCubit.dart';
+import 'package:bus_ticket_reservation_app/ui/widgets/circularProgressIndicator.dart';
+import 'package:bus_ticket_reservation_app/utils/ErrorMessageKeys.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

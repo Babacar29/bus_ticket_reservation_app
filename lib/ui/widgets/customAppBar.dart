@@ -1,9 +1,9 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
-import 'package:burkina_transport_app/ui/widgets/customBackBtn.dart';
-import 'package:burkina_transport_app/ui/widgets/customTextLabel.dart';
-import 'package:burkina_transport_app/utils/uiUtils.dart';
+import 'package:bus_ticket_reservation_app/ui/widgets/customBackBtn.dart';
+import 'package:bus_ticket_reservation_app/ui/widgets/customTextLabel.dart';
+import 'package:bus_ticket_reservation_app/utils/uiUtils.dart';
 
 setCustomAppBar({required double height, required bool isBackBtn, required String label, required BuildContext context, required bool isConvertText, double? horizontalPad}) {
   return PreferredSize(

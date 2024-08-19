@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:burkina_transport_app/ui/styles/colors.dart';
-import 'package:burkina_transport_app/utils/uiUtils.dart';
+import 'package:bus_ticket_reservation_app/ui/styles/colors.dart';
+import 'package:bus_ticket_reservation_app/utils/uiUtils.dart';
 
 class BottomCommButton extends StatelessWidget {
   final Function onTap;

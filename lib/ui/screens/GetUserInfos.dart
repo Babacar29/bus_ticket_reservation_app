@@ -1,5 +1,5 @@
-import 'package:burkina_transport_app/cubits/commandCubit.dart';
-import 'package:burkina_transport_app/utils/hiveBoxKeys.dart';
+import 'package:bus_ticket_reservation_app/cubits/commandCubit.dart';
+import 'package:bus_ticket_reservation_app/utils/hiveBoxKeys.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

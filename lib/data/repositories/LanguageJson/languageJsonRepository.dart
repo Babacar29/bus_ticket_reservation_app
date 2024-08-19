@@ -1,6 +1,6 @@
 // ignore_for_file: file_names
-
-import 'package:burkina_transport_app/utils/api.dart';
+/*
+import 'package:bus_ticket_reservation_app/utils/api.dart';
 import 'languageJsonRemoteDataRepo.dart';
 
 class LanguageJsonRepository {
@@ -35,4 +35,4 @@ class LanguageJsonRepository {
       throw ApiException(e.toString());
     }
   }
-}
+}*/

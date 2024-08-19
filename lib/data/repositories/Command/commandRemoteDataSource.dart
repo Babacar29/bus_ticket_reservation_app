@@ -2,7 +2,7 @@
 
 import 'dart:io';
 
-import 'package:burkina_transport_app/utils/api.dart';
+import 'package:bus_ticket_reservation_app/utils/api.dart';
 
 import '../../../utils/constant.dart';
 

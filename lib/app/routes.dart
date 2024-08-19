@@ -1,16 +1,15 @@
-import 'package:burkina_transport_app/ui/screens/Payments/OtpScreen.dart';
-import 'package:burkina_transport_app/ui/screens/Payments/PaymentStarted.dart';
-import 'package:burkina_transport_app/ui/screens/Tickets/TicketDetails.dart';
-import 'package:burkina_transport_app/ui/screens/chooseSeat.dart';
+import 'package:bus_ticket_reservation_app/ui/screens/Payments/OtpScreen.dart';
+import 'package:bus_ticket_reservation_app/ui/screens/Payments/PaymentStarted.dart';
+import 'package:bus_ticket_reservation_app/ui/screens/Tickets/TicketDetails.dart';
+import 'package:bus_ticket_reservation_app/ui/screens/chooseSeat.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:burkina_transport_app/ui/screens/PrivacyPolicyScreen.dart';
-import 'package:burkina_transport_app/ui/screens/Profile/userProfile.dart';
-import 'package:burkina_transport_app/ui/screens/auth/ForgotPassword.dart';
-import 'package:burkina_transport_app/ui/screens/dashBoard/dashBoardScreen.dart';
-import 'package:burkina_transport_app/ui/screens/languageList.dart';
-import 'package:burkina_transport_app/ui/screens/splashScreen.dart';
-import 'package:burkina_transport_app/ui/screens/auth/loginScreen.dart';
+import 'package:bus_ticket_reservation_app/ui/screens/PrivacyPolicyScreen.dart';
+import 'package:bus_ticket_reservation_app/ui/screens/Profile/userProfile.dart';
+import 'package:bus_ticket_reservation_app/ui/screens/auth/ForgotPassword.dart';
+import 'package:bus_ticket_reservation_app/ui/screens/dashBoard/dashBoardScreen.dart';
+import 'package:bus_ticket_reservation_app/ui/screens/splashScreen.dart';
+import 'package:bus_ticket_reservation_app/ui/screens/auth/loginScreen.dart';
 
 import '../ui/screens/GetUserInfos.dart';
 import '../ui/screens/Tickets/TicketsScreen.dart';
@@ -58,10 +57,10 @@ class Routes {
         {
           return LoginScreen.route(routeSettings);
         }
-      case languageList:
+      /*case languageList:
         {
           return LanguageList.route(routeSettings);
-        }
+        }*/
       case privacy:
         {
           return PrivacyPolicy.route(routeSettings);

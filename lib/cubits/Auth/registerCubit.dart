@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:burkina_transport_app/data/repositories/Auth/authRepository.dart';
+import 'package:bus_ticket_reservation_app/data/repositories/Auth/authRepository.dart';
 import 'package:hive/hive.dart';
 
 import '../../core/services/local_storage/sharedPreferences.dart';

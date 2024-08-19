@@ -65,7 +65,7 @@ class AuthRepository {
   }
 
   //to update fcmId user's data to database. This will be in use when authenticating using fcmId
-  Future<Map<String, dynamic>> updateFcmId({required String userId, required String fcmId, required BuildContext context}) async {
+  /*Future<Map<String, dynamic>> updateFcmId({required String userId, required String fcmId, required BuildContext context}) async {
     final result = await _authRemoteDataSource.updateFcmId(userId: userId, fcmId: fcmId, context: context);
     return result;
   }
@@ -88,14 +88,14 @@ class AuthRepository {
     return result;
   }
 
-  Future<Map<String, dynamic>> register({required BuildContext context}) async {
-    final result = await _authRemoteDataSource.register(context: context);
-    return result;
-  }
-
   //to delete my account
   Future<dynamic> deleteUser({required BuildContext context, required String userId}) async {
     final result = await _authRemoteDataSource.deleteUserAcc(userId: userId, context: context);
+    return result;
+  }*/
+
+  Future<Map<String, dynamic>> register({required BuildContext context}) async {
+    final result = await _authRemoteDataSource.register(context: context);
     return result;
   }
 

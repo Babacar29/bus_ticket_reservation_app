@@ -1,9 +1,8 @@
 // ignore_for_file: file_names
 
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../data/repositories/LanguageJson/languageJsonRepository.dart';
 import '../utils/appLanguages.dart';
 
 abstract class LanguageJsonState {}
@@ -27,11 +26,11 @@ class LanguageJsonFetchFailure extends LanguageJsonState {
 }
 
 class LanguageJsonCubit extends Cubit<LanguageJsonState> {
-  final LanguageJsonRepository _languageJsonRepository;
+  //final LanguageJsonRepository _languageJsonRepository;
 
-  LanguageJsonCubit(this._languageJsonRepository) : super(LanguageJsonInitial());
+  LanguageJsonCubit() : super(LanguageJsonInitial());
 
-  void fetchCurrentLanguageAndLabels(String currentLanguage) async {
+  /*void fetchCurrentLanguageAndLabels(String currentLanguage) async {
     try {
       emit(LanguageJsonFetchInProgress());
 
@@ -43,9 +42,9 @@ class LanguageJsonCubit extends Cubit<LanguageJsonState> {
         languageJson: appLanguageLabelKeys,
       ));
     }
-  }
+  }*/
 
-  void getLanguageJson({required BuildContext context, required String lanCode}) async {
+  /*void getLanguageJson({required BuildContext context, required String lanCode}) async {
     try {
       emit(LanguageJsonFetchInProgress());
       final result = await _languageJsonRepository.getLanguageJson(lanCode: lanCode);
@@ -54,7 +53,7 @@ class LanguageJsonCubit extends Cubit<LanguageJsonState> {
     } catch (e) {
       emit(LanguageJsonFetchSuccess(languageJson: appLanguageLabelKeys));
     }
-  }
+  }*/
 
   String getTranslatedLabels(String label) {
     if (state is LanguageJsonFetchSuccess) {
@@ -64,3 +63,4 @@ class LanguageJsonCubit extends Cubit<LanguageJsonState> {
     }
   }
 }
+

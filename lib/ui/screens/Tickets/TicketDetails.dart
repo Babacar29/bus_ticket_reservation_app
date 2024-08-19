@@ -1,6 +1,6 @@
 // ignore_for_file: file_names
 
-import 'package:burkina_transport_app/ui/screens/HomePage/HomePage.dart';
+import 'package:bus_ticket_reservation_app/ui/screens/HomePage/HomePage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

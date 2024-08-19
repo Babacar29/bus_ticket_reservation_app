@@ -2,13 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:burkina_transport_app/ui/widgets/customBackBtn.dart';
-import 'package:burkina_transport_app/ui/widgets/customTextLabel.dart';
-import 'package:burkina_transport_app/utils/internetConnectivity.dart';
-import 'package:burkina_transport_app/utils/uiUtils.dart';
-import 'package:burkina_transport_app/ui/widgets/SnackBarWidget.dart';
-import 'package:burkina_transport_app/ui/screens/auth/Widgets/setEmail.dart';
-import 'package:burkina_transport_app/ui/screens/auth/Widgets/setLoginAndSignUpBtn.dart';
+import 'package:bus_ticket_reservation_app/ui/widgets/customBackBtn.dart';
+import 'package:bus_ticket_reservation_app/ui/widgets/customTextLabel.dart';
+import 'package:bus_ticket_reservation_app/utils/internetConnectivity.dart';
+import 'package:bus_ticket_reservation_app/utils/uiUtils.dart';
+import 'package:bus_ticket_reservation_app/ui/widgets/SnackBarWidget.dart';
+import 'package:bus_ticket_reservation_app/ui/screens/auth/Widgets/setEmail.dart';
+import 'package:bus_ticket_reservation_app/ui/screens/auth/Widgets/setLoginAndSignUpBtn.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});

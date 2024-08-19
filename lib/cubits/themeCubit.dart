@@ -1,7 +1,8 @@
+/*
 // ignore_for_file: file_names
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:burkina_transport_app/data/repositories/Settings/settingsLocalDataRepository.dart';
+import 'package:bus_ticket_reservation_app/data/repositories/Settings/settingsLocalDataRepository.dart';
 
 import '../ui/styles/appTheme.dart';
 
@@ -21,3 +22,4 @@ class ThemeCubit extends Cubit<ThemeState> {
     emit(ThemeState(appTheme));
   }
 }
+*/

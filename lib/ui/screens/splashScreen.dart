@@ -1,15 +1,11 @@
 // ignore_for_file: file_names
 
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-//import 'package:flutter_svg/flutter_svg.dart';
-import 'package:burkina_transport_app/cubits/themeCubit.dart';
-import 'package:burkina_transport_app/ui/styles/colors.dart';
-import 'package:burkina_transport_app/utils/uiUtils.dart';
-import 'package:burkina_transport_app/app/routes.dart';
-import 'package:burkina_transport_app/ui/widgets/Slideanimation.dart';
+import 'package:bus_ticket_reservation_app/ui/styles/colors.dart';
+import 'package:bus_ticket_reservation_app/utils/uiUtils.dart';
+import 'package:bus_ticket_reservation_app/app/routes.dart';
+import 'package:bus_ticket_reservation_app/ui/widgets/Slideanimation.dart';
 
 import 'dashBoard/dashBoardScreen.dart';
 
@@ -55,7 +51,7 @@ class SplashState extends State<Splash> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    if (Platform.isAndroid) UiUtils.setUIOverlayStyle(appTheme: context.read<ThemeCubit>().state.appTheme); //set UiOverlayStyle according to selected theme
+    //if (Platform.isAndroid) UiUtils.setUIOverlayStyle(appTheme: context.read<ThemeCubit>().state.appTheme); //set UiOverlayStyle according to selected theme
     Timer(
         const Duration(seconds: 3),
             () =>

@@ -3,12 +3,11 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
-import 'package:burkina_transport_app/utils/api.dart';
-import 'package:burkina_transport_app/utils/strings.dart';
-import 'package:burkina_transport_app/cubits/Auth/authCubit.dart' as auth;
+import 'package:bus_ticket_reservation_app/utils/api.dart';
+
+import 'package:bus_ticket_reservation_app/cubits/Auth/authCubit.dart' as auth;
 import 'package:hive/hive.dart';
 
 import '../../../utils/constant.dart';
@@ -17,7 +16,7 @@ import '../../../utils/hiveBoxKeys.dart';
 class AuthRemoteDataSource {
 
 
-  Future<dynamic> loginAuth(
+  /*Future<dynamic> loginAuth(
       {required BuildContext context, required String firebaseId, required String name, required String email, required String type, required String profile, required String mobile}) async {
     try {
       final body = {FIREBASE_ID: firebaseId, NAME: name, TYPE: type, EMAIL: email};
@@ -90,7 +89,7 @@ class AuthRemoteDataSource {
     } catch (e) {
       throw ApiMessageAndCodeException(errorMessage: e.toString());
     }
-  }
+  }*/
 
   static String getRandomString(int length) {
     const chars =

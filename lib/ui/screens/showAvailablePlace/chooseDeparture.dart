@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:burkina_transport_app/cubits/availableCitiesCubit.dart';
-import 'package:burkina_transport_app/cubits/commandCubit.dart';
-import 'package:burkina_transport_app/cubits/trajetsCubit.dart';
-import 'package:burkina_transport_app/ui/widgets/circularProgressIndicator.dart';
-import 'package:burkina_transport_app/utils/hiveBoxKeys.dart';
+import 'package:bus_ticket_reservation_app/cubits/availableCitiesCubit.dart';
+import 'package:bus_ticket_reservation_app/cubits/commandCubit.dart';
+import 'package:bus_ticket_reservation_app/cubits/trajetsCubit.dart';
+import 'package:bus_ticket_reservation_app/ui/widgets/circularProgressIndicator.dart';
+import 'package:bus_ticket_reservation_app/utils/hiveBoxKeys.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

@@ -29,7 +29,7 @@ class UpdateFcmIdCubit extends Cubit<UpdateFcmIdState> {
   UpdateFcmIdCubit(this._authRepository) : super(UpdateFcmIdInitial());
 
   //to update fcmId
-  void updateFcmId({required String userId, required String fcmId, required BuildContext context}) {
+  /*void updateFcmId({required String userId, required String fcmId, required BuildContext context}) {
     emit(UpdateFcmIdProgress());
     _authRepository
         .updateFcmId(
@@ -42,7 +42,7 @@ class UpdateFcmIdCubit extends Cubit<UpdateFcmIdState> {
     }).catchError((e) {
       emit(UpdateFcmIdFailure(e.toString()));
     });
-  }
+  }*/
 
   void sendAPNToken({required String token}) {
     emit(UpdateFcmIdProgress());

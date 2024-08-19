@@ -1,8 +1,9 @@
 // ignore_for_file: file_names
 
+/*
 import 'package:flutter/cupertino.dart';
-import 'package:burkina_transport_app/utils/api.dart';
-import 'package:burkina_transport_app/utils/strings.dart';
+import 'package:bus_ticket_reservation_app/utils/api.dart';
+import 'package:bus_ticket_reservation_app/utils/strings.dart';
 
 class GetUserByIdRemoteDataSource {
   Future<dynamic> getUserById({required BuildContext context, required String userId}) async {
@@ -17,3 +18,4 @@ class GetUserByIdRemoteDataSource {
     }
   }
 }
+*/

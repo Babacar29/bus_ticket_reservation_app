@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:burkina_transport_app/utils/hiveBoxKeys.dart';
+import 'package:bus_ticket_reservation_app/utils/hiveBoxKeys.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:jaguar_jwt/jaguar_jwt.dart';
-import 'package:burkina_transport_app/utils/ErrorMessageKeys.dart';
-import 'package:burkina_transport_app/utils/internetConnectivity.dart';
-import 'package:burkina_transport_app/utils/strings.dart';
+import 'package:bus_ticket_reservation_app/utils/ErrorMessageKeys.dart';
+import 'package:bus_ticket_reservation_app/utils/internetConnectivity.dart';
+import 'package:bus_ticket_reservation_app/utils/strings.dart';
 
 import 'constant.dart';
 
@@ -79,54 +79,7 @@ class Api {
   static String accessKey = "5670";
 
   //all apis list
-  static String getUserSignUpApi = '${databaseUrl}user_signup';
-  static String getNewsApi = '${databaseUrl}get_news';
-  static String getNewsByCatApi = '${databaseUrl}get_news_by_category';
-  static String getSettingApi = '${databaseUrl}get_settings';
-  static String getCatApi = '${databaseUrl}get_category';
-  static String getNewsByIdApi = '${databaseUrl}get_news_by_id';
-  static String setBookmarkApi = '${databaseUrl}set_bookmark';
-  static String getBookmarkApi = '${databaseUrl}get_bookmark';
-  static String setCommentApi = '${databaseUrl}set_comment';
-  static String getCommentByNewsApi = '${databaseUrl}get_comment_by_news';
-  static String getBreakingNewsApi = '${databaseUrl}get_breaking_news';
-  static String setProfileApi = '${databaseUrl}set_profile_image';
-  static String setUpdateProfileApi = '${databaseUrl}update_profile';
-  static String setRegisterToken = '${databaseUrl}register_token';
-  static String getNotificationApi = '${databaseUrl}get_notification';
-  static String setUserCatApi = '${databaseUrl}set_user_category';
-  static String getUserByIdApi = '${databaseUrl}get_user_by_id';
-  static String getNewsByUserCatApi = '${databaseUrl}get_news_by_user_category';
-  static String setCommentDeleteApi = '${databaseUrl}delete_comment';
-  static String setLikesDislikesApi = '${databaseUrl}set_like_dislike';
-  static String setFlagApi = '${databaseUrl}set_flag';
-  static String getLiveStreamingApi = '${databaseUrl}get_live_streaming';
-  static String getSubCategoryApi = '${databaseUrl}get_subcategory_by_category';
-  static String setLikeDislikeComApi = '${databaseUrl}set_comment_like_dislike';
-  static String getNewsByTagApi = '${databaseUrl}get_news_by_tag';
-  static String getUserNotificationApi = '${databaseUrl}get_user_notification';
-  static String updateFCMIdApi = '${databaseUrl}update_fcm_id';
-  static String deleteUserNotiApi = '${databaseUrl}delete_user_notification';
-  static String getQueApi = '${databaseUrl}get_question';
-  static String getQueResultApi = '${databaseUrl}get_question_result';
-  static String setQueResultApi = '${databaseUrl}set_question_result';
-  static String userDeleteApi = '${databaseUrl}delete_user';
-  static String getTagsApi = '${databaseUrl}get_tag';
-  static String setNewsApi = '${databaseUrl}set_news';
-  static String updateNewsApi = '${databaseUrl}update_news';
-  static String setDeleteNewsApi = '${databaseUrl}delete_news';
-  static String setDeleteImageApi = '${databaseUrl}delete_news_images';
-  static String getVideosApi = '${databaseUrl}get_videos';
-  static String getLanguagesApi = '${databaseUrl}get_languages_list';
-  static String getLangJsonDataApi = '${databaseUrl}get_language_json_data';
-  static String getPagesApi = '${databaseUrl}get_pages';
-  static String getPolicyPagesApi = '${databaseUrl}get_policy_pages';
-  static String getFeatureSectionApi = '${databaseUrl}get_featured_sections';
-  static String getLikeNewsApi = '${databaseUrl}get_like';
-  static String getFeatureSectionByIdApi = '${databaseUrl}get_featured_section_by_id';
-  static String setNewsViewApi = '${databaseUrl}set_news_view';
-  static String setBreakingNewsViewApi = '${databaseUrl}set_breaking_news_view';
-  static String getAdsNewsDetailsApi = '${databaseUrl}get_ad_space_news_details';
+
   static String signInApi = '$base_url/auth/login';
   static String registerApi = '$base_url/users';
   static String getCitiesApi = '$base_url/cities';

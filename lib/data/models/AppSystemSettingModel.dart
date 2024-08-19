@@ -1,5 +1,5 @@
 // ignore_for_file: file_names
-import 'package:burkina_transport_app/utils/strings.dart';
+import 'package:bus_ticket_reservation_app/utils/strings.dart';
 
 class AppSystemSettingModel {
   String? breakNewsMode, liveStreamMode, catMode, subCatMode, commentMode, inAppAdsMode, iosInAppAdsMode, adsType, iosAdsType;

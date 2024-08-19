@@ -1,36 +1,24 @@
 import 'dart:io';
 
-import 'package:burkina_transport_app/app/routes.dart';
-import 'package:burkina_transport_app/cubits/Auth/loginCubit.dart';
-import 'package:burkina_transport_app/cubits/availableCitiesCubit.dart';
-import 'package:burkina_transport_app/cubits/commandCubit.dart';
-import 'package:burkina_transport_app/cubits/otherPagesCubit.dart';
-import 'package:burkina_transport_app/cubits/trajetsCubit.dart';
-import 'package:burkina_transport_app/data/repositories/AvailableCities/AvailableCitiesRepository.dart';
-import 'package:burkina_transport_app/data/repositories/Command/commandRepository.dart';
-import 'package:burkina_transport_app/data/repositories/Payments/PaymentsRepository.dart';
-import 'package:burkina_transport_app/data/repositories/TrajetsRepositories/TrajetsRepository.dart';
+import 'package:bus_ticket_reservation_app/app/routes.dart';
+import 'package:bus_ticket_reservation_app/cubits/Auth/loginCubit.dart';
+import 'package:bus_ticket_reservation_app/cubits/availableCitiesCubit.dart';
+import 'package:bus_ticket_reservation_app/cubits/commandCubit.dart';
+import 'package:bus_ticket_reservation_app/cubits/trajetsCubit.dart';
+import 'package:bus_ticket_reservation_app/data/repositories/AvailableCities/AvailableCitiesRepository.dart';
+import 'package:bus_ticket_reservation_app/data/repositories/Command/commandRepository.dart';
+import 'package:bus_ticket_reservation_app/data/repositories/Payments/PaymentsRepository.dart';
+import 'package:bus_ticket_reservation_app/data/repositories/TrajetsRepositories/TrajetsRepository.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:burkina_transport_app/cubits/Auth/deleteUserCubit.dart';
-import 'package:burkina_transport_app/cubits/Auth/registerCubit.dart';
-import 'package:burkina_transport_app/cubits/Auth/updateUserCubit.dart';
-import 'package:burkina_transport_app/cubits/UserPreferences/setUserPreferenceCatCubit.dart';
-import 'package:burkina_transport_app/cubits/appLocalizationCubit.dart';
-import 'package:burkina_transport_app/cubits/Auth/authCubit.dart';
-import 'package:burkina_transport_app/cubits/languageCubit.dart';
-import 'package:burkina_transport_app/cubits/settingCubit.dart';
-import 'package:burkina_transport_app/cubits/languageJsonCubit.dart';
-import 'package:burkina_transport_app/cubits/themeCubit.dart';
-import 'package:burkina_transport_app/data/repositories/Auth/authRepository.dart';
-import 'package:burkina_transport_app/data/repositories/SetUserPreferenceCat/setUserPrefCatRepository.dart';
-import 'package:burkina_transport_app/data/repositories/language/languageRepository.dart';
-import 'package:burkina_transport_app/data/repositories/Settings/settingRepository.dart';
-import 'package:burkina_transport_app/data/repositories/LanguageJson/languageJsonRepository.dart';
-import 'package:burkina_transport_app/utils/uiUtils.dart';
+import 'package:bus_ticket_reservation_app/cubits/Auth/registerCubit.dart';
+import 'package:bus_ticket_reservation_app/cubits/Auth/authCubit.dart';
+import 'package:bus_ticket_reservation_app/cubits/languageJsonCubit.dart';
+import 'package:bus_ticket_reservation_app/data/repositories/Auth/authRepository.dart';
+import 'package:bus_ticket_reservation_app/utils/uiUtils.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -40,8 +28,6 @@ import '../core/services/local_storage/sharedPreferences.dart';
 import '../cubits/Auth/updateFCMCubit.dart';
 import '../cubits/Payments/paymentCubit.dart';
 import '../cubits/ticketsCubit.dart';
-import '../data/repositories/OtherPages/otherPagesRepository.dart';
-import '../data/repositories/Settings/settingsLocalDataRepository.dart';
 import '../data/repositories/Tickets/TicketsRepositories.dart';
 import '../utils/hiveBoxKeys.dart';
 import '../firebase_options.dart';
@@ -74,23 +60,13 @@ Future<void> initializeApp() async {
   );
 
   runApp(MultiBlocProvider(providers: [
-    //BlocProvider<AppConfigurationCubit>(create: (context) => AppConfigurationCubit(SystemRepository())),
-    //BlocProvider<SettingsCubit>(create: (_) => SettingsCubit(SettingsRepository())),
-    BlocProvider<LanguageJsonCubit>(create: (_) => LanguageJsonCubit(LanguageJsonRepository())),
-    BlocProvider<LanguageCubit>(create: (context) => LanguageCubit(LanguageRepository())),
+    BlocProvider<LanguageJsonCubit>(create: (_) => LanguageJsonCubit()),
     BlocProvider<AuthCubit>(create: (_) => AuthCubit(AuthRepository())),
     BlocProvider<LoginCubit>(create: (_) => LoginCubit(AuthRepository())),
     BlocProvider<UpdateFcmIdCubit>(create: (_) => UpdateFcmIdCubit(AuthRepository())),
-    //BlocProvider<UserByCatCubit>(create: (_) => UserByCatCubit(UserByCatRepository())),
-    BlocProvider<SetUserPrefCatCubit>(create: (_) => SetUserPrefCatCubit(SetUserPrefCatRepository())),
-    BlocProvider<UpdateUserCubit>(create: (_) => UpdateUserCubit(AuthRepository())),
-    BlocProvider<DeleteUserCubit>(create: (_) => DeleteUserCubit(AuthRepository())),
-    BlocProvider<ThemeCubit>(create: (_) => ThemeCubit(SettingsLocalDataRepository())),
-    //BlocProvider<GetUserByIdCubit>(create: (_) => GetUserByIdCubit(GetUserByIdRepository())),
-    BlocProvider<AppLocalizationCubit>(create: (_) => AppLocalizationCubit(SettingsLocalDataRepository())),
-    BlocProvider<SettingsCubit>(create: (_) => SettingsCubit(SettingsRepository())),
-    BlocProvider<OtherPageCubit>(create: (_) => OtherPageCubit(OtherPageRepository())),
-    //BlocProvider<OtherPageCubit>(create: (_) => OtherPageCubit(OtherPageRepository())),
+    //BlocProvider<ThemeCubit>(create: (_) => ThemeCubit(SettingsLocalDataRepository())),
+    //BlocProvider<AppLocalizationCubit>(create: (_) => AppLocalizationCubit(SettingsLocalDataRepository())),
+    //BlocProvider<SettingsCubit>(create: (_) => SettingsCubit(SettingsRepository())),
     BlocProvider<LoginCubit>(create: (_) => LoginCubit(AuthRepository())),
     BlocProvider<RegisterCubit>(create: (_) => RegisterCubit(AuthRepository(), SharedPreferencesServices())),
     BlocProvider<AvailableCitiesCubit>(create: (_) => AvailableCitiesCubit(AvailableCitiesRepository())),

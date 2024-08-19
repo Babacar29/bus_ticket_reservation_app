@@ -1,8 +1,8 @@
 // ignore_for_file: file_names
 
-import 'package:flutter/cupertino.dart';
-import 'package:burkina_transport_app/data/models/appLanguageModel.dart';
-import 'package:burkina_transport_app/data/repositories/language/languageRemoteDataSource.dart';
+/*import 'package:flutter/cupertino.dart';
+import 'package:bus_ticket_reservation_app/data/models/appLanguageModel.dart';
+import 'package:bus_ticket_reservation_app/data/repositories/language/languageRemoteDataSource.dart';
 
 class LanguageRepository {
   static final LanguageRepository _languageRepository = LanguageRepository._internal();
@@ -23,4 +23,4 @@ class LanguageRepository {
       "Language": (result['data'] as List).map((e) => LanguageModel.fromJson(e)).toList(),
     };
   }
-}
+}*/

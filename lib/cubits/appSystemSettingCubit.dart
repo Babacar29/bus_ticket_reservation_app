@@ -2,8 +2,8 @@
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:burkina_transport_app/data/models/AppSystemSettingModel.dart';
-import 'package:burkina_transport_app/data/repositories/AppSystemSetting/systemRepository.dart';
+import 'package:bus_ticket_reservation_app/data/models/AppSystemSettingModel.dart';
+import 'package:bus_ticket_reservation_app/data/repositories/AppSystemSetting/systemRepository.dart';
 
 abstract class AppConfigurationState extends Equatable {}
 

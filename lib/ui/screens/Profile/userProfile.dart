@@ -5,17 +5,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:burkina_transport_app/app/routes.dart';
-import 'package:burkina_transport_app/cubits/Auth/authCubit.dart';
-import 'package:burkina_transport_app/cubits/Auth/updateUserCubit.dart';
-import 'package:burkina_transport_app/data/repositories/Auth/authLocalDataSource.dart';
-import 'package:burkina_transport_app/ui/styles/colors.dart';
-import 'package:burkina_transport_app/ui/widgets/SnackBarWidget.dart';
-import 'package:burkina_transport_app/ui/widgets/circularProgressIndicator.dart';
-import 'package:burkina_transport_app/ui/widgets/customAppBar.dart';
-import 'package:burkina_transport_app/ui/widgets/customTextLabel.dart';
-import 'package:burkina_transport_app/utils/uiUtils.dart';
-import 'package:burkina_transport_app/utils/validators.dart';
+import 'package:bus_ticket_reservation_app/cubits/Auth/authCubit.dart';
+import 'package:bus_ticket_reservation_app/data/repositories/Auth/authLocalDataSource.dart';
+import 'package:bus_ticket_reservation_app/ui/styles/colors.dart';
+import 'package:bus_ticket_reservation_app/ui/widgets/circularProgressIndicator.dart';
+import 'package:bus_ticket_reservation_app/ui/widgets/customAppBar.dart';
+import 'package:bus_ticket_reservation_app/ui/widgets/customTextLabel.dart';
+import 'package:bus_ticket_reservation_app/utils/uiUtils.dart';
+import 'package:bus_ticket_reservation_app/utils/validators.dart';
 
 class UserProfileScreen extends StatefulWidget {
   final String from;
@@ -67,51 +64,34 @@ class UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   buildProfileFields() {
-    return BlocConsumer<UpdateUserCubit, UpdateUserState>(
-      listener: (context, state) {
-        //show snackbar incase of success & failure both
-        if (state is UpdateUserFetchSuccess && state.updatedUser != null) {
-          showSnackBar(UiUtils.getTranslatedLabel(context, 'profileUpdateMsg'), context);
-          isSaving = false;
-          setState(() {});
-          (widget.from == "login") ? Navigator.of(context).pushNamedAndRemoveUntil(Routes.managePref, (route) => false, arguments: {"from": 2}) : Navigator.pop(context);
-        }
-        if (state is UpdateUserFetchFailure) {
-          isSaving = false;
-          showSnackBar(state.errorMessage, context);
-        }
-      },
-      builder: (context, state) {
-        return SingleChildScrollView(
-            child: Form(
-                key: _formKey,
-                child: Column(children: [
-                  profileWidget(),
-                  SizedBox(height: size.height * 0.03),
-                  setTextField(
-                      validatorMethod: (value) => Validators.nameValidation(value!, context),
-                      focusNode: nameFocus,
-                      nextFocus: (context.read<AuthCubit>().getType() != loginMbl) ? mobNoFocus : emailFocus,
-                      textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.name,
-                      controller: nameC,
-                      hintlbl: UiUtils.getTranslatedLabel(context, 'nameLbl')),
-                  SizedBox(height: size.height * 0.03),
-                  setMobileNumber(),
-                  SizedBox(height: size.height * 0.03),
-                  setTextField(
-                      validatorMethod: (value) => value!.trim().isEmpty ? null : Validators.emailValidation(value, context),
-                      focusNode: emailFocus,
-                      textInputAction: TextInputAction.done,
-                      keyboardType: TextInputType.emailAddress,
-                      controller: emailC,
-                      isenable: (context.read<AuthCubit>().getType() == loginMbl) ? true : false,
-                      hintlbl: UiUtils.getTranslatedLabel(context, 'emailLbl')),
-                  SizedBox(height: size.height * 0.05),
-                  submitBtn(context)
-                ])));
-      },
-    );
+    return SingleChildScrollView(
+        child: Form(
+            key: _formKey,
+            child: Column(children: [
+              profileWidget(),
+              SizedBox(height: size.height * 0.03),
+              setTextField(
+                  validatorMethod: (value) => Validators.nameValidation(value!, context),
+                  focusNode: nameFocus,
+                  nextFocus: (context.read<AuthCubit>().getType() != loginMbl) ? mobNoFocus : emailFocus,
+                  textInputAction: TextInputAction.next,
+                  keyboardType: TextInputType.name,
+                  controller: nameC,
+                  hintlbl: UiUtils.getTranslatedLabel(context, 'nameLbl')),
+              SizedBox(height: size.height * 0.03),
+              setMobileNumber(),
+              SizedBox(height: size.height * 0.03),
+              setTextField(
+                  validatorMethod: (value) => value!.trim().isEmpty ? null : Validators.emailValidation(value, context),
+                  focusNode: emailFocus,
+                  textInputAction: TextInputAction.done,
+                  keyboardType: TextInputType.emailAddress,
+                  controller: emailC,
+                  isenable: (context.read<AuthCubit>().getType() == loginMbl) ? true : false,
+                  hintlbl: UiUtils.getTranslatedLabel(context, 'emailLbl')),
+              SizedBox(height: size.height * 0.05),
+              submitBtn(context)
+            ])));
   }
 
   Widget setMobileNumber() {
@@ -183,20 +163,20 @@ class UserProfileScreenState extends State<UserProfileScreen> {
                 : CustomTextLabel(text: 'saveLbl', textStyle: Theme.of(this.context).textTheme.titleLarge?.copyWith(color: secondaryColor, fontWeight: FontWeight.w500, letterSpacing: 0.6)),
           ),
           onPressed: () async {
-            validateData();
+            //validateData();
           },
         ));
   }
 
-  validateData() async {
+  /*validateData() async {
     if (_formKey.currentState!.validate()) {
       profileupdateprocess();
     } else {
       debugPrint("validation failed");
     }
-  }
+  }*/
 
-  profileupdateprocess() async {
+  /*profileupdateprocess() async {
     isSaving = true;
     //in case of Clearing Existing mobile number -> set mobile to blank, so it can be passed to replace existing value of mobile number as NULL mobile number won't be passed to APi
     mobile = monoC!.text.trim();
@@ -208,7 +188,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
     } catch (e) {
       showSnackBar(e.toString(), context);
     }
-  }
+  }*/
 
   setTextField(
       {String? Function(String?)? validatorMethod,

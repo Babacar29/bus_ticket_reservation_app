@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:burkina_transport_app/data/models/AuthModel.dart';
-import 'package:burkina_transport_app/data/repositories/Auth/authRepository.dart';
+import 'package:bus_ticket_reservation_app/data/models/AuthModel.dart';
+import 'package:bus_ticket_reservation_app/data/repositories/Auth/authRepository.dart';
 
 const String loginEmail = "email";
 const String loginGmail = "gmail";

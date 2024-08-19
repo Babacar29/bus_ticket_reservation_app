@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:burkina_transport_app/utils/constant.dart';
-import 'package:burkina_transport_app/utils/uiUtils.dart';
+import 'package:bus_ticket_reservation_app/utils/constant.dart';
+import 'package:bus_ticket_reservation_app/utils/uiUtils.dart';
 
 class CustomNetworkImage extends StatelessWidget {
   final String networkImageUrl;

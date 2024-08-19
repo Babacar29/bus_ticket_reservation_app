@@ -1,9 +1,9 @@
 // ignore_for_file: file_names, prefer_typing_uninitialized_variables
-
+/*
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:burkina_transport_app/data/repositories/UserByCategory/userByCatRepository.dart';
+import 'package:bus_ticket_reservation_app/data/repositories/UserByCategory/userByCatRepository.dart';
 
 abstract class UserByCatState {}
 
@@ -40,4 +40,4 @@ class UserByCatCubit extends Cubit<UserByCatState> {
       emit(UserByCatFetchFailure(e.toString()));
     }
   }
-}
+}*/

@@ -1,7 +1,7 @@
 // ignore_for_file: file_names
 
-import 'package:flutter/cupertino.dart';
-import 'package:burkina_transport_app/utils/api.dart';
+/*import 'package:flutter/cupertino.dart';
+import 'package:bus_ticket_reservation_app/utils/api.dart';
 
 class LanguageRemoteDataSource {
   Future<dynamic> getLanguages({required BuildContext context}) async {
@@ -12,4 +12,4 @@ class LanguageRemoteDataSource {
       throw ApiMessageAndCodeException(errorMessage: e.toString());
     }
   }
-}
+}*/

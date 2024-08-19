@@ -5,12 +5,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:burkina_transport_app/app/routes.dart';
-import 'package:burkina_transport_app/cubits/Auth/authCubit.dart';
-import 'package:burkina_transport_app/cubits/languageJsonCubit.dart';
-import 'package:burkina_transport_app/ui/styles/colors.dart';
-import 'package:burkina_transport_app/utils/labelKeys.dart';
-import 'package:burkina_transport_app/ui/styles/appTheme.dart';
+import 'package:bus_ticket_reservation_app/app/routes.dart';
+import 'package:bus_ticket_reservation_app/cubits/Auth/authCubit.dart';
+import 'package:bus_ticket_reservation_app/cubits/languageJsonCubit.dart';
+import 'package:bus_ticket_reservation_app/ui/styles/colors.dart';
+import 'package:bus_ticket_reservation_app/utils/labelKeys.dart';
+import 'package:bus_ticket_reservation_app/ui/styles/appTheme.dart';
 
 class UiUtils {
   static GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
