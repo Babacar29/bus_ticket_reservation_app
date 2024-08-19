@@ -1,9 +1,7 @@
 //Please add your admin panel url here and make sure you do not add '/' at the end of the url
 
-//const String base_url = "https://business.ankata.tech";
-const String base_url = "https://consumer.ankata.net";
-//const String baseUrl = "https://admin.reewmi.fr/";
-//const String databaseUrl = "${baseUrl}api/";
+
+const String base_url = "https://domain.net";
 
 //Please add your jwt key here that you have added in admin panel system configuration setting
 const String jwtKey = "replace_your_jwt_secret_key";
